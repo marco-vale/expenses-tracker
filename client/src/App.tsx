@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { Expense } from './types/Expense';
 import { fetchExpenses } from './helpers/api';
-import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Container, Grid, Paper, Stack, Typography } from '@mui/material';
+import ExpensesList from './components/ExpensesList';
+import { Link } from 'react-router';
 
 function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -14,36 +16,25 @@ function App() {
 
   return (
     <>
-      <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Expenses Tracker
-        </Typography>
+      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+        Expenses Tracker
+      </Typography>
 
-        <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Amount (€)</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Category</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {expenses.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell>{expense.title}</TableCell>
-                  <TableCell>{expense.amount}€</TableCell>
-                  <TableCell>{expense.date.toDateString()}</TableCell>
-                  <TableCell>{expense.category ? expense.category.name : '---'}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <Container maxWidth="md">
+        <Grid container spacing={2}>
+          <Paper style={{ padding: '1rem', marginTop: '1rem', width: '100%' }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Button variant="contained" color="primary" style={{ margin: '1rem' }} component={Link} to="/create">
+                New Expense
+              </Button>
+            </Stack>
+          </Paper>
+
+          <ExpensesList expenses={expenses} />
+        </Grid>
       </Container>
     </>
   )
 }
 
-export default App
+export default App;
