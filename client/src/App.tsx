@@ -1,28 +1,47 @@
-import { useState } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react'
 import type { Expense } from './types/Expense';
+import { fetchExpenses } from './helpers/api';
+import { Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 
 function App() {
-  const [expenses, setExpenses] = useState<Expense[]>([
-    { id: 'e1', title: 'Toilet Paper', amount: 94.12, date: new Date(2020, 7, 14) },
-    { id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
-    { id: 'e3', title: 'Car Insurance', amount: 294.67, date: new Date(2021, 2, 28) },
-    { id: 'e4', title: 'New Desk (Wooden)', amount: 450, date: new Date(2021, 5, 12) },
-  ]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      setExpenses(await fetchExpenses());
+    })();
+  }, []);
 
   return (
     <>
-      <p>Expenses</p>
-      {expenses.map((expense) => (
-        <div key={expense.id}>
-          <h2>{expense.title}</h2>
-          <p>Amount: ${expense.amount}</p>
-          <p>Date: {expense.date.toDateString()}</p>
-          {expense.category && (
-            <p>Category: {expense.category.name}</p>
-          )}
-        </div>
-      ))}
+      <Container maxWidth="md" style={{ marginTop: '2rem' }}>
+        <Typography variant="h4" component="h1" gutterBottom align="center">
+          Expenses Tracker
+        </Typography>
+
+        <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Title</TableCell>
+                <TableCell>Amount (€)</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Category</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {expenses.map((expense) => (
+                <TableRow key={expense.id}>
+                  <TableCell>{expense.title}</TableCell>
+                  <TableCell>{expense.amount}€</TableCell>
+                  <TableCell>{expense.date.toDateString()}</TableCell>
+                  <TableCell>{expense.category ? expense.category.name : '---'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     </>
   )
 }
