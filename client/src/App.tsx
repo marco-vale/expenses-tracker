@@ -24,7 +24,13 @@ function App() {
         <Grid container spacing={2}>
           <Paper style={{ padding: '1rem', marginTop: '1rem', width: '100%' }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Button variant="contained" color="primary" style={{ margin: '1rem' }} component={Link} to="/create">
+              <Button
+                color="primary"
+                variant="contained"
+                style={{ margin: '1rem' }}
+                component={Link}
+                to="/create"
+              >
                 New Expense
               </Button>
             </Stack>
