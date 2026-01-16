@@ -1,6 +1,4 @@
-import { gql } from 'graphql-tag';
-
-export const types = gql`
+export const typeDefs = `#graphql
   type ExpenseCategory {
     id: ID!
     name: String!
@@ -12,5 +10,9 @@ export const types = gql`
     amount: Float!
     date: String!
     category: ExpenseCategory
+  }
+
+  type Query {
+    expenses: [Expense!]!
   }
 `;

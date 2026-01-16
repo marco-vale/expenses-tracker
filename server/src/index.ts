@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { Expense } from './types/Expense.js';
+import { ApolloServer } from '@apollo/server';
+import { typeDefs } from './graphql/typeDefs.js';
+import { resolvers } from './graphql/resolvers.js';
+import { prisma } from './prisma/client.js';
+import { expressMiddleware } from '@as-integrations/express5';
 
 const app = express();
 app.use(express.json());
@@ -16,14 +20,25 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true })
 });
 
-app.get('/api/expenses', (_req, res) => {
-  const expenses: Expense[] = [
-    { id: 'e1', title: 'Toilet Paper', amount: 94.12, date: new Date(2020, 7, 14) },
-    { id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
-    { id: 'e3', title: 'Car Insurance', amount: 294.67, date: new Date(2021, 2, 28) },
-    { id: 'e4', title: 'New Desk (Wooden)', amount: 450, date: new Date(2021, 5, 12) },
-  ];
+const apollo = new ApolloServer({
+  typeDefs: typeDefs,
+  resolvers: resolvers,
+});
 
+await apollo.start();
+
+app.use(
+  '/graphql',
+  expressMiddleware(apollo, {
+    context: async () => ({ prisma }),
+  }),
+);
+
+app.get('/api/expenses', async (_req, res) => {
+  const expenses = await prisma.expense.findMany({
+    include: { category: true },
+    orderBy: { date: 'desc' },
+  });
 
   res.json(expenses);
 });
@@ -31,5 +46,6 @@ app.get('/api/expenses', (_req, res) => {
 const port = Number(process.env.PORT ?? 3001);
 
 app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`)
+  console.log(`API listening on http://localhost:${port}`);
+  console.log(`GraphQL ready at http://localhost:${port}/graphql`);
 });
