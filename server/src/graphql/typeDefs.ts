@@ -12,7 +12,18 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
+  input ExpenseInput {
+    title: String!
+    amount: Float!
+    date: String!
+    categoryId: ID
+  }
+
   type Query {
     expenses: [Expense!]!
+  }
+
+  type Mutation {
+    createExpense(expense: ExpenseInput): Expense!
   }
 `;

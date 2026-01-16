@@ -2,12 +2,12 @@ import { Button, Container, Grid, Paper, Stack, Typography } from '@mui/material
 import ExpensesList from './components/ExpensesList';
 import { Link } from 'react-router';
 import { useMemo } from 'react';
-import type { Expense, ExpensesQuery } from './gql/graphql';
 import { useQuery } from '@apollo/client/react';
-import { expensesQuery } from './graphql/expenses';
+import { getExpenses } from './graphql/getExpenses';
+import type { Expense, GetExpensesQuery } from './gql/graphql';
 
 function App() {
-  const { data, loading } = useQuery<ExpensesQuery>(expensesQuery);
+  const { data, loading } = useQuery<GetExpensesQuery>(getExpenses);
 
   const expenses = useMemo<Expense[]>(() => {
     if (!data || !data.expenses || loading) {

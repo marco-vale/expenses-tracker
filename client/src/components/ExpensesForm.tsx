@@ -3,14 +3,19 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Button, TextField } from '@mui/material';
 import { Link } from 'react-router';
+import { useMutation } from '@apollo/client/react';
+import type { CreateExpenseMutation } from '../gql/graphql';
+import { createExpense } from '../graphql/createExpense';
 
 type ExpenseFormValues = {
   title: string;
-  amount: number;
+  amount: string;
   date: string;
 };
 
 const ExpensesForm: React.FC = () => {
+  const [createExpenseMutation] = useMutation<CreateExpenseMutation>(createExpense);
+
   const schema = Yup.object().shape({
     title: Yup.string().required(),
     amount: Yup.number().required().positive(),
@@ -20,14 +25,21 @@ const ExpensesForm: React.FC = () => {
   const formik = useFormik<ExpenseFormValues>({
     initialValues: {
       title: '',
-      amount: 0,
+      amount: '0',
       date: new Date().toISOString().slice(0, 16),
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      console.log('Form submitted with values:', {
-        ...values,
-        date: new Date(values.date),
+      console.log(values);
+
+      createExpenseMutation({
+        variables: {
+          expense: {
+            title: values.title,
+            amount: Number(values.amount),
+            date: new Date(values.date).toISOString(),
+          },
+        },
       });
     },
   });
