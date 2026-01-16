@@ -5,6 +5,8 @@ import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
 import { BrowserRouter, Route, Routes } from 'react-router'
 
 import CreateExpense from './CreateExpense.tsx'
+import { ApolloProvider } from '@apollo/client/react'
+import { apollo } from './apollo/client.ts'
 
 const theme = createTheme({
   palette: {
@@ -14,14 +16,16 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/create" element={<CreateExpense />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <ApolloProvider client={apollo}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/create" element={<CreateExpense />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </ApolloProvider>
   </StrictMode>,
 )
