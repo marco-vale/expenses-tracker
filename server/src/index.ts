@@ -34,15 +34,6 @@ app.use(
   }),
 );
 
-app.get('/api/expenses', async (_req, res) => {
-  const expenses = await prisma.expense.findMany({
-    include: { category: true },
-    orderBy: { date: 'desc' },
-  });
-
-  res.json(expenses);
-});
-
 const port = Number(process.env.PORT ?? 3001);
 
 app.listen(port, () => {

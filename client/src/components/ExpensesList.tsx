@@ -1,6 +1,6 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React from "react";
-import type { Expense } from '../types/Expense';
+import type { Expense } from '../gql/graphql';
 
 export type ExpensesListProps = {
   expenses: Expense[];
@@ -23,7 +23,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses }: ExpensesListPro
             <TableRow key={expense.id}>
               <TableCell>{expense.title}</TableCell>
               <TableCell>{expense.amount}€</TableCell>
-              <TableCell>{expense.date.toDateString()}</TableCell>
+              <TableCell>{expense.date}</TableCell>
               <TableCell>{expense.category ? expense.category.name : '---'}</TableCell>
             </TableRow>
           ))}

@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react'
-import type { Expense } from './types/Expense';
-import { fetchExpenses } from './helpers/api';
 import { Button, Container, Grid, Paper, Stack, Typography } from '@mui/material';
 import ExpensesList from './components/ExpensesList';
 import { Link } from 'react-router';
+import { useMemo } from 'react';
+import type { Expense, ExpensesQuery } from './gql/graphql';
+import { useQuery } from '@apollo/client/react';
+import { expensesQuery } from './graphql/expenses';
 
 function App() {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const { data, loading } = useQuery<ExpensesQuery>(expensesQuery);
 
-  useEffect(() => {
-    (async () => {
-      setExpenses(await fetchExpenses());
-    })();
-  }, []);
+  const expenses = useMemo<Expense[]>(() => {
+    if (!data || !data.expenses || loading) {
+      return [];
+    }
+
+    return data.expenses;
+  }, [data, loading]);
 
   return (
     <>
