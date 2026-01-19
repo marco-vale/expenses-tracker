@@ -42,11 +42,17 @@ export type ExpenseInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createExpense: Expense;
+  deleteExpense: Scalars['ID']['output'];
 };
 
 
 export type MutationCreateExpenseArgs = {
   expense: ExpenseInput;
+};
+
+
+export type MutationDeleteExpenseArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type Query = {
@@ -166,6 +172,7 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createExpense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
+  deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

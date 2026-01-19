@@ -36,5 +36,13 @@ export const resolvers: Resolvers<GraphQLContext> = {
         date: newExpense.date.toISOString(),
       };
     },
+
+    deleteExpense: async (_, { id }, context) => {
+      await context.prisma.expense.delete({
+        where: { id },
+      });
+
+      return id;
+    },
   },
 };

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const getExpenses = gql`
+export const getExpensesGql = gql`
   query GetExpenses {
     expenses {
       id

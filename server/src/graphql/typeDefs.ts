@@ -25,5 +25,6 @@ export const typeDefs = `#graphql
 
   type Mutation {
     createExpense(expense: ExpenseInput!): Expense!
+    deleteExpense(id: ID!): ID!
   }
 `;

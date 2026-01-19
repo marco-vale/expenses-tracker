@@ -2,20 +2,41 @@ import { Button, Container, Grid, Paper, Stack, Typography } from '@mui/material
 import ExpensesList from './components/ExpensesList';
 import { Link } from 'react-router';
 import { useMemo } from 'react';
-import { useQuery } from '@apollo/client/react';
-import { getExpenses } from './graphql/getExpenses';
-import type { Expense, GetExpensesQuery } from './graphql/__generated__/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { getExpensesGql } from './graphql/getExpensesGql';
+import type {
+  DeleteExpenseMutation,
+  Expense,
+  GetExpensesQuery,
+} from './graphql/__generated__/graphql';
+import { deleteExpenseGql } from './graphql/deleteExpenseGql';
 
 function App() {
-  const { data, loading } = useQuery<GetExpensesQuery>(getExpenses);
+  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery>(
+    getExpensesGql,
+    { fetchPolicy: 'network-only', },
+  );
+
+  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(
+    deleteExpenseGql,
+    { refetchQueries: [getExpensesGql], }
+  );
+
+  const deleteExpense = (id: string) => {
+    deleteExpenseMutation({
+      variables: {
+        id,
+      },
+    });
+  };
 
   const expenses = useMemo<Expense[]>(() => {
-    if (!data?.expenses || loading) {
+    if (!expensesData?.expenses || expensesLoading) {
       return [];
     }
 
-    return data.expenses;
-  }, [data?.expenses, loading]);
+    return expensesData.expenses;
+  }, [expensesData?.expenses, expensesLoading]);
 
   return (
     <>
@@ -39,7 +60,10 @@ function App() {
             </Stack>
           </Paper>
 
-          <ExpensesList expenses={expenses} />
+          <ExpensesList
+            expenses={expenses}
+            deleteExpense={deleteExpense}
+          />
         </Grid>
       </Container>
     </>

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const createExpense = gql`
+export const createExpenseGql = gql`
   mutation CreateExpense($expense: ExpenseInput!) {
     createExpense(expense: $expense) {
       id
