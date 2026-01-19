@@ -24,6 +24,6 @@ export const typeDefs = `#graphql
   }
 
   type Mutation {
-    createExpense(expense: ExpenseInput): Expense!
+    createExpense(expense: ExpenseInput!): Expense!
   }
 `;

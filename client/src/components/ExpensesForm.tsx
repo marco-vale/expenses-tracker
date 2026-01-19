@@ -4,8 +4,8 @@ import { useFormik } from 'formik';
 import { Button, TextField } from '@mui/material';
 import { Link } from 'react-router';
 import { useMutation } from '@apollo/client/react';
-import type { CreateExpenseMutation } from '../gql/graphql';
 import { createExpense } from '../graphql/createExpense';
+import type { CreateExpenseMutation } from '../graphql/__generated__/graphql';
 
 type ExpenseFormValues = {
   title: string;

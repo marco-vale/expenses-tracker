@@ -4,18 +4,18 @@ import { Link } from 'react-router';
 import { useMemo } from 'react';
 import { useQuery } from '@apollo/client/react';
 import { getExpenses } from './graphql/getExpenses';
-import type { Expense, GetExpensesQuery } from './gql/graphql';
+import type { Expense, GetExpensesQuery } from './graphql/__generated__/graphql';
 
 function App() {
   const { data, loading } = useQuery<GetExpensesQuery>(getExpenses);
 
   const expenses = useMemo<Expense[]>(() => {
-    if (!data || !data.expenses || loading) {
+    if (!data?.expenses || loading) {
       return [];
     }
 
     return data.expenses;
-  }, [data, loading]);
+  }, [data?.expenses, loading]);
 
   return (
     <>

@@ -45,7 +45,7 @@ export type Mutation = {
 
 
 export type MutationCreateExpenseArgs = {
-  expense?: InputMaybe<ExpenseInput>;
+  expense: ExpenseInput;
 };
 
 export type Query = {

@@ -1,28 +1,40 @@
-import { GraphQLContext } from './context.js';
+import { Expense, ExpenseInput, MutationCreateExpenseArgs, RequireFields, Resolvers } from './__generated__/resolvers-types';
+import { GraphQLContext } from './context';
 
-export const resolvers = {
+export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
-    expenses: async (_p: unknown, _a: unknown, ctx: GraphQLContext) => {
-      return ctx.prisma.expense.findMany({
+    expenses: async (_p, {}, context) => {
+      const expenses = await context.prisma.expense.findMany({
         include: { category: true },
         orderBy: { date: 'desc' },
+      });
+
+      return expenses.map((dbExpense) => {
+        return {
+          ...dbExpense,
+          date: dbExpense.date.toISOString(),
+        };
       });
     },
   },
 
   Mutation: {
-    createExpense: async (_p: unknown, args: { expense: { title: string; amount: number; date: string; categoryId?: string } }, ctx: GraphQLContext) => {
-      const { title, amount, date, categoryId } = args.expense;
-
-      return ctx.prisma.expense.create({
+    createExpense: async (_, { expense }, context) => {
+      const newExpense = await context.prisma.expense.create({
         data: {
-          title,
-          amount,
-          date,
-          category: categoryId ? { connect: { id: categoryId } } : undefined,
+          title: expense.title,
+          amount: expense.amount,
+          date: new Date(expense.date),
+          category: expense.categoryId ? { connect: { id: expense.categoryId } } : undefined,
         },
         include: { category: true },
       });
+
+
+      return {
+        ...newExpense,
+        date: newExpense.date.toISOString(),
+      };
     },
   },
 };

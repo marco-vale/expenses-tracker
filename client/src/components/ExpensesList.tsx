@@ -1,6 +1,6 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React from "react";
-import type { Expense } from '../gql/graphql';
+import type { Expense } from '../graphql/__generated__/graphql';
 
 export type ExpensesListProps = {
   expenses: Expense[];
