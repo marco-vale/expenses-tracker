@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client/react';
 import type { Expense, GetExpenseQuery, UpdateExpenseMutation } from './graphql/__generated__/graphql';
 import { updateExpenseGql } from './graphql/updateExpenseGql';
 import { Container, Grid, Typography } from '@mui/material';
-import ExpensesForm from './components/ExpensesForm';
+import ExpenseForm from './components/ExpenseForm';
 import type { ExpenseFormValues } from './types/types';
 import { getExpenseGql } from './graphql/getExpenseGql';
 import { useMemo } from 'react';
@@ -56,7 +56,7 @@ function EditExpense() {
       <Container maxWidth="md">
         <Grid container spacing={2}>
           {!expenseLoading && (
-            <ExpensesForm expense={expense} onSubmit={onSubmit} />
+            <ExpenseForm expense={expense} onSubmit={onSubmit} />
           )}
         </Grid>
       </Container>

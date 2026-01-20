@@ -4,3 +4,7 @@ export type ExpenseFormValues = {
   amount: string;
   date: string;
 };
+
+export type ExpenseCategoryFormValues = {
+  name: string;
+};

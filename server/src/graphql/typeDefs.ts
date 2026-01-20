@@ -36,5 +36,7 @@ export const typeDefs = `#graphql
     createExpense(expense: ExpenseCreateInput!): ID!
     updateExpense(expense: ExpenseUpdateInput!): ID!
     deleteExpense(id: ID!): ID!
+
+    upsertExpenseCategory(name: String!): ID!
   }
 `;

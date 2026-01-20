@@ -10,7 +10,7 @@ type ExpensesListProps = {
   deleteExpense: (id: string) => void;
 };
 
-const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, deleteExpense }: ExpensesListProps) => {
+const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, deleteExpense }) => {
   const handleDeleteExpense = (id: string) => {
     deleteExpense(id);
   };

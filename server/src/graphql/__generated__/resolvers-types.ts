@@ -52,6 +52,7 @@ export type Mutation = {
   createExpense: Scalars['ID']['output'];
   deleteExpense: Scalars['ID']['output'];
   updateExpense: Scalars['ID']['output'];
+  upsertExpenseCategory: Scalars['ID']['output'];
 };
 
 
@@ -67,6 +68,11 @@ export type MutationDeleteExpenseArgs = {
 
 export type MutationUpdateExpenseArgs = {
   expense: ExpenseUpdateInput;
+};
+
+
+export type MutationUpsertExpenseCategoryArgs = {
+  name: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -196,6 +202,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
   updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
+  upsertExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpsertExpenseCategoryArgs, 'name'>>;
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

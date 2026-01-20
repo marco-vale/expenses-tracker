@@ -19,6 +19,7 @@ type Documents = {
     "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n    }\n  }\n": typeof types.GetExpenseDocument,
     "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n    }\n  }\n": typeof types.GetExpensesDocument,
     "\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n": typeof types.UpdateExpenseDocument,
+    "\n  mutation UpsertExpenseCategory($name: String!) {\n    upsertExpenseCategory(name: $name)\n  }\n": typeof types.UpsertExpenseCategoryDocument,
 };
 const documents: Documents = {
     "\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n": types.CreateExpenseDocument,
@@ -26,6 +27,7 @@ const documents: Documents = {
     "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n    }\n  }\n": types.GetExpenseDocument,
     "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n    }\n  }\n": types.GetExpensesDocument,
     "\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n": types.UpdateExpenseDocument,
+    "\n  mutation UpsertExpenseCategory($name: String!) {\n    upsertExpenseCategory(name: $name)\n  }\n": types.UpsertExpenseCategoryDocument,
 };
 
 /**
@@ -62,6 +64,10 @@ export function graphql(source: "\n  query GetExpenses {\n    expenses {\n      
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n"): (typeof documents)["\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpsertExpenseCategory($name: String!) {\n    upsertExpenseCategory(name: $name)\n  }\n"): (typeof documents)["\n  mutation UpsertExpenseCategory($name: String!) {\n    upsertExpenseCategory(name: $name)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -5,14 +5,15 @@ import { Button, TextField } from '@mui/material';
 import { Link } from 'react-router';
 import type { Expense } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
+import { AppRoutes } from '../routes/routes';
 
 type ExpenseFormProps = {
   expense?: Expense;
   onSubmit: (values: ExpenseFormValues) => void;
 };
 
-const ExpensesForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }: ExpenseFormProps) => {
-  const schema = Yup.object().shape({
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
+  const validationSchema = Yup.object({
     id: Yup.string(),
     title: Yup.string().required(),
     amount: Yup.number().required().positive(),
@@ -28,7 +29,7 @@ const ExpensesForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }: Expense
         ? new Date(expense.date).toISOString().slice(0, 16)
         : new Date().toISOString().slice(0, 16),
     },
-    validationSchema: schema,
+    validationSchema,
     onSubmit,
   });
 
@@ -39,6 +40,7 @@ const ExpensesForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }: Expense
         name="title"
         label="Title"
         fullWidth
+        autoFocus
         margin="normal"
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
@@ -83,7 +85,7 @@ const ExpensesForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }: Expense
         variant="outlined"
         style={{ marginTop: '1rem', marginRight: '1rem' }}
         component={Link}
-        to="/"
+        to={AppRoutes.Home}
       >
         Back
       </Button>
@@ -93,10 +95,10 @@ const ExpensesForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }: Expense
         variant="contained"
         style={{ marginTop: '1rem' }}
       >
-        {expense ? 'Update Expense' : 'Create Expense'}
+        {expense ? 'Save Expense' : 'Add Expense'}
       </Button>
     </form>
   );
 };
 
-export default ExpensesForm;
+export default ExpenseForm;

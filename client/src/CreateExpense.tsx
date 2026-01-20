@@ -1,5 +1,5 @@
 import { Container, Grid, Typography } from '@mui/material';
-import ExpensesForm from './components/ExpensesForm';
+import ExpenseForm from './components/ExpenseForm';
 import { useMutation } from '@apollo/client/react';
 import type { CreateExpenseMutation } from './graphql/__generated__/graphql';
 import { createExpenseGql } from './graphql/createExpenseGql';
@@ -29,12 +29,12 @@ function CreateExpense() {
   return (
     <>
       <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
-        New Expense
+        Add Expense
       </Typography>
 
       <Container maxWidth="md">
         <Grid container spacing={2}>
-          <ExpensesForm onSubmit={onSubmit} />
+          <ExpenseForm onSubmit={onSubmit} />
         </Grid>
       </Container>
     </>

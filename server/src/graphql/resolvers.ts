@@ -32,7 +32,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         ...expense,
         date: convertDateToString(expense.date),
       };
-    }
+    },
   },
 
   Mutation: {
@@ -71,6 +71,16 @@ export const resolvers: Resolvers<GraphQLContext> = {
       });
 
       return id;
+    },
+
+    upsertExpenseCategory: async (_, { name }, context) => {
+      const upsertedExpenseCategory = await context.prisma.expenseCategory.upsert({
+        where: { name },
+        update: { name },
+        create: { name },
+      });
+
+      return upsertedExpenseCategory.id;
     },
   },
 };
