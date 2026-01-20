@@ -1,4 +1,5 @@
-import { Expense, ExpenseInput, MutationCreateExpenseArgs, RequireFields, Resolvers } from './__generated__/resolvers-types';
+import { convertDateToString } from '../tools/convertDateToString';
+import { Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 
 export const resolvers: Resolvers<GraphQLContext> = {
@@ -9,13 +10,29 @@ export const resolvers: Resolvers<GraphQLContext> = {
         orderBy: { date: 'desc' },
       });
 
-      return expenses.map((dbExpense) => {
+      return expenses.map((expense) => {
         return {
-          ...dbExpense,
-          date: dbExpense.date.toISOString(),
+          ...expense,
+          date: convertDateToString(expense.date),
         };
       });
     },
+
+    expense: async (_p, { id }, context) => {
+      const expense = await context.prisma.expense.findFirst({
+        where: { id },
+        include: { category: true },
+      });
+
+      if (!expense) {
+        throw new Error(`Expense with id ${id} not found`);
+      }
+
+      return {
+        ...expense,
+        date: convertDateToString(expense.date),
+      };
+    }
   },
 
   Mutation: {
@@ -30,11 +47,22 @@ export const resolvers: Resolvers<GraphQLContext> = {
         include: { category: true },
       });
 
+      return newExpense.id;
+    },
 
-      return {
-        ...newExpense,
-        date: newExpense.date.toISOString(),
-      };
+    updateExpense: async (_, { expense }, context) => {
+      const updatedExpense = await context.prisma.expense.update({
+        where: { id: expense.id },
+        data: {
+          title: expense.title,
+          amount: expense.amount,
+          date: new Date(expense.date),
+          category: expense.categoryId ? { connect: { id: expense.categoryId } } : { disconnect: true },
+        },
+        include: { category: true },
+      });
+
+      return updatedExpense.id;
     },
 
     deleteExpense: async (_, { id }, context) => {

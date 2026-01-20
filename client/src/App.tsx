@@ -14,12 +14,16 @@ import { deleteExpenseGql } from './graphql/deleteExpenseGql';
 function App() {
   const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery>(
     getExpensesGql,
-    { fetchPolicy: 'network-only', },
+    {
+      fetchPolicy: 'network-only',
+    },
   );
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(
     deleteExpenseGql,
-    { refetchQueries: [getExpensesGql], }
+    {
+      refetchQueries: [getExpensesGql],
+    },
   );
 
   const deleteExpense = (id: string) => {

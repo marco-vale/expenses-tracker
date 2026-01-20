@@ -3,20 +3,17 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Button, TextField } from '@mui/material';
 import { Link } from 'react-router';
-import type { ExpenseInput } from '../graphql/__generated__/graphql';
+import type { Expense } from '../graphql/__generated__/graphql';
+import type { ExpenseFormValues } from '../types/types';
 
 type ExpenseFormProps = {
-  createExpense: (expense: ExpenseInput) => void;
+  expense?: Expense;
+  onSubmit: (values: ExpenseFormValues) => void;
 };
 
-type ExpenseFormValues = {
-  title: string;
-  amount: string;
-  date: string;
-};
-
-const ExpensesForm: React.FC<ExpenseFormProps> = ({ createExpense }: ExpenseFormProps) => {
+const ExpensesForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }: ExpenseFormProps) => {
   const schema = Yup.object().shape({
+    id: Yup.string(),
     title: Yup.string().required(),
     amount: Yup.number().required().positive(),
     date: Yup.string().required(),
@@ -24,18 +21,15 @@ const ExpensesForm: React.FC<ExpenseFormProps> = ({ createExpense }: ExpenseForm
 
   const formik = useFormik<ExpenseFormValues>({
     initialValues: {
-      title: '',
-      amount: '0',
-      date: new Date().toISOString().slice(0, 16),
+      id: expense?.id || '',
+      title: expense?.title || '',
+      amount: expense?.amount ? expense.amount.toString() : '0',
+      date: expense?.date
+        ? new Date(expense.date).toISOString().slice(0, 16)
+        : new Date().toISOString().slice(0, 16),
     },
     validationSchema: schema,
-    onSubmit: (values) => {
-      createExpense({
-        title: values.title,
-        amount: Number(values.amount),
-        date: new Date(values.date).toISOString(),
-      });
-    },
+    onSubmit,
   });
 
   return (
@@ -99,7 +93,7 @@ const ExpensesForm: React.FC<ExpenseFormProps> = ({ createExpense }: ExpenseForm
         variant="contained"
         style={{ marginTop: '1rem' }}
       >
-        Create Expense
+        {expense ? 'Update Expense' : 'Create Expense'}
       </Button>
     </form>
   );

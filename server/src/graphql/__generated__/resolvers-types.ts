@@ -32,22 +32,31 @@ export type ExpenseCategory = {
   name: Scalars['String']['output'];
 };
 
-export type ExpenseInput = {
+export type ExpenseCreateInput = {
   amount: Scalars['Float']['input'];
   categoryId?: InputMaybe<Scalars['ID']['input']>;
   date: Scalars['String']['input'];
   title: Scalars['String']['input'];
 };
 
+export type ExpenseUpdateInput = {
+  amount: Scalars['Float']['input'];
+  categoryId?: InputMaybe<Scalars['ID']['input']>;
+  date: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  createExpense: Expense;
+  createExpense: Scalars['ID']['output'];
   deleteExpense: Scalars['ID']['output'];
+  updateExpense: Scalars['ID']['output'];
 };
 
 
 export type MutationCreateExpenseArgs = {
-  expense: ExpenseInput;
+  expense: ExpenseCreateInput;
 };
 
 
@@ -55,9 +64,20 @@ export type MutationDeleteExpenseArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type MutationUpdateExpenseArgs = {
+  expense: ExpenseUpdateInput;
+};
+
 export type Query = {
   __typename?: 'Query';
+  expense: Expense;
   expenses: Array<Expense>;
+};
+
+
+export type QueryExpenseArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -136,7 +156,8 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Expense: ResolverTypeWrapper<Expense>;
   ExpenseCategory: ResolverTypeWrapper<ExpenseCategory>;
-  ExpenseInput: ExpenseInput;
+  ExpenseCreateInput: ExpenseCreateInput;
+  ExpenseUpdateInput: ExpenseUpdateInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
@@ -149,7 +170,8 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Expense: Expense;
   ExpenseCategory: ExpenseCategory;
-  ExpenseInput: ExpenseInput;
+  ExpenseCreateInput: ExpenseCreateInput;
+  ExpenseUpdateInput: ExpenseUpdateInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Mutation: Record<PropertyKey, never>;
@@ -171,11 +193,13 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
 };
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createExpense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
+  createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
+  updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType>;
 };
 

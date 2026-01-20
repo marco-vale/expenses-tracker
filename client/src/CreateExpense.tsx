@@ -1,17 +1,28 @@
 import { Container, Grid, Typography } from '@mui/material';
 import ExpensesForm from './components/ExpensesForm';
 import { useMutation } from '@apollo/client/react';
-import type { CreateExpenseMutation, ExpenseInput } from './graphql/__generated__/graphql';
+import type { CreateExpenseMutation } from './graphql/__generated__/graphql';
 import { createExpenseGql } from './graphql/createExpenseGql';
+import type { ExpenseFormValues } from './types/types';
+import { useNavigate } from 'react-router';
+import { AppRoutes } from './routes/routes';
 
 function CreateExpense() {
+  const navigate = useNavigate();
+
   const [createExpenseMutation] = useMutation<CreateExpenseMutation>(createExpenseGql);
 
-  const createExpense = (expense: ExpenseInput) => {
+  const onSubmit = (values: ExpenseFormValues) => {
     createExpenseMutation({
       variables: {
-        expense,
+        expense: {
+          title: values.title,
+          amount: Number(values.amount),
+          date: new Date(values.date).toISOString(),
+        },
       },
+    }).then(() => {
+      navigate(AppRoutes.Home);
     });
   };
 
@@ -23,7 +34,7 @@ function CreateExpense() {
 
       <Container maxWidth="md">
         <Grid container spacing={2}>
-          <ExpensesForm createExpense={createExpense} />
+          <ExpensesForm onSubmit={onSubmit} />
         </Grid>
       </Container>
     </>

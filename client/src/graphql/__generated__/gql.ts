@@ -14,14 +14,18 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  mutation CreateExpense($expense: ExpenseInput!) {\n    createExpense(expense: $expense) {\n      id\n      title\n      amount\n      date\n    }\n  }\n": typeof types.CreateExpenseDocument,
+    "\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n": typeof types.CreateExpenseDocument,
     "\n  mutation DeleteExpense($id: ID!) {\n    deleteExpense(id: $id)\n  }\n": typeof types.DeleteExpenseDocument,
+    "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n    }\n  }\n": typeof types.GetExpenseDocument,
     "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n    }\n  }\n": typeof types.GetExpensesDocument,
+    "\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n": typeof types.UpdateExpenseDocument,
 };
 const documents: Documents = {
-    "\n  mutation CreateExpense($expense: ExpenseInput!) {\n    createExpense(expense: $expense) {\n      id\n      title\n      amount\n      date\n    }\n  }\n": types.CreateExpenseDocument,
+    "\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n": types.CreateExpenseDocument,
     "\n  mutation DeleteExpense($id: ID!) {\n    deleteExpense(id: $id)\n  }\n": types.DeleteExpenseDocument,
+    "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n    }\n  }\n": types.GetExpenseDocument,
     "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n    }\n  }\n": types.GetExpensesDocument,
+    "\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n": types.UpdateExpenseDocument,
 };
 
 /**
@@ -41,7 +45,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateExpense($expense: ExpenseInput!) {\n    createExpense(expense: $expense) {\n      id\n      title\n      amount\n      date\n    }\n  }\n"): (typeof documents)["\n  mutation CreateExpense($expense: ExpenseInput!) {\n    createExpense(expense: $expense) {\n      id\n      title\n      amount\n      date\n    }\n  }\n"];
+export function graphql(source: "\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n"): (typeof documents)["\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -49,7 +53,15 @@ export function graphql(source: "\n  mutation DeleteExpense($id: ID!) {\n    del
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n    }\n  }\n"): (typeof documents)["\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n    }\n  }\n"): (typeof documents)["\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n"): (typeof documents)["\n  mutation UpdateExpense($expense: ExpenseUpdateInput!) {\n    updateExpense(expense: $expense)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
