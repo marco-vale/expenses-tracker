@@ -3,6 +3,7 @@ export type ExpenseFormValues = {
   title: string;
   amount: string;
   date: string;
+  categoryId?: string;
 };
 
 export type ExpenseCategoryFormValues = {

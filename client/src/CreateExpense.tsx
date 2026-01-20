@@ -19,6 +19,7 @@ function CreateExpense() {
           title: values.title,
           amount: Number(values.amount),
           date: new Date(values.date).toISOString(),
+          categoryId: values.categoryId || undefined,
         },
       },
     }).then(() => {

@@ -7,6 +7,10 @@ export const getExpenseGql = gql`
       title
       amount
       date
+      category {
+        id
+        name
+      }
     }
   }
 `;

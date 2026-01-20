@@ -33,6 +33,10 @@ export const resolvers: Resolvers<GraphQLContext> = {
         date: convertDateToString(expense.date),
       };
     },
+
+    expenseCategories: async (_p, {}, context) => {
+      return context.prisma.expenseCategory.findMany();
+    },
   },
 
   Mutation: {
