@@ -1,7 +1,7 @@
 import { Button, Card, Container, Grid, Stack, Typography } from '@mui/material';
 import ExpensesList from './components/ExpensesList';
 import { Link } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
   DeleteExpenseDocument,
@@ -15,21 +15,15 @@ import {
   type GetExpensesQuery,
   type UpsertExpenseCategoryMutation,
 } from './graphql/__generated__/graphql';
-import ExpenseCategoryDialog from './components/ExpenseCategoryDialog';
+import ExpenseCategoryFormDialog from './components/ExpenseCategoryFormDialog';
 import { AppRoutes } from './routes/routes';
 import type { ExpenseCategoryFormValues } from './types/types';
 import { formatAmount } from './tools/formatAmount';
+import ExpenseDeleteDialog from './components/ExpenseDeleteDialog';
 
 function App() {
   const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
   const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(GetExpenseAmountsDocument, { fetchPolicy: 'network-only' });
-
-  const expenses: Expense[] = expensesData?.expenses || [];
-  const expenseAmounts: ExpenseAmounts | undefined = expenseAmountsData?.expenseAmounts || undefined;
-
-  useEffect(() => {
-    console.log(expenseAmountsData);
-  }, [expenseAmountsData]);
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(DeleteExpenseDocument, { refetchQueries: [GetExpensesDocument] });
   const deleteExpense = (id: string) => {
@@ -41,17 +35,32 @@ function App() {
   };
 
   const [upsertExpenseCategoryMutation] = useMutation<UpsertExpenseCategoryMutation>(UpsertExpenseCategoryDocument);
-  const onExpenseCategoryDialogSubmit = (values: ExpenseCategoryFormValues) => {
+  const onExpenseCategoryFormDialogSubmit = (values: ExpenseCategoryFormValues) => {
     upsertExpenseCategoryMutation({
       variables: {
         name: values.name,
       },
     }).then(() => {
-      setExpenseCategoryDialogOpen(false);
+      setExpenseCategoryFormDialogOpen(false);
     });
   };
 
-  const [expenseCategoryDialogOpen, setExpenseCategoryDialogOpen] = useState<boolean>(false);
+  const expenses: Expense[] = expensesData?.expenses || [];
+  const expenseAmounts: ExpenseAmounts | undefined = expenseAmountsData?.expenseAmounts || undefined;
+
+  const [expenseToDeleteId, setExpenseToDeleteId] = useState<string>('');
+
+  const [expenseDeleteDialogOpen, setExpenseDeleteDialogOpen] = useState<boolean>(false);
+  const [expenseCategoryFormDialogOpen, setExpenseCategoryFormDialogOpen] = useState<boolean>(false);
+
+  const openExpenseDeleteDialog = (expenseId: string) => {
+    setExpenseToDeleteId(expenseId);
+    setExpenseDeleteDialogOpen(true);
+  };
+
+  const openExpenseCategoryFormDialog = () => {
+    setExpenseCategoryFormDialogOpen(true);
+  };
 
   return (
     <>
@@ -78,13 +87,20 @@ function App() {
 
           <ExpensesList
             expenses={expenses}
+            openExpenseDeleteDialog={openExpenseDeleteDialog}
+          />
+
+          <ExpenseDeleteDialog
+            open={expenseDeleteDialogOpen}
+            close={() => setExpenseDeleteDialogOpen(false)}
+            expenseToDeleteId={expenseToDeleteId}
             deleteExpense={deleteExpense}
           />
 
-          <ExpenseCategoryDialog
-            open={expenseCategoryDialogOpen}
-            close={() => setExpenseCategoryDialogOpen(false)}
-            onSubmit={onExpenseCategoryDialogSubmit}
+          <ExpenseCategoryFormDialog
+            open={expenseCategoryFormDialogOpen}
+            close={() => setExpenseCategoryFormDialogOpen(false)}
+            onSubmit={onExpenseCategoryFormDialogSubmit}
           />
 
           <Stack direction="row" alignItems="center" spacing={2} marginTop="1rem">
@@ -97,7 +113,7 @@ function App() {
             </Button>
             <Button
               variant="contained"
-              onClick={() => setExpenseCategoryDialogOpen(true)}
+              onClick={openExpenseCategoryFormDialog}
             >
               Add Category
             </Button>

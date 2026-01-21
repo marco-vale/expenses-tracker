@@ -7,10 +7,10 @@ import { Delete, Edit } from '@mui/icons-material';
 
 type ExpensesListProps = {
   expenses: Expense[];
-  deleteExpense: (id: string) => void;
+  openExpenseDeleteDialog: (expenseId: string) => void;
 };
 
-const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, deleteExpense }) => {
+const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDeleteDialog }) => {
   return (
     <>
       {expenses.length === 0 && (
@@ -42,7 +42,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, deleteExpense }) 
                     <IconButton size="small" color="primary" href={`/edit/${e.id}`}>
                       <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => deleteExpense(e.id)}>
+                    <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
                       <Delete fontSize="small" />
                     </IconButton>
                   </TableCell>

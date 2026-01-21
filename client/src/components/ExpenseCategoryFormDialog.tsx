@@ -4,13 +4,13 @@ import React, { useCallback } from 'react';
 import type { ExpenseCategoryFormValues } from '../types/types';
 import * as Yup from 'yup';
 
-type ExpenseCategoryDialogProps = {
+type ExpenseCategoryFormDialogProps = {
   open: boolean;
   close: () => void;
   onSubmit: (values: ExpenseCategoryFormValues) => void;
 };
 
-const ExpenseCategoryDialog: React.FC<ExpenseCategoryDialogProps> = ({ open, close, onSubmit }) => {
+const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, onSubmit }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required(),
   });
@@ -67,4 +67,4 @@ const ExpenseCategoryDialog: React.FC<ExpenseCategoryDialogProps> = ({ open, clo
   );
 };
 
-export default ExpenseCategoryDialog;
+export default ExpenseCategoryFormDialog;
