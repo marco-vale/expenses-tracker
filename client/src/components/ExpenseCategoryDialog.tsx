@@ -50,7 +50,6 @@ const ExpenseCategoryDialog: React.FC<ExpenseCategoryDialogProps> = ({ open, clo
         </DialogContent>
         <DialogActions>
           <Button
-            color="primary"
             variant="outlined"
             onClick={handleClose}
           >
@@ -58,7 +57,6 @@ const ExpenseCategoryDialog: React.FC<ExpenseCategoryDialogProps> = ({ open, clo
           </Button>
           <Button
             type="submit"
-            color="primary"
             variant="contained"
           >
             Add

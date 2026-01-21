@@ -15,15 +15,11 @@ type ExpenseFormProps = {
 };
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
-  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery>(getExpenseCategoriesGql);
+  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(getExpenseCategoriesGql);
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
-    if (!expenseCategoriesData?.expenseCategories || expenseCategoriesLoading) {
-      return [];
-    }
-
-    return expenseCategoriesData.expenseCategories;
-  }, [expenseCategoriesData?.expenseCategories, expenseCategoriesLoading]);
+    return expenseCategoriesData?.expenseCategories || [];
+  }, [expenseCategoriesData?.expenseCategories]);
 
   const validationSchema = Yup.object({
     id: Yup.string(),
@@ -37,7 +33,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
     initialValues: {
       id: expense?.id || '',
       title: expense?.title || '',
-      amount: expense?.amount ? expense.amount.toString() : '0',
+      amount: expense?.amount ? expense.amount.toString() : '',
       date: expense?.date
         ? new Date(expense.date).toISOString().slice(0, 16)
         : new Date().toISOString().slice(0, 16),
@@ -97,41 +93,40 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
         <Select
           id="categoryId"
           name="categoryId"
-          label="Category"
           fullWidth
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.categoryId}
+          style={{ marginTop: '1rem' }}
         >
-          {expenseCategories.map((expenseCategory) => (
+          {expenseCategories.map((ec) => (
             <MenuItem
-              key={expenseCategory.id}
-              value={expenseCategory.id}
+              key={ec.id}
+              value={ec.id}
             >
-              {expenseCategory.name}
+              {ec.name}
             </MenuItem>
           ))}
         </Select>
       </div>
 
-      <Button
-        type="button"
-        color="secondary"
-        variant="outlined"
-        style={{ marginTop: '1rem', marginRight: '1rem' }}
-        component={Link}
-        to={AppRoutes.Home}
-      >
-        Back
-      </Button>
-      <Button
-        type="submit"
-        color="primary"
-        variant="contained"
-        style={{ marginTop: '1rem' }}
-      >
-        {expense ? 'Save Expense' : 'Add Expense'}
-      </Button>
+      <div style={{ marginTop: '1rem' }}>
+        <Button
+          type="button"
+          variant="outlined"
+          style={{ marginRight: '1rem' }}
+          component={Link}
+          to={AppRoutes.Home}
+        >
+          Back
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+        >
+          {expense ? 'Save' : 'Add'}
+        </Button>
+      </div>
     </form>
   );
 };

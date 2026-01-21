@@ -11,10 +11,6 @@ type ExpensesListProps = {
 };
 
 const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, deleteExpense }) => {
-  const handleDeleteExpense = (id: string) => {
-    deleteExpense(id);
-  };
-
   return (
     <>
       {expenses.length === 0 && (
@@ -36,17 +32,17 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, deleteExpense }) 
               </TableRow>
             </TableHead>
             <TableBody>
-              {expenses.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell>{expense.title}</TableCell>
-                  <TableCell>{formatAmount(expense.amount)}</TableCell>
-                  <TableCell>{formatDate(expense.date)}</TableCell>
-                  <TableCell>{expense.category ? expense.category.name : '---'}</TableCell>
+              {expenses.map((e) => (
+                <TableRow key={e.id}>
+                  <TableCell>{e.title}</TableCell>
+                  <TableCell>{formatAmount(e.amount)}</TableCell>
+                  <TableCell>{formatDate(e.date)}</TableCell>
+                  <TableCell>{e.category ? e.category.name : '---'}</TableCell>
                   <TableCell>
-                    <IconButton size="small" color="primary" href={`/edit/${expense.id}`}>
+                    <IconButton size="small" color="primary" href={`/edit/${e.id}`}>
                       <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDeleteExpense(expense.id)}>
+                    <IconButton size="small" color="error" onClick={() => deleteExpense(e.id)}>
                       <Delete fontSize="small" />
                     </IconButton>
                   </TableCell>

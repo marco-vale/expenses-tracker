@@ -16,6 +16,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n": typeof types.CreateExpenseDocument,
     "\n  mutation DeleteExpense($id: ID!) {\n    deleteExpense(id: $id)\n  }\n": typeof types.DeleteExpenseDocument,
+    "\n  query GetExpenseAmounts {\n    expenseAmounts {\n      amount\n      categories {\n        category {\n          id\n          name\n        }\n        amount\n      }\n    }\n  }\n": typeof types.GetExpenseAmountsDocument,
     "\n  query GetExpenseCategories {\n    expenseCategories {\n      id\n      name\n    }\n  }\n": typeof types.GetExpenseCategoriesDocument,
     "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n      category {\n        id\n        name\n      }\n    }\n  }\n": typeof types.GetExpenseDocument,
     "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n      category {\n        id\n        name\n      }\n    }\n  }\n": typeof types.GetExpensesDocument,
@@ -25,6 +26,7 @@ type Documents = {
 const documents: Documents = {
     "\n  mutation CreateExpense($expense: ExpenseCreateInput!) {\n    createExpense(expense: $expense)\n  }\n": types.CreateExpenseDocument,
     "\n  mutation DeleteExpense($id: ID!) {\n    deleteExpense(id: $id)\n  }\n": types.DeleteExpenseDocument,
+    "\n  query GetExpenseAmounts {\n    expenseAmounts {\n      amount\n      categories {\n        category {\n          id\n          name\n        }\n        amount\n      }\n    }\n  }\n": types.GetExpenseAmountsDocument,
     "\n  query GetExpenseCategories {\n    expenseCategories {\n      id\n      name\n    }\n  }\n": types.GetExpenseCategoriesDocument,
     "\n  query GetExpense($id: ID!) {\n    expense(id: $id) {\n      id\n      title\n      amount\n      date\n      category {\n        id\n        name\n      }\n    }\n  }\n": types.GetExpenseDocument,
     "\n  query GetExpenses {\n    expenses {\n      id\n      title\n      amount\n      date\n      category {\n        id\n        name\n      }\n    }\n  }\n": types.GetExpensesDocument,
@@ -54,6 +56,10 @@ export function graphql(source: "\n  mutation CreateExpense($expense: ExpenseCre
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation DeleteExpense($id: ID!) {\n    deleteExpense(id: $id)\n  }\n"): (typeof documents)["\n  mutation DeleteExpense($id: ID!) {\n    deleteExpense(id: $id)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetExpenseAmounts {\n    expenseAmounts {\n      amount\n      categories {\n        category {\n          id\n          name\n        }\n        amount\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetExpenseAmounts {\n    expenseAmounts {\n      amount\n      categories {\n        category {\n          id\n          name\n        }\n        amount\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

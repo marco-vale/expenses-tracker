@@ -1,12 +1,14 @@
-import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { Button, Card, Container, Grid, Stack, Typography } from '@mui/material';
 import ExpensesList from './components/ExpensesList';
 import { Link } from 'react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { getExpensesGql } from './graphql/getExpensesGql';
 import type {
   DeleteExpenseMutation,
   Expense,
+  ExpenseAmounts,
+  GetExpenseAmountsQuery,
   GetExpensesQuery,
   UpsertExpenseCategoryMutation,
 } from './graphql/__generated__/graphql';
@@ -15,9 +17,19 @@ import ExpenseCategoryDialog from './components/ExpenseCategoryDialog';
 import { AppRoutes } from './routes/routes';
 import { upsertExpenseCategoryGql } from './graphql/upsertExpenseCategoryGql';
 import type { ExpenseCategoryFormValues } from './types/types';
+import { formatAmount } from './tools/formatAmount';
+import { getExpenseAmountsGql } from './graphql/getExpenseAmountsGql';
 
 function App() {
-  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery>(getExpensesGql, { fetchPolicy: 'network-only' });
+  const { data: expensesData } = useQuery<GetExpensesQuery>(getExpensesGql, { fetchPolicy: 'network-only' });
+  const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(getExpenseAmountsGql, { fetchPolicy: 'network-only' });
+
+  const expenses: Expense[] = expensesData?.expenses || [];
+  const expenseAmounts: ExpenseAmounts | undefined = expenseAmountsData?.expenseAmounts || undefined;
+
+  useEffect(() => {
+    console.log(expenseAmountsData);
+  }, [expenseAmountsData]);
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(deleteExpenseGql, { refetchQueries: [getExpensesGql] });
   const deleteExpense = (id: string) => {
@@ -39,14 +51,6 @@ function App() {
     });
   };
 
-  const expenses = useMemo<Expense[]>(() => {
-    if (!expensesData?.expenses || expensesLoading) {
-      return [];
-    }
-
-    return expensesData.expenses;
-  }, [expensesData?.expenses, expensesLoading]);
-
   const [expenseCategoryDialogOpen, setExpenseCategoryDialogOpen] = useState<boolean>(false);
 
   return (
@@ -57,22 +61,19 @@ function App() {
 
       <Container maxWidth="md">
         <Grid container spacing={2}>
-          <Stack direction="row" alignItems="center" spacing={2} style={{ marginTop: '1rem' }}>
-            <Button
-              color="primary"
-              variant="contained"
-              component={Link}
-              to={AppRoutes.CreateExpense}
-            >
-              Add Expense
-            </Button>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => setExpenseCategoryDialogOpen(true)}
-            >
-              Add Category
-            </Button>
+          <Stack width="100%" direction="row" spacing={2} marginTop="1rem">
+            <Card style={{ flexGrow: 1, padding: '1rem' }}>
+              <Typography variant="h6" align="center">
+                Total Expenses: {formatAmount(expenseAmounts?.amount || 0)}
+              </Typography>
+            </Card>
+            {(expenseAmounts?.categories || []).map((eca) => (
+              <Card key={eca.category.id} style={{ flexGrow: 1, padding: '1rem' }}>
+                <Typography variant="h6" align="center">
+                  {eca.category.name}: {formatAmount(eca.amount)}
+                </Typography>
+              </Card>
+            ))}
           </Stack>
 
           <ExpensesList
@@ -85,6 +86,22 @@ function App() {
             close={() => setExpenseCategoryDialogOpen(false)}
             onSubmit={onExpenseCategoryDialogSubmit}
           />
+
+          <Stack direction="row" alignItems="center" spacing={2} marginTop="1rem">
+            <Button
+              variant="contained"
+              component={Link}
+              to={AppRoutes.CreateExpense}
+            >
+              Add Expense
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => setExpenseCategoryDialogOpen(true)}
+            >
+              Add Category
+            </Button>
+          </Stack>
         </Grid>
       </Container>
     </>

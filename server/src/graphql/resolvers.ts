@@ -1,25 +1,26 @@
+import { Expense, ExpenseCategory, PrismaClient } from '../../generated/prisma/client';
 import { convertDateToString } from '../tools/convertDateToString';
-import { Resolvers } from './__generated__/resolvers-types';
+import { ExpenseCategoryAmount, Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
-    expenses: async (_p, {}, context) => {
-      const expenses = await context.prisma.expense.findMany({
+    expenses: async (_p, { }, context) => {
+      const expenses: Expense[] = await context.prisma.expense.findMany({
         include: { category: true },
         orderBy: { date: 'desc' },
       });
 
-      return expenses.map((expense) => {
+      return expenses.map((e) => {
         return {
-          ...expense,
-          date: convertDateToString(expense.date),
+          ...e,
+          date: convertDateToString(e.date),
         };
       });
     },
 
     expense: async (_p, { id }, context) => {
-      const expense = await context.prisma.expense.findFirst({
+      const expense: Expense | null = await context.prisma.expense.findFirst({
         where: { id },
         include: { category: true },
       });
@@ -34,14 +35,45 @@ export const resolvers: Resolvers<GraphQLContext> = {
       };
     },
 
-    expenseCategories: async (_p, {}, context) => {
+    expenseCategories: async (_p, { }, context) => {
       return context.prisma.expenseCategory.findMany();
     },
+
+    expenseAmounts: async (_p, { }, context) => {
+      const prisma: PrismaClient = context.prisma;
+
+      const expensesAmountSum = await prisma.expense.aggregate({
+        _sum: { amount: true },
+      });
+
+      const expenseCategoryAmountSums = await prisma.expense.groupBy({
+        by: ['categoryId'],
+        _sum: { amount: true },
+      });
+
+      const expenseCategories: ExpenseCategory[] = await prisma.expenseCategory.findMany({
+        where: {
+          id: {
+            in: expenseCategoryAmountSums.map((eca) => eca.categoryId).filter((id) => id !== null),
+          },
+        },
+      });
+
+      const categories: ExpenseCategoryAmount[] = expenseCategoryAmountSums.map((ecas) => ({
+        amount: ecas._sum.amount || 0,
+        category: expenseCategories.find((ec) => ec.id === ecas.categoryId) || { id: '', name: '---' },
+      }));
+
+      return {
+        amount: expensesAmountSum._sum.amount || 0,
+        categories: categories.sort((a, b) => a.category.name.localeCompare(b.category.name)),
+      };
+    }
   },
 
   Mutation: {
     createExpense: async (_, { expense }, context) => {
-      const newExpense = await context.prisma.expense.create({
+      const newExpense: Expense = await context.prisma.expense.create({
         data: {
           title: expense.title,
           amount: expense.amount,
@@ -55,7 +87,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
     },
 
     updateExpense: async (_, { expense }, context) => {
-      const updatedExpense = await context.prisma.expense.update({
+      const updatedExpense: Expense = await context.prisma.expense.update({
         where: { id: expense.id },
         data: {
           title: expense.title,
@@ -78,7 +110,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
     },
 
     upsertExpenseCategory: async (_, { name }, context) => {
-      const upsertedExpenseCategory = await context.prisma.expenseCategory.upsert({
+      const upsertedExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.upsert({
         where: { name },
         update: { name },
         create: { name },

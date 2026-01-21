@@ -12,6 +12,16 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
+  type ExpenseCategoryAmount {
+    category: ExpenseCategory!
+    amount: Float!
+  }
+
+  type ExpenseAmounts {
+    amount: Float!
+    categories: [ExpenseCategoryAmount!]!
+  }
+
   input ExpenseCreateInput {
     title: String!
     amount: Float!
@@ -32,6 +42,8 @@ export const typeDefs = `#graphql
     expense(id: ID!): Expense!
 
     expenseCategories: [ExpenseCategory!]!
+
+    expenseAmounts: ExpenseAmounts!
   }
 
   type Mutation {
