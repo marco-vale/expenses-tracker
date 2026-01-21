@@ -1,5 +1,5 @@
 import { Button, Card, Container, Grid, Stack, Typography } from '@mui/material';
-import ExpensesList from './components/ExpensesList';
+import ExpensesList from '../components/ExpensesList';
 import { Link } from 'react-router';
 import { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
@@ -14,12 +14,12 @@ import {
   type GetExpenseAmountsQuery,
   type GetExpensesQuery,
   type UpsertExpenseCategoryMutation,
-} from './graphql/__generated__/graphql';
-import ExpenseCategoryFormDialog from './components/ExpenseCategoryFormDialog';
-import { AppRoutes } from './routes/routes';
-import type { ExpenseCategoryFormValues } from './types/types';
-import { formatAmount } from './tools/formatAmount';
-import ExpenseDeleteDialog from './components/ExpenseDeleteDialog';
+} from '../graphql/__generated__/graphql';
+import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
+import { AppRoutes } from '../routes/routes';
+import type { ExpenseCategoryFormValues } from '../types/types';
+import { formatAmount } from '../tools/formatAmount';
+import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
 
 function App() {
   const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });

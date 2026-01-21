@@ -1,14 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import App from './pages/App.tsx'
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
 import { BrowserRouter, Route, Routes } from 'react-router'
 
-import CreateExpense from './CreateExpense.tsx'
 import { ApolloProvider } from '@apollo/client/react'
 import { apollo } from './apollo/client.ts'
-import EditExpense from './EditExpense.tsx'
 import { AppRoutes } from './routes/routes.ts'
+import CreateExpense from './pages/CreateExpense.tsx'
+import EditExpense from './pages/EditExpense.tsx'
 
 const theme = createTheme({
   palette: {

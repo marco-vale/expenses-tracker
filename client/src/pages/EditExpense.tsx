@@ -1,11 +1,11 @@
 import { useMutation, useQuery } from '@apollo/client/react';
-import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation } from './graphql/__generated__/graphql';
 import { Container, Grid, Typography } from '@mui/material';
-import ExpenseForm from './components/ExpenseForm';
-import type { ExpenseFormValues } from './types/types';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { AppRoutes } from './routes/routes';
+import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation } from '../graphql/__generated__/graphql';
+import type { ExpenseFormValues } from '../types/types';
+import { AppRoutes } from '../routes/routes';
+import ExpenseForm from '../components/ExpenseForm';
 
 function EditExpense() {
   const navigate = useNavigate();

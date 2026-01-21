@@ -3,3 +3,7 @@ export enum AppRoutes {
   CreateExpense = '/create',
   EditExpense = '/edit/:id',
 };
+
+export const buildRoute = (route: AppRoutes, id: string): string => {
+  return route.replace(':id', id);
+};

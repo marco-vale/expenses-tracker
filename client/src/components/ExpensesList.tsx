@@ -4,6 +4,7 @@ import type { Expense } from '../graphql/__generated__/graphql';
 import { formatDate } from '../tools/formatDate';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
+import { AppRoutes, buildRoute } from '../routes/routes';
 
 type ExpensesListProps = {
   expenses: Expense[];
@@ -39,7 +40,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
                   <TableCell>{formatDate(e.date)}</TableCell>
                   <TableCell>{e.category ? e.category.name : '---'}</TableCell>
                   <TableCell>
-                    <IconButton size="small" color="primary" href={`/edit/${e.id}`}>
+                    <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
                       <Edit fontSize="small" />
                     </IconButton>
                     <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>

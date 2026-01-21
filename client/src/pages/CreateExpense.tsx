@@ -1,10 +1,10 @@
 import { Container, Grid, Typography } from '@mui/material';
-import ExpenseForm from './components/ExpenseForm';
 import { useMutation } from '@apollo/client/react';
-import { CreateExpenseDocument, type CreateExpenseMutation } from './graphql/__generated__/graphql';
-import type { ExpenseFormValues } from './types/types';
 import { useNavigate } from 'react-router';
-import { AppRoutes } from './routes/routes';
+import { CreateExpenseDocument, type CreateExpenseMutation } from '../graphql/__generated__/graphql';
+import type { ExpenseFormValues } from '../types/types';
+import { AppRoutes } from '../routes/routes';
+import ExpenseForm from '../components/ExpenseForm';
 
 function CreateExpense() {
   const navigate = useNavigate();

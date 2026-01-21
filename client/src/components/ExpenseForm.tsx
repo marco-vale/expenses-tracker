@@ -14,7 +14,7 @@ type ExpenseFormProps = {
 };
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
-  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument);
+  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument, { fetchPolicy: 'network-only' });
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
     return expenseCategoriesData?.expenseCategories || [];
