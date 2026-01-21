@@ -1,0 +1,12 @@
+query GetExpense($id: ID!) {
+  expense(id: $id) {
+    id
+    title
+    amount
+    date
+    category {
+      id
+      name
+    }
+  }
+}

@@ -1,10 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client/react';
-import type { Expense, GetExpenseQuery, UpdateExpenseMutation } from './graphql/__generated__/graphql';
-import { updateExpenseGql } from './graphql/updateExpenseGql';
+import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation } from './graphql/__generated__/graphql';
 import { Container, Grid, Typography } from '@mui/material';
 import ExpenseForm from './components/ExpenseForm';
 import type { ExpenseFormValues } from './types/types';
-import { getExpenseGql } from './graphql/getExpenseGql';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { AppRoutes } from './routes/routes';
@@ -14,7 +12,7 @@ function EditExpense() {
   const { id } = useParams<{ id: string }>();
 
   const { data: expenseData, loading: expenseLoading } = useQuery<GetExpenseQuery>(
-    getExpenseGql,
+    GetExpenseDocument,
     {
       variables: {
         id,
@@ -22,7 +20,7 @@ function EditExpense() {
     },
   );
 
-  const [updateExpenseMutation] = useMutation<UpdateExpenseMutation>(updateExpenseGql);
+  const [updateExpenseMutation] = useMutation<UpdateExpenseMutation>(UpdateExpenseDocument);
 
   const onSubmit = (values: ExpenseFormValues) => {
     updateExpenseMutation({

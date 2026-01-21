@@ -1,0 +1,6 @@
+query GetExpenseCategories {
+  expenseCategories {
+    id
+    name
+  }
+}

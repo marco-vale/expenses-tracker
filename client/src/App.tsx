@@ -3,26 +3,26 @@ import ExpensesList from './components/ExpensesList';
 import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { getExpensesGql } from './graphql/getExpensesGql';
-import type {
-  DeleteExpenseMutation,
-  Expense,
-  ExpenseAmounts,
-  GetExpenseAmountsQuery,
-  GetExpensesQuery,
-  UpsertExpenseCategoryMutation,
+import {
+  DeleteExpenseDocument,
+  GetExpenseAmountsDocument,
+  GetExpensesDocument,
+  UpsertExpenseCategoryDocument,
+  type DeleteExpenseMutation,
+  type Expense,
+  type ExpenseAmounts,
+  type GetExpenseAmountsQuery,
+  type GetExpensesQuery,
+  type UpsertExpenseCategoryMutation,
 } from './graphql/__generated__/graphql';
-import { deleteExpenseGql } from './graphql/deleteExpenseGql';
 import ExpenseCategoryDialog from './components/ExpenseCategoryDialog';
 import { AppRoutes } from './routes/routes';
-import { upsertExpenseCategoryGql } from './graphql/upsertExpenseCategoryGql';
 import type { ExpenseCategoryFormValues } from './types/types';
 import { formatAmount } from './tools/formatAmount';
-import { getExpenseAmountsGql } from './graphql/getExpenseAmountsGql';
 
 function App() {
-  const { data: expensesData } = useQuery<GetExpensesQuery>(getExpensesGql, { fetchPolicy: 'network-only' });
-  const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(getExpenseAmountsGql, { fetchPolicy: 'network-only' });
+  const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
+  const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(GetExpenseAmountsDocument, { fetchPolicy: 'network-only' });
 
   const expenses: Expense[] = expensesData?.expenses || [];
   const expenseAmounts: ExpenseAmounts | undefined = expenseAmountsData?.expenseAmounts || undefined;
@@ -31,7 +31,7 @@ function App() {
     console.log(expenseAmountsData);
   }, [expenseAmountsData]);
 
-  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(deleteExpenseGql, { refetchQueries: [getExpensesGql] });
+  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(DeleteExpenseDocument, { refetchQueries: [GetExpensesDocument] });
   const deleteExpense = (id: string) => {
     deleteExpenseMutation({
       variables: {
@@ -40,7 +40,7 @@ function App() {
     });
   };
 
-  const [upsertExpenseCategoryMutation] = useMutation<UpsertExpenseCategoryMutation>(upsertExpenseCategoryGql);
+  const [upsertExpenseCategoryMutation] = useMutation<UpsertExpenseCategoryMutation>(UpsertExpenseCategoryDocument);
   const onExpenseCategoryDialogSubmit = (values: ExpenseCategoryFormValues) => {
     upsertExpenseCategoryMutation({
       variables: {

@@ -1,8 +1,7 @@
 import { Container, Grid, Typography } from '@mui/material';
 import ExpenseForm from './components/ExpenseForm';
 import { useMutation } from '@apollo/client/react';
-import type { CreateExpenseMutation } from './graphql/__generated__/graphql';
-import { createExpenseGql } from './graphql/createExpenseGql';
+import { CreateExpenseDocument, type CreateExpenseMutation } from './graphql/__generated__/graphql';
 import type { ExpenseFormValues } from './types/types';
 import { useNavigate } from 'react-router';
 import { AppRoutes } from './routes/routes';
@@ -10,7 +9,7 @@ import { AppRoutes } from './routes/routes';
 function CreateExpense() {
   const navigate = useNavigate();
 
-  const [createExpenseMutation] = useMutation<CreateExpenseMutation>(createExpenseGql);
+  const [createExpenseMutation] = useMutation<CreateExpenseMutation>(CreateExpenseDocument);
 
   const onSubmit = (values: ExpenseFormValues) => {
     createExpenseMutation({

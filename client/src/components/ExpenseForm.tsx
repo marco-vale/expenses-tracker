@@ -3,11 +3,10 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Button, MenuItem, Select, TextField } from '@mui/material';
 import { Link } from 'react-router';
-import type { GetExpenseCategoriesQuery, Expense, ExpenseCategory } from '../graphql/__generated__/graphql';
+import { type GetExpenseCategoriesQuery, type Expense, type ExpenseCategory, GetExpenseCategoriesDocument } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import { useQuery } from '@apollo/client/react';
-import { getExpenseCategoriesGql } from '../graphql/getExpenseCategoriesGql';
 
 type ExpenseFormProps = {
   expense?: Expense;
@@ -15,7 +14,7 @@ type ExpenseFormProps = {
 };
 
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
-  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(getExpenseCategoriesGql);
+  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument);
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
     return expenseCategoriesData?.expenseCategories || [];
