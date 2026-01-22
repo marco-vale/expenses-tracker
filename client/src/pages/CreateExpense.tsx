@@ -5,11 +5,13 @@ import { CreateExpenseDocument, type CreateExpenseMutation } from '../graphql/__
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
+import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 function CreateExpense() {
-  const navigate = useNavigate();
-
+  const { expenseCategories } = useExpenseCategories();
   const [createExpenseMutation] = useMutation<CreateExpenseMutation>(CreateExpenseDocument);
+
+  const navigate = useNavigate();
 
   const onSubmit = (values: ExpenseFormValues) => {
     createExpenseMutation({
@@ -34,7 +36,10 @@ function CreateExpense() {
 
       <Container maxWidth="md">
         <Grid container spacing={2}>
-          <ExpenseForm onSubmit={onSubmit} />
+          <ExpenseForm
+            expenseCategories={expenseCategories}
+            onSubmit={onSubmit}
+          />
         </Grid>
       </Container>
     </>

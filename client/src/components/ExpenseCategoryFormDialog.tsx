@@ -7,10 +7,10 @@ import * as Yup from 'yup';
 type ExpenseCategoryFormDialogProps = {
   open: boolean;
   close: () => void;
-  onSubmit: (values: ExpenseCategoryFormValues) => void;
+  upsertExpenseCategory: (name: string) => void;
 };
 
-const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, onSubmit }) => {
+const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, upsertExpenseCategory }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required(),
   });
@@ -20,7 +20,10 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ o
       name: '',
     },
     validationSchema,
-    onSubmit,
+    onSubmit: (values) => {
+      upsertExpenseCategory(values.name);
+      handleClose();
+    },
   });
 
   const handleClose = useCallback(() => {

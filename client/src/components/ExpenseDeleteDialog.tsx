@@ -4,12 +4,12 @@ import { useCallback } from 'react';
 
 type ExpenseDeleteDialogProps = {
   open: boolean;
-  close: () => void;
   expenseToDeleteId: string;
+  close: () => void;
   deleteExpense: (id: string) => void;
 }
 
-const ExpenseDeleteDialog: React.FC<ExpenseDeleteDialogProps> = ({ open, close, expenseToDeleteId, deleteExpense }) => {
+const ExpenseDeleteDialog: React.FC<ExpenseDeleteDialogProps> = ({ open, expenseToDeleteId, close, deleteExpense }) => {
   const handleDelete = useCallback(() => {
     deleteExpense(expenseToDeleteId);
     close();

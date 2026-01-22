@@ -1,25 +1,19 @@
-import React, { useMemo } from "react";
+import React from "react";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { Button, MenuItem, Select, TextField } from '@mui/material';
 import { Link } from 'react-router';
-import { type GetExpenseCategoriesQuery, type Expense, type ExpenseCategory, GetExpenseCategoriesDocument } from '../graphql/__generated__/graphql';
+import { type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
-import { useQuery } from '@apollo/client/react';
 
 type ExpenseFormProps = {
   expense?: Expense;
+  expenseCategories: ExpenseCategory[];
   onSubmit: (values: ExpenseFormValues) => void;
 };
 
-const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, onSubmit }) => {
-  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument, { fetchPolicy: 'network-only' });
-
-  const expenseCategories = useMemo<ExpenseCategory[]>(() => {
-    return expenseCategoriesData?.expenseCategories || [];
-  }, [expenseCategoriesData?.expenseCategories]);
-
+const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, onSubmit }) => {
   const validationSchema = Yup.object({
     id: Yup.string(),
     title: Yup.string().required(),

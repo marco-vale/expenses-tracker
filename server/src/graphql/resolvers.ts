@@ -61,7 +61,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
       const categories: ExpenseCategoryAmount[] = expenseCategoryAmountSums.map((ecas) => ({
         amount: ecas._sum.amount || 0,
-        category: expenseCategories.find((ec) => ec.id === ecas.categoryId) || { id: '', name: '---' },
+        category: expenseCategories.find((ec) => ec.id === ecas.categoryId) || { id: '', name: 'Uncategorized' },
       }));
 
       return {

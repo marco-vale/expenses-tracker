@@ -6,9 +6,9 @@ import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpens
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
+import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 function EditExpense() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const { data: expenseData, loading: expenseLoading } = useQuery<GetExpenseQuery>(
@@ -20,7 +20,10 @@ function EditExpense() {
     },
   );
 
+  const { expenseCategories } = useExpenseCategories();
   const [updateExpenseMutation] = useMutation<UpdateExpenseMutation>(UpdateExpenseDocument);
+
+  const navigate = useNavigate();
 
   const onSubmit = (values: ExpenseFormValues) => {
     updateExpenseMutation({
@@ -55,7 +58,11 @@ function EditExpense() {
       <Container maxWidth="md">
         <Grid container spacing={2}>
           {!expenseLoading && (
-            <ExpenseForm expense={expense} onSubmit={onSubmit} />
+            <ExpenseForm
+              expense={expense}
+              expenseCategories={expenseCategories}
+              onSubmit={onSubmit}
+            />
           )}
         </Grid>
       </Container>
