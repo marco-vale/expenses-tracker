@@ -20,6 +20,8 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ o
       name: '',
     },
     validationSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: (values) => {
       upsertExpenseCategory(values.name);
       handleClose();

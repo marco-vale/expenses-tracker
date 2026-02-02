@@ -1,4 +1,4 @@
-import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { Button, Container, Stack, Typography } from '@mui/material';
 import ExpensesList from '../components/ExpensesList';
 import { Link } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client/react';
@@ -65,47 +65,45 @@ function App() {
         Expenses Tracker
       </Typography>
 
-      <Container maxWidth="md">
-        <Grid container spacing={2}>
-          <ExpensesSummary
-            expenseAmounts={expenseAmounts}
-          />
+      <Container maxWidth="md" style={{ marginTop: '2rem' }}>
+        <ExpensesSummary
+          expenseAmounts={expenseAmounts}
+        />
 
-          <ExpensesList
-            expenses={expenses}
-            openExpenseDeleteDialog={openExpenseDeleteDialog}
-          />
+        <ExpensesList
+          expenses={expenses}
+          openExpenseDeleteDialog={openExpenseDeleteDialog}
+        />
 
-          <ExpenseDeleteDialog
-            open={isExpenseDeleteDialogOpen}
-            expenseToDeleteId={expenseToDeleteId!}
-            close={closeExpenseDeleteDialog}
-            deleteExpense={deleteExpense}
-          />
-
-          <ExpenseCategoryFormDialog
-            open={isExpenseCategoryFormDialogOpen}
-            close={closeExpenseCategoryFormDialog}
-            upsertExpenseCategory={upsertExpenseCategory}
-          />
-
-          <Stack direction="row" alignItems="center" spacing={2} marginTop="1rem">
-            <Button
-              variant="contained"
-              component={Link}
-              to={AppRoutes.CreateExpense}
-            >
-              Add Expense
-            </Button>
-            <Button
-              variant="contained"
-              onClick={openExpenseCategoryFormDialog}
-            >
-              Add Category
-            </Button>
-          </Stack>
-        </Grid>
+        <Stack direction="row" spacing={2} marginTop="2rem">
+          <Button
+            variant="contained"
+            component={Link}
+            to={AppRoutes.CreateExpense}
+          >
+            Add Expense
+          </Button>
+          <Button
+            variant="contained"
+            onClick={openExpenseCategoryFormDialog}
+          >
+            Add Category
+          </Button>
+        </Stack>
       </Container>
+
+      <ExpenseDeleteDialog
+        open={isExpenseDeleteDialogOpen}
+        expenseToDeleteId={expenseToDeleteId!}
+        close={closeExpenseDeleteDialog}
+        deleteExpense={deleteExpense}
+      />
+
+      <ExpenseCategoryFormDialog
+        open={isExpenseCategoryFormDialogOpen}
+        close={closeExpenseCategoryFormDialog}
+        upsertExpenseCategory={upsertExpenseCategory}
+      />
     </>
   )
 }

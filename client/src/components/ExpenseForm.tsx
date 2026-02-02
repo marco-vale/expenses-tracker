@@ -16,7 +16,7 @@ type ExpenseFormProps = {
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, onSubmit }) => {
   const validationSchema = Yup.object({
     id: Yup.string(),
-    title: Yup.string().required(),
+    description: Yup.string().required(),
     amount: Yup.number().required().positive(),
     date: Yup.string().required(),
     categoryId: Yup.string(),
@@ -25,7 +25,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
   const formik = useFormik<ExpenseFormValues>({
     initialValues: {
       id: expense?.id || '',
-      title: expense?.title || '',
+      description: expense?.description || '',
       amount: expense?.amount ? expense.amount.toString() : '',
       date: expense?.date
         ? new Date(expense.date).toISOString().slice(0, 16)
@@ -33,6 +33,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
       categoryId: expense?.category?.id || '',
     },
     validationSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit,
   });
 
@@ -40,18 +42,18 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
     <form onSubmit={formik.handleSubmit}>
       <div>
         <TextField
-          id="title"
-          name="title"
-          label="Title"
+          id="description"
+          name="description"
+          label="Description"
           fullWidth
           autoFocus
           margin="normal"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          value={formik.values.title}
+          value={formik.values.description}
           slotProps={{ inputLabel: { shrink: true } }}
-          error={formik.touched.title && Boolean(formik.errors.title)}
-          helperText={formik.touched.title && formik.errors.title ? formik.errors.title : ''}
+          error={formik.touched.description && Boolean(formik.errors.description)}
+          helperText={formik.touched.description && formik.errors.description ? formik.errors.description : ''}
         />
 
         <TextField

@@ -22,8 +22,8 @@ export type Expense = {
   amount: Scalars['Float']['output'];
   category?: Maybe<ExpenseCategory>;
   date: Scalars['String']['output'];
+  description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  title: Scalars['String']['output'];
 };
 
 export type ExpenseAmounts = {
@@ -48,15 +48,15 @@ export type ExpenseCreateInput = {
   amount: Scalars['Float']['input'];
   categoryId?: InputMaybe<Scalars['ID']['input']>;
   date: Scalars['String']['input'];
-  title: Scalars['String']['input'];
+  description: Scalars['String']['input'];
 };
 
 export type ExpenseUpdateInput = {
   amount: Scalars['Float']['input'];
   categoryId?: InputMaybe<Scalars['ID']['input']>;
   date: Scalars['String']['input'];
+  description: Scalars['String']['input'];
   id: Scalars['ID']['input'];
-  title: Scalars['String']['input'];
 };
 
 export type Mutation = {
@@ -207,8 +207,8 @@ export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends Re
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   category?: Resolver<Maybe<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type ExpenseAmountsResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpenseAmounts'] = ResolversParentTypes['ExpenseAmounts']> = {

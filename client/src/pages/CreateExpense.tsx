@@ -17,7 +17,7 @@ function CreateExpense() {
     createExpenseMutation({
       variables: {
         expense: {
-          title: values.title,
+          description: values.description,
           amount: Number(values.amount),
           date: new Date(values.date).toISOString(),
           categoryId: values.categoryId || undefined,

@@ -75,7 +75,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
     createExpense: async (_, { expense }, context) => {
       const newExpense: Expense = await context.prisma.expense.create({
         data: {
-          title: expense.title,
+          description: expense.description,
           amount: expense.amount,
           date: new Date(expense.date),
           category: expense.categoryId ? { connect: { id: expense.categoryId } } : undefined,
@@ -90,7 +90,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
       const updatedExpense: Expense = await context.prisma.expense.update({
         where: { id: expense.id },
         data: {
-          title: expense.title,
+          description: expense.description,
           amount: expense.amount,
           date: new Date(expense.date),
           category: expense.categoryId ? { connect: { id: expense.categoryId } } : { disconnect: true },

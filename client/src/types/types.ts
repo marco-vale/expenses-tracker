@@ -1,6 +1,6 @@
 export type ExpenseFormValues = {
   id?: string;
-  title: string;
+  description: string;
   amount: string;
   date: string;
   categoryId?: string;

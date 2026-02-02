@@ -1,7 +1,7 @@
 query GetExpense($id: ID!) {
   expense(id: $id) {
     id
-    title
+    description
     amount
     date
     category {

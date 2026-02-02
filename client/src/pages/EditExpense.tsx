@@ -30,7 +30,7 @@ function EditExpense() {
       variables: {
         expense: {
           id: values.id,
-          title: values.title,
+          description: values.description,
           amount: Number(values.amount),
           date: new Date(values.date).toISOString(),
           categoryId: values.categoryId || undefined,

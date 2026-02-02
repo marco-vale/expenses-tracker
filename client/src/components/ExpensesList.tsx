@@ -1,4 +1,4 @@
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React from "react";
 import type { Expense } from '../graphql/__generated__/graphql';
 import { formatDate } from '../tools/formatDate';
@@ -13,7 +13,7 @@ type ExpensesListProps = {
 
 const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDeleteDialog }) => {
   return (
-    <>
+    <Stack width="100%" marginTop="2rem" spacing={2}>
       {expenses.length === 0 && (
         <Typography variant="h6" align="center" gutterBottom>
           No expenses found.
@@ -21,11 +21,11 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
       )}
 
       {expenses.length > 0 && (
-        <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Title</TableCell>
+                <TableCell>Description</TableCell>
                 <TableCell>Amount</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Category</TableCell>
@@ -35,7 +35,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
             <TableBody>
               {expenses.map((e) => (
                 <TableRow key={e.id}>
-                  <TableCell>{e.title}</TableCell>
+                  <TableCell>{e.description}</TableCell>
                   <TableCell>{formatAmount(e.amount)}</TableCell>
                   <TableCell>{formatDate(e.date)}</TableCell>
                   <TableCell>{e.category ? e.category.name : '---'}</TableCell>
@@ -53,7 +53,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
           </Table>
         </TableContainer>
       )}
-    </>
+    </Stack>
   );
 };
 

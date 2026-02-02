@@ -9,7 +9,7 @@ type ExpensesSummaryProps = {
 
 const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expenseAmounts }) => {
   return (
-    <Stack width="100%" direction="row" spacing={2} marginTop="1rem">
+    <Stack width="100%" direction="row" spacing={2}>
       <Card style={{ flexGrow: 1, padding: '1rem' }}>
         <Typography variant="h6" align="center">
           Total Expenses: {formatAmount(expenseAmounts?.amount || 0)}

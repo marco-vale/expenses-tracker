@@ -6,7 +6,7 @@ export const typeDefs = `#graphql
 
   type Expense {
     id: ID!
-    title: String!
+    description: String!
     amount: Float!
     date: String!
     category: ExpenseCategory
@@ -23,7 +23,7 @@ export const typeDefs = `#graphql
   }
 
   input ExpenseCreateInput {
-    title: String!
+    description: String!
     amount: Float!
     date: String!
     categoryId: ID
@@ -31,7 +31,7 @@ export const typeDefs = `#graphql
 
   input ExpenseUpdateInput {
     id: ID!
-    title: String!
+    description: String!
     amount: Float!
     date: String!
     categoryId: ID
