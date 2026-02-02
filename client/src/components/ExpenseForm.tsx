@@ -16,9 +16,9 @@ type ExpenseFormProps = {
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, onSubmit }) => {
   const validationSchema = Yup.object({
     id: Yup.string(),
-    description: Yup.string().required(),
-    amount: Yup.number().required().positive(),
-    date: Yup.string().required(),
+    description: Yup.string().required('Description is required'),
+    amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
+    date: Yup.string().required('Date is required'),
     categoryId: Yup.string(),
   });
 

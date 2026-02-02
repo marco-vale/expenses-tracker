@@ -12,7 +12,7 @@ type ExpenseCategoryFormDialogProps = {
 
 const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, upsertExpenseCategory }) => {
   const validationSchema = Yup.object({
-    name: Yup.string().required(),
+    name: Yup.string().required('Name is required'),
   });
 
   const formik = useFormik<ExpenseCategoryFormValues>({

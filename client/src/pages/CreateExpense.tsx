@@ -7,7 +7,7 @@ import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
-function CreateExpense() {
+const CreateExpense: React.FC = () => {
   const { expenseCategories } = useExpenseCategories();
   const [createExpenseMutation] = useMutation<CreateExpenseMutation>(CreateExpenseDocument);
 

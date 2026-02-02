@@ -8,7 +8,7 @@ import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
-function EditExpense() {
+const EditExpense: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: expenseData, loading: expenseLoading } = useQuery<GetExpenseQuery>(

@@ -9,6 +9,7 @@ import { apollo } from './apollo/client.ts'
 import { AppRoutes } from './routes/routes.ts'
 import CreateExpense from './pages/CreateExpense.tsx'
 import EditExpense from './pages/EditExpense.tsx'
+import ExpenseCategories from './pages/ExpenseCategories.tsx'
 
 const theme = createTheme({
   palette: {
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
         <BrowserRouter>
           <Routes>
             <Route path={AppRoutes.Home} element={<App />} />
+            <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
             <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
             <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
           </Routes>

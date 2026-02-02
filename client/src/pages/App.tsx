@@ -6,26 +6,25 @@ import {
   DeleteExpenseDocument,
   GetExpenseAmountsDocument,
   GetExpensesDocument,
-  UpsertExpenseCategoryDocument,
   type DeleteExpenseMutation,
   type Expense,
   type ExpenseAmounts,
   type GetExpenseAmountsQuery,
   type GetExpensesQuery,
-  type UpsertExpenseCategoryMutation,
 } from '../graphql/__generated__/graphql';
-import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { AppRoutes } from '../routes/routes';
 import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { useDialog } from '../hooks/useDialog';
 
-function App() {
+const App: React.FC = () => {
   const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
   const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(GetExpenseAmountsDocument, { fetchPolicy: 'network-only' });
 
-  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(DeleteExpenseDocument, { refetchQueries: [GetExpensesDocument] });
-  const [upsertExpenseCategoryMutation] = useMutation<UpsertExpenseCategoryMutation>(UpsertExpenseCategoryDocument);
+  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(
+    DeleteExpenseDocument,
+    { refetchQueries: [GetExpensesDocument] },
+  );
 
   const {
     isOpen: isExpenseDeleteDialogOpen,
@@ -33,12 +32,6 @@ function App() {
     open: openExpenseDeleteDialog,
     close: closeExpenseDeleteDialog,
   } = useDialog<string>();
-
-  const {
-    isOpen: isExpenseCategoryFormDialogOpen,
-    open: openExpenseCategoryFormDialog,
-    close: closeExpenseCategoryFormDialog,
-  } = useDialog();
 
   const expenses: Expense[] = expensesData?.expenses || [];
   const expenseAmounts: ExpenseAmounts | undefined = expenseAmountsData?.expenseAmounts || undefined;
@@ -51,21 +44,16 @@ function App() {
     });
   };
 
-  const upsertExpenseCategory = (name: string) => {
-    upsertExpenseCategoryMutation({
-      variables: {
-        name,
-      },
-    });
-  };
-
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
-        Expenses Tracker
-      </Typography>
-
       <Container maxWidth="md" style={{ marginTop: '2rem' }}>
+        <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+          Expenses Tracker
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom>
+          Manage your expenses here.
+        </Typography>
+
         <ExpensesSummary
           expenseAmounts={expenseAmounts}
         />
@@ -85,9 +73,10 @@ function App() {
           </Button>
           <Button
             variant="contained"
-            onClick={openExpenseCategoryFormDialog}
+            component={Link}
+            to={AppRoutes.ExpenseCategories}
           >
-            Add Category
+            Categories
           </Button>
         </Stack>
       </Container>
@@ -97,12 +86,6 @@ function App() {
         expenseToDeleteId={expenseToDeleteId!}
         close={closeExpenseDeleteDialog}
         deleteExpense={deleteExpense}
-      />
-
-      <ExpenseCategoryFormDialog
-        open={isExpenseCategoryFormDialogOpen}
-        close={closeExpenseCategoryFormDialog}
-        upsertExpenseCategory={upsertExpenseCategory}
       />
     </>
   )
