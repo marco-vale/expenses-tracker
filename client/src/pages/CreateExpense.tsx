@@ -24,7 +24,7 @@ const CreateExpense: React.FC = () => {
         },
       },
     }).then(() => {
-      navigate(AppRoutes.Home);
+      navigate(AppRoutes.Expenses);
     });
   };
 

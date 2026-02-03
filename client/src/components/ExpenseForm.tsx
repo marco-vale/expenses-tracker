@@ -111,7 +111,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
           variant="outlined"
           style={{ marginRight: '1rem' }}
           component={Link}
-          to={AppRoutes.Home}
+          to={AppRoutes.Expenses}
         >
           Back
         </Button>

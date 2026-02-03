@@ -17,7 +17,7 @@ import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { useDialog } from '../hooks/useDialog';
 
-const App: React.FC = () => {
+const Expenses: React.FC = () => {
   const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
   const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(GetExpenseAmountsDocument, { fetchPolicy: 'network-only' });
 
@@ -71,13 +71,6 @@ const App: React.FC = () => {
           >
             Add Expense
           </Button>
-          <Button
-            variant="contained"
-            component={Link}
-            to={AppRoutes.ExpenseCategories}
-          >
-            Categories
-          </Button>
         </Stack>
       </Container>
 
@@ -91,4 +84,4 @@ const App: React.FC = () => {
   )
 }
 
-export default App;
+export default Expenses;

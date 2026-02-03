@@ -5,8 +5,6 @@ import { useMutation } from '@apollo/client/react';
 import { GetExpenseCategoriesDocument, UpsertExpenseCategoryDocument, type UpsertExpenseCategoryMutation } from '../graphql/__generated__/graphql';
 import { Button, Container, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
-import { AppRoutes } from '../routes/routes';
-import { Link } from 'react-router';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 const ExpenseCategories: React.FC = () => {
@@ -51,13 +49,6 @@ const ExpenseCategories: React.FC = () => {
             onClick={openExpenseCategoryFormDialog}
           >
             Add Category
-          </Button>
-          <Button
-            variant="contained"
-            component={Link}
-            to={AppRoutes.Home}
-          >
-            Expenses
           </Button>
         </Stack>
       </Container>
