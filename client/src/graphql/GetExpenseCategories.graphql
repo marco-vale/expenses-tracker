@@ -1,6 +1,7 @@
-query GetExpenseCategories {
+query GetExpenseCategories($calculateAmount: Boolean!) {
   expenseCategories {
     id
     name
+    amount @include(if: $calculateAmount)
   }
 }

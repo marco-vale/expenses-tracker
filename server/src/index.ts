@@ -5,6 +5,7 @@ import { typeDefs } from './graphql/typeDefs.js';
 import { resolvers } from './graphql/resolvers.js';
 import { prisma } from './prisma/client.js';
 import { expressMiddleware } from '@as-integrations/express5';
+import { expenseCategoryAmountLoader } from './graphql/loaders/expenseCategoryAmountLoader.js';
 
 const app = express();
 app.use(express.json());
@@ -30,7 +31,12 @@ await apollo.start();
 app.use(
   '/graphql',
   expressMiddleware(apollo, {
-    context: async () => ({ prisma }),
+    context: async () => ({
+      prisma,
+      loaders: {
+        expenseCategoryAmount: expenseCategoryAmountLoader(prisma),
+      },
+    }),
   }),
 );
 

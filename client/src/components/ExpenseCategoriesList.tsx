@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ExpenseCategory } from '../graphql/__generated__/graphql';
 import { Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { formatAmount } from '../tools/formatAmount';
 
 interface ExpenseCategoriesListProps {
   expenseCategories: ExpenseCategory[];
@@ -21,12 +22,14 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCa
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
+                <TableCell>Amount</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {expenseCategories.map((ec) => (
                 <TableRow key={ec.id}>
                   <TableCell>{ec.name}</TableCell>
+                  <TableCell>{formatAmount(ec.amount ?? 0)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

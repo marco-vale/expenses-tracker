@@ -8,7 +8,7 @@ import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 const CreateExpense: React.FC = () => {
-  const { expenseCategories } = useExpenseCategories();
+  const { expenseCategories } = useExpenseCategories(false);
   const [createExpenseMutation] = useMutation<CreateExpenseMutation>(CreateExpenseDocument);
 
   const navigate = useNavigate();

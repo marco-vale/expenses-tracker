@@ -4,22 +4,20 @@ import { Link } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
   DeleteExpenseDocument,
-  GetExpenseAmountsDocument,
   GetExpensesDocument,
   type DeleteExpenseMutation,
   type Expense,
-  type ExpenseAmounts,
-  type GetExpenseAmountsQuery,
   type GetExpensesQuery,
 } from '../graphql/__generated__/graphql';
 import { AppRoutes } from '../routes/routes';
 import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { useDialog } from '../hooks/useDialog';
+import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 const Expenses: React.FC = () => {
+  const { expenseCategories } = useExpenseCategories();
   const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
-  const { data: expenseAmountsData } = useQuery<GetExpenseAmountsQuery>(GetExpenseAmountsDocument, { fetchPolicy: 'network-only' });
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(
     DeleteExpenseDocument,
@@ -33,8 +31,7 @@ const Expenses: React.FC = () => {
     close: closeExpenseDeleteDialog,
   } = useDialog<string>();
 
-  const expenses: Expense[] = expensesData?.expenses || [];
-  const expenseAmounts: ExpenseAmounts | undefined = expenseAmountsData?.expenseAmounts || undefined;
+  const expenses: Expense[] = expensesData?.expenses ?? [];
 
   const deleteExpense = (id: string) => {
     deleteExpenseMutation({
@@ -48,14 +45,14 @@ const Expenses: React.FC = () => {
     <>
       <Container maxWidth="md" style={{ marginTop: '2rem' }}>
         <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
-          Expenses Tracker
+          Expenses
         </Typography>
         <Typography variant="body1" align="center" gutterBottom>
           Manage your expenses here.
         </Typography>
 
         <ExpensesSummary
-          expenseAmounts={expenseAmounts}
+          expenseCategories={expenseCategories}
         />
 
         <ExpensesList

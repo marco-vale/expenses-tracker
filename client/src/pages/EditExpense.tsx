@@ -20,7 +20,7 @@ const EditExpense: React.FC = () => {
     },
   );
 
-  const { expenseCategories } = useExpenseCategories();
+  const { expenseCategories } = useExpenseCategories(false);
   const [updateExpenseMutation] = useMutation<UpdateExpenseMutation>(UpdateExpenseDocument);
 
   const navigate = useNavigate();
