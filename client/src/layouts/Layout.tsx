@@ -1,9 +1,12 @@
 import React from 'react';
 import { Box, Button } from '@mui/material';
-import { Link, Outlet } from 'react-router';
+import { Link, Outlet, useLocation, type Location } from 'react-router';
 import { AppRoutes } from '../routes/routes';
+import { Category, Euro } from '@mui/icons-material';
 
 const Layout: React.FC = () => {
+  const location: Location = useLocation();
+
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <Box
@@ -19,17 +22,19 @@ const Layout: React.FC = () => {
           <Button
             component={Link}
             to={AppRoutes.Expenses}
-            variant="outlined"
+            variant={location.pathname === AppRoutes.Expenses ? 'contained' : 'outlined'}
             fullWidth
           >
+            <Euro sx={{ mr: 1 }} />
             Expenses
           </Button>
           <Button
             component={Link}
             to={AppRoutes.ExpenseCategories}
-            variant="outlined"
+            variant={location.pathname === AppRoutes.ExpenseCategories ? 'contained' : 'outlined'}
             fullWidth
           >
+            <Category sx={{ mr: 1 }} />
             Categories
           </Button>
         </Box>

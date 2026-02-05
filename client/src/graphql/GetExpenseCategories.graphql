@@ -1,7 +1,8 @@
-query GetExpenseCategories($calculateAmount: Boolean!) {
+query GetExpenseCategories($getAmount: Boolean!, $getDeletable: Boolean!) {
   expenseCategories {
     id
     name
-    amount @include(if: $calculateAmount)
+    amount @include(if: $getAmount)
+    deletable @include(if: $getDeletable)
   }
 }

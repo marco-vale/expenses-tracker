@@ -2,16 +2,21 @@ import React from 'react';
 import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useMutation } from '@apollo/client/react';
-import { GetExpenseCategoriesDocument, UpsertExpenseCategoryDocument, type UpsertExpenseCategoryMutation } from '../graphql/__generated__/graphql';
+import { DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, UpsertExpenseCategoryDocument, type DeleteExpenseCategoryMutation, type UpsertExpenseCategoryMutation } from '../graphql/__generated__/graphql';
 import { Button, Container, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 const ExpenseCategories: React.FC = () => {
-  const { expenseCategories } = useExpenseCategories();
+  const { expenseCategories } = useExpenseCategories(true, true);
 
   const [upsertExpenseCategoryMutation] = useMutation<UpsertExpenseCategoryMutation>(
     UpsertExpenseCategoryDocument,
+    { refetchQueries: [GetExpenseCategoriesDocument] },
+  );
+
+  const [deleteExpenseCategoryMutation] = useMutation<DeleteExpenseCategoryMutation>(
+    DeleteExpenseCategoryDocument,
     { refetchQueries: [GetExpenseCategoriesDocument] },
   );
 
@@ -29,6 +34,14 @@ const ExpenseCategories: React.FC = () => {
     });
   };
 
+  const deleteExpenseCategory = (id: string) => {
+    deleteExpenseCategoryMutation({
+      variables: {
+        id,
+      },
+    });
+  };
+
   return (
     <>
       <Container maxWidth="md" style={{ marginTop: '2rem' }}>
@@ -41,6 +54,7 @@ const ExpenseCategories: React.FC = () => {
 
         <ExpenseCategoriesList
           expenseCategories={expenseCategories}
+          deleteExpenseCategory={deleteExpenseCategory}
         />
 
         <Stack direction="row" spacing={2} marginTop="2rem">

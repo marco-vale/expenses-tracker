@@ -29,6 +29,7 @@ export type Expense = {
 export type ExpenseCategory = {
   __typename?: 'ExpenseCategory';
   amount?: Maybe<Scalars['Float']['output']>;
+  deletable?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
@@ -52,6 +53,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createExpense: Scalars['ID']['output'];
   deleteExpense: Scalars['ID']['output'];
+  deleteExpenseCategory: Scalars['ID']['output'];
   updateExpense: Scalars['ID']['output'];
   upsertExpenseCategory: Scalars['ID']['output'];
 };
@@ -63,6 +65,11 @@ export type MutationCreateExpenseArgs = {
 
 
 export type MutationDeleteExpenseArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteExpenseCategoryArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -197,6 +204,7 @@ export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends Re
 
 export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpenseCategory'] = ResolversParentTypes['ExpenseCategory']> = {
   amount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  deletable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
@@ -204,6 +212,7 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
+  deleteExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseCategoryArgs, 'id'>>;
   updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
   upsertExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpsertExpenseCategoryArgs, 'name'>>;
 };

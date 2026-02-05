@@ -1,13 +1,15 @@
 import React from 'react';
 import type { ExpenseCategory } from '../graphql/__generated__/graphql';
-import { Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { formatAmount } from '../tools/formatAmount';
+import { Delete } from '@mui/icons-material';
 
 interface ExpenseCategoriesListProps {
   expenseCategories: ExpenseCategory[];
+  deleteExpenseCategory: (id: string) => void;
 }
 
-const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCategories }) => {
+const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCategories, deleteExpenseCategory }) => {
   return (
     <Stack width="100%" marginTop="2rem" spacing={2}>
       {expenseCategories.length === 0 && (
@@ -23,6 +25,7 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCa
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Amount</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -30,6 +33,15 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCa
                 <TableRow key={ec.id}>
                   <TableCell>{ec.name}</TableCell>
                   <TableCell>{formatAmount(ec.amount ?? 0)}</TableCell>
+                  <TableCell>
+                    <Tooltip title={ec.deletable ? "Delete category" : "This category is in use and cannot be deleted"}>
+                      <span>
+                        <IconButton size="small" color="error" disabled={!ec.deletable} onClick={() => deleteExpenseCategory(ec.id)}>
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

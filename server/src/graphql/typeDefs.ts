@@ -3,6 +3,7 @@ export const typeDefs = `#graphql
     id: ID!
     name: String!
     amount: Float
+    deletable: Boolean
   }
 
   type Expense {
@@ -41,5 +42,6 @@ export const typeDefs = `#graphql
     deleteExpense(id: ID!): ID!
 
     upsertExpenseCategory(name: String!): ID!
+    deleteExpenseCategory(id: ID!): ID!
   }
 `;

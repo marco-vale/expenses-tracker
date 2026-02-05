@@ -24,13 +24,13 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
 
   const formik = useFormik<ExpenseFormValues>({
     initialValues: {
-      id: expense?.id || '',
-      description: expense?.description || '',
+      id: expense?.id ?? '',
+      description: expense?.description ?? '',
       amount: expense?.amount ? expense.amount.toString() : '',
       date: expense?.date
         ? new Date(expense.date).toISOString().slice(0, 16)
         : new Date().toISOString().slice(0, 16),
-      categoryId: expense?.category?.id || '',
+      categoryId: expense?.category?.id ?? '',
     },
     validationSchema,
     validateOnChange: false,

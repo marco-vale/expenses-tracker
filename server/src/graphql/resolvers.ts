@@ -44,6 +44,9 @@ export const resolvers: Resolvers<GraphQLContext> = {
     amount: async (parent, { }, context) => {
       return context.loaders.expenseCategoryAmount.load(parent.id);
     },
+    deletable: async (parent, { }, context) => {
+      return context.loaders.expenseCategoryDeletable.load(parent.id);
+    },
   },
 
   Mutation: {
@@ -92,6 +95,14 @@ export const resolvers: Resolvers<GraphQLContext> = {
       });
 
       return upsertedExpenseCategory.id;
+    },
+
+    deleteExpenseCategory: async (parent, { id }, context) => {
+      await context.prisma.expenseCategory.delete({
+        where: { id },
+      });
+
+      return id;
     },
   },
 };

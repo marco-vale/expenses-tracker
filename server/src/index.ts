@@ -6,6 +6,7 @@ import { resolvers } from './graphql/resolvers.js';
 import { prisma } from './prisma/client.js';
 import { expressMiddleware } from '@as-integrations/express5';
 import { expenseCategoryAmountLoader } from './graphql/loaders/expenseCategoryAmountLoader.js';
+import { expenseCategoryDeletableLoader } from './graphql/loaders/expenseCategoryDeletableLoader.js';
 
 const app = express();
 app.use(express.json());
@@ -35,6 +36,7 @@ app.use(
       prisma,
       loaders: {
         expenseCategoryAmount: expenseCategoryAmountLoader(prisma),
+        expenseCategoryDeletable: expenseCategoryDeletableLoader(prisma),
       },
     }),
   }),

@@ -1,0 +1,3 @@
+mutation DeleteExpenseCategory($id: ID!) {
+  deleteExpenseCategory(id: $id)
+}

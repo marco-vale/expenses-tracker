@@ -3,7 +3,7 @@ import { PrismaClient } from '../../../generated/prisma/client';
 
 export const expenseCategoryAmountLoader = (prisma: PrismaClient) => {
   return new DataLoader<string, number>(async (categoryIds: readonly string[]) => {
-    const amounts = await prisma.expense.groupBy({
+    const expenseAmounts = await prisma.expense.groupBy({
       by: ['categoryId'],
       where: {
         categoryId: { in: [...categoryIds] },
@@ -13,10 +13,10 @@ export const expenseCategoryAmountLoader = (prisma: PrismaClient) => {
       },
     });
 
-    const amountsMap = new Map(
-      amounts.map(eca => [eca.categoryId!, eca._sum.amount ?? 0])
+    const expenseAmountsMap = new Map(
+      expenseAmounts.map(ea => [ea.categoryId!, ea._sum.amount ?? 0])
     );
 
-    return categoryIds.map(id => amountsMap.get(id) ?? 0);
+    return categoryIds.map(id => expenseAmountsMap.get(id) ?? 0);
   });
 };

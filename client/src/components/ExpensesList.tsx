@@ -1,4 +1,4 @@
-import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import React from "react";
 import type { Expense } from '../graphql/__generated__/graphql';
 import { formatDate } from '../tools/formatDate';
@@ -40,12 +40,18 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
                   <TableCell>{formatDate(e.date)}</TableCell>
                   <TableCell>{e.category ? e.category.name : '---'}</TableCell>
                   <TableCell>
-                    <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
-                      <Edit fontSize="small" />
-                    </IconButton>
-                    <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
-                      <Delete fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Edit expense">
+                      <span>
+                        <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip title="Delete expense">
+                      <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
