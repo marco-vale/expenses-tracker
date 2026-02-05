@@ -36,7 +36,9 @@ export const resolvers: Resolvers<GraphQLContext> = {
     },
 
     expenseCategories: async (parent, { }, context) => {
-      return context.prisma.expenseCategory.findMany();
+      return context.prisma.expenseCategory.findMany({
+        orderBy: { name: 'asc' },
+      });
     },
   },
 

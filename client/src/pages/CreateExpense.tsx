@@ -6,6 +6,7 @@ import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
+import { formatNumberString } from '../tools/formatNumberString';
 
 const CreateExpense: React.FC = () => {
   const { expenseCategories } = useExpenseCategories(false);
@@ -18,7 +19,7 @@ const CreateExpense: React.FC = () => {
       variables: {
         expense: {
           description: values.description,
-          amount: Number(values.amount),
+          amount: Number(formatNumberString(values.amount)),
           date: new Date(values.date).toISOString(),
           categoryId: values.categoryId || undefined,
         },

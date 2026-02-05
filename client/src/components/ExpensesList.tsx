@@ -1,7 +1,7 @@
 import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import React from "react";
 import type { Expense } from '../graphql/__generated__/graphql';
-import { formatDate } from '../tools/formatDate';
+import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import { AppRoutes, buildRoute } from '../routes/routes';
@@ -37,7 +37,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
                 <TableRow key={e.id}>
                   <TableCell>{e.description}</TableCell>
                   <TableCell>{formatAmount(e.amount)}</TableCell>
-                  <TableCell>{formatDate(e.date)}</TableCell>
+                  <TableCell>{formatDateString(e.date)}</TableCell>
                   <TableCell>{e.category ? e.category.name : '---'}</TableCell>
                   <TableCell>
                     <Tooltip title="Edit expense">

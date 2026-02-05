@@ -6,6 +6,7 @@ import { Link } from 'react-router';
 import { type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
+import { formatNumberString } from '../tools/formatNumberString';
 
 type ExpenseFormProps = {
   expense?: Expense;
@@ -17,7 +18,17 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
   const validationSchema = Yup.object({
     id: Yup.string(),
     description: Yup.string().required('Description is required'),
-    amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
+    amount: Yup.string()
+      .required('Amount is required')
+      .transform((value) => {
+        return formatNumberString(value);
+      })
+      .test('is-number', 'Amount must be a valid number', (value) => {
+        return !isNaN(parseFloat(value));
+      })
+      .test('is-positive', 'Amount must be positive', (value) => {
+        return parseFloat(value) > 0;
+      }),
     date: Yup.string().required('Date is required'),
     categoryId: Yup.string(),
   });
@@ -26,7 +37,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
     initialValues: {
       id: expense?.id ?? '',
       description: expense?.description ?? '',
-      amount: expense?.amount ? expense.amount.toString() : '',
+      amount: expense?.amount.toString() ?? '',
       date: expense?.date
         ? new Date(expense.date).toISOString().slice(0, 16)
         : new Date().toISOString().slice(0, 16),
