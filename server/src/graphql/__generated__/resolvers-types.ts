@@ -100,7 +100,7 @@ export type MutationUpdateExpenseCategoryArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  expense: Expense;
+  expense?: Maybe<Expense>;
   expenseCategories: Array<ExpenseCategory>;
   expenses: Array<Expense>;
 };
@@ -238,7 +238,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
+  expense?: Resolver<Maybe<ResolversTypes['Expense']>, ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenseCategories?: Resolver<Array<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
   expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType>;
 };

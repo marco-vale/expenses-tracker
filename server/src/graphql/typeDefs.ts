@@ -40,7 +40,7 @@ export const typeDefs = `#graphql
 
   type Query {
     expenses: [Expense!]!
-    expense(id: ID!): Expense!
+    expense(id: ID!): Expense
 
     expenseCategories: [ExpenseCategory!]!
   }
