@@ -1,6 +1,8 @@
 export enum AppRoutes {
-  Expenses = '/',
+  LoginUser = '/login',
+  CreateUser = '/users/create',
   ExpenseCategories = '/expense-categories',
+  Expenses = '/',
   CreateExpense = '/create',
   EditExpense = '/edit/:id',
 };

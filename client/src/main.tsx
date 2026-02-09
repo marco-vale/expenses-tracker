@@ -11,6 +11,8 @@ import CreateExpense from './pages/CreateExpense.tsx'
 import EditExpense from './pages/EditExpense.tsx'
 import ExpenseCategories from './pages/ExpenseCategories.tsx'
 import Layout from './layouts/Layout.tsx'
+import LoginUser from './pages/LoginUser.tsx'
+import CreateUser from './pages/CreateUser.tsx'
 
 const theme = createTheme({
   palette: {
@@ -25,9 +27,11 @@ createRoot(document.getElementById('root')!).render(
         <CssBaseline />
         <BrowserRouter>
           <Routes>
+            <Route path={AppRoutes.LoginUser} element={<LoginUser />} />
+            <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
             <Route element={<Layout />}>
-              <Route path={AppRoutes.Expenses} element={<Expenses />} />
               <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
+              <Route path={AppRoutes.Expenses} element={<Expenses />} />
               <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
               <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
             </Route>

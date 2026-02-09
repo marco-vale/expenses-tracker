@@ -14,6 +14,25 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
+  input UserCreateInput {
+    email: String!
+    password: String!
+  }
+
+  input UserLoginInput {
+    email: String!
+    password: String!
+  }
+
+  input ExpenseCategoryCreateInput {
+    name: String!
+  }
+
+  input ExpenseCategoryUpdateInput {
+    id: ID!
+    name: String!
+  }
+
   input ExpenseCreateInput {
     description: String!
     amount: Float!
@@ -29,29 +48,23 @@ export const typeDefs = `#graphql
     categoryId: ID
   }
 
-  input ExpenseCategoryCreateInput {
-    name: String!
-  }
-
-  input ExpenseCategoryUpdateInput {
-    id: ID!
-    name: String!
-  }
-
   type Query {
-    expenses: [Expense!]!
-    expense(id: ID!): Expense
-
     expenseCategories: [ExpenseCategory!]!
+
+    expenses: [Expense!]!
+    expense(id: ID!): Expense!
   }
 
   type Mutation {
-    createExpense(expense: ExpenseCreateInput!): ID!
-    updateExpense(expense: ExpenseUpdateInput!): ID!
-    deleteExpense(id: ID!): ID!
+    createUser(user: UserCreateInput!): ID!
+    loginUser(user: UserLoginInput!): ID!
 
     createExpenseCategory(expenseCategory: ExpenseCategoryCreateInput!): ID!
     updateExpenseCategory(expenseCategory: ExpenseCategoryUpdateInput!): ID!
     deleteExpenseCategory(id: ID!): ID!
+
+    createExpense(expense: ExpenseCreateInput!): ID!
+    updateExpense(expense: ExpenseUpdateInput!): ID!
+    deleteExpense(id: ID!): ID!
   }
 `;
