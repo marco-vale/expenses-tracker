@@ -98,7 +98,7 @@ export type MutationUpdateExpenseCategoryArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  expense: Expense;
+  expense?: Maybe<Expense>;
   expenseCategories: Array<ExpenseCategory>;
   expenses: Array<Expense>;
 };
@@ -141,7 +141,7 @@ export type GetExpenseQueryVariables = Exact<{
 }>;
 
 
-export type GetExpenseQuery = { __typename?: 'Query', expense: { __typename?: 'Expense', id: string, description: string, amount: number, date: string, category?: { __typename?: 'ExpenseCategory', id: string, name: string } | null } };
+export type GetExpenseQuery = { __typename?: 'Query', expense?: { __typename?: 'Expense', id: string, description: string, amount: number, date: string, category?: { __typename?: 'ExpenseCategory', id: string, name: string } | null } | null };
 
 export type GetExpenseCategoriesQueryVariables = Exact<{
   getAmount: Scalars['Boolean']['input'];
