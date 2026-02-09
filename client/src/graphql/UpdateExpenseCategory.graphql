@@ -1,0 +1,3 @@
+mutation UpdateExpenseCategory($expenseCategory: ExpenseCategoryUpdateInput!) {
+  updateExpenseCategory(expenseCategory: $expenseCategory)
+}

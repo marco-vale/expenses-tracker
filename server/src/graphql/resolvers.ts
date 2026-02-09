@@ -89,14 +89,25 @@ export const resolvers: Resolvers<GraphQLContext> = {
       return id;
     },
 
-    upsertExpenseCategory: async (parent, { name }, context) => {
-      const upsertedExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.upsert({
-        where: { name },
-        update: { name },
-        create: { name },
+    createExpenseCategory: async (parent, { expenseCategory }, context) => {
+      const newExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.create({
+        data: {
+          name: expenseCategory.name,
+        },
       });
 
-      return upsertedExpenseCategory.id;
+      return newExpenseCategory.id;
+    },
+
+    updateExpenseCategory: async (parent, { expenseCategory }, context) => {
+      const updatedExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.update({
+        where: { id: expenseCategory.id },
+        data: {
+          name: expenseCategory.name,
+        },
+      });
+
+      return updatedExpenseCategory.id;
     },
 
     deleteExpenseCategory: async (parent, { id }, context) => {

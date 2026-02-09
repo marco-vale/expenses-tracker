@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client/react';
 import { Container, Grid, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
@@ -26,11 +26,19 @@ const EditExpense: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = (values: ExpenseFormValues) => {
+  const expense = useMemo<Expense | undefined>(() => {
+    if (!expenseData?.expense || expenseLoading) {
+      return undefined;
+    }
+
+    return expenseData.expense;
+  }, [expenseData?.expense, expenseLoading]);
+
+  const onSubmit = useCallback((values: ExpenseFormValues) => {
     updateExpenseMutation({
       variables: {
         expense: {
-          id: values.id,
+          id: expense?.id ?? '',
           description: values.description,
           amount: Number(formatNumberString(values.amount)),
           date: new Date(values.date).toISOString(),
@@ -40,15 +48,7 @@ const EditExpense: React.FC = () => {
     }).then(() => {
       navigate(AppRoutes.Expenses);
     });
-  };
-
-  const expense = useMemo<Expense | undefined>(() => {
-    if (!expenseData?.expense || expenseLoading) {
-      return undefined;
-    }
-
-    return expenseData.expense;
-  }, [expenseData?.expense, expenseLoading]);
+  }, [expense?.id, navigate, updateExpenseMutation]);
 
   return (
     <>

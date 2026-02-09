@@ -35,7 +35,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
 
   const formik = useFormik<ExpenseFormValues>({
     initialValues: {
-      id: expense?.id ?? '',
       description: expense?.description ?? '',
       amount: expense?.amount.toString() ?? '',
       date: expense?.date
@@ -130,7 +129,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
           type="submit"
           variant="contained"
         >
-          {expense ? 'Save' : 'Add'}
+          {expense?.id ? 'Save' : 'Add'}
         </Button>
       </div>
     </form>

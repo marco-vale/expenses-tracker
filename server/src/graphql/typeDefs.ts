@@ -29,6 +29,15 @@ export const typeDefs = `#graphql
     categoryId: ID
   }
 
+  input ExpenseCategoryCreateInput {
+    name: String!
+  }
+
+  input ExpenseCategoryUpdateInput {
+    id: ID!
+    name: String!
+  }
+
   type Query {
     expenses: [Expense!]!
     expense(id: ID!): Expense!
@@ -41,7 +50,8 @@ export const typeDefs = `#graphql
     updateExpense(expense: ExpenseUpdateInput!): ID!
     deleteExpense(id: ID!): ID!
 
-    upsertExpenseCategory(name: String!): ID!
+    createExpenseCategory(expenseCategory: ExpenseCategoryCreateInput!): ID!
+    updateExpenseCategory(expenseCategory: ExpenseCategoryUpdateInput!): ID!
     deleteExpenseCategory(id: ID!): ID!
   }
 `;

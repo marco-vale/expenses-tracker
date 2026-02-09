@@ -1,5 +1,4 @@
 export type ExpenseFormValues = {
-  id?: string;
   description: string;
   amount: string;
   date: string;

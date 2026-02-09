@@ -3,27 +3,30 @@ import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
 import type { ExpenseCategoryFormValues } from '../types/types';
 import * as Yup from 'yup';
+import type { ExpenseCategory } from '../graphql/__generated__/graphql';
 
 type ExpenseCategoryFormDialogProps = {
   open: boolean;
   close: () => void;
-  upsertExpenseCategory: (name: string) => void;
+  expenseCategory?: ExpenseCategory;
+  onSubmit: (values: ExpenseCategoryFormValues) => void;
 };
 
-const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, upsertExpenseCategory }) => {
+const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, expenseCategory, onSubmit }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
   });
 
   const formik = useFormik<ExpenseCategoryFormValues>({
     initialValues: {
-      name: '',
+      name: expenseCategory?.name ?? '',
     },
     validationSchema,
     validateOnChange: false,
     validateOnBlur: false,
+    enableReinitialize: true,
     onSubmit: (values) => {
-      upsertExpenseCategory(values.name);
+      onSubmit(values);
       handleClose();
     },
   });
@@ -58,13 +61,13 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ o
             variant="outlined"
             onClick={handleClose}
           >
-            Cancel
+            Back
           </Button>
           <Button
             type="submit"
             variant="contained"
           >
-            Add
+            {expenseCategory?.id ? 'Save' : 'Add'}
           </Button>
         </DialogActions>
       </form>

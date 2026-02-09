@@ -7,6 +7,7 @@ import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { formatNumberString } from '../tools/formatNumberString';
+import { useCallback } from 'react';
 
 const CreateExpense: React.FC = () => {
   const { expenseCategories } = useExpenseCategories(false);
@@ -14,7 +15,7 @@ const CreateExpense: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = (values: ExpenseFormValues) => {
+  const onSubmit = useCallback((values: ExpenseFormValues) => {
     createExpenseMutation({
       variables: {
         expense: {
@@ -27,7 +28,7 @@ const CreateExpense: React.FC = () => {
     }).then(() => {
       navigate(AppRoutes.Expenses);
     });
-  };
+  }, [navigate, createExpenseMutation]);
 
   return (
     <>

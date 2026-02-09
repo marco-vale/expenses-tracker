@@ -1,0 +1,3 @@
+mutation CreateExpenseCategory($expenseCategory: ExpenseCategoryCreateInput!) {
+  createExpenseCategory(expenseCategory: $expenseCategory)
+}

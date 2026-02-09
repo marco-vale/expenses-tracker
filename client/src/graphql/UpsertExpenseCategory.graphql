@@ -1,3 +1,0 @@
-mutation UpsertExpenseCategory($name: String!) {
-  upsertExpenseCategory(name: $name)
-}

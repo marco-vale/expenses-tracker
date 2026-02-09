@@ -34,6 +34,15 @@ export type ExpenseCategory = {
   name: Scalars['String']['output'];
 };
 
+export type ExpenseCategoryCreateInput = {
+  name: Scalars['String']['input'];
+};
+
+export type ExpenseCategoryUpdateInput = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type ExpenseCreateInput = {
   amount: Scalars['Float']['input'];
   categoryId?: InputMaybe<Scalars['ID']['input']>;
@@ -52,15 +61,21 @@ export type ExpenseUpdateInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createExpense: Scalars['ID']['output'];
+  createExpenseCategory: Scalars['ID']['output'];
   deleteExpense: Scalars['ID']['output'];
   deleteExpenseCategory: Scalars['ID']['output'];
   updateExpense: Scalars['ID']['output'];
-  upsertExpenseCategory: Scalars['ID']['output'];
+  updateExpenseCategory: Scalars['ID']['output'];
 };
 
 
 export type MutationCreateExpenseArgs = {
   expense: ExpenseCreateInput;
+};
+
+
+export type MutationCreateExpenseCategoryArgs = {
+  expenseCategory: ExpenseCategoryCreateInput;
 };
 
 
@@ -79,8 +94,8 @@ export type MutationUpdateExpenseArgs = {
 };
 
 
-export type MutationUpsertExpenseCategoryArgs = {
-  name: Scalars['String']['input'];
+export type MutationUpdateExpenseCategoryArgs = {
+  expenseCategory: ExpenseCategoryUpdateInput;
 };
 
 export type Query = {
@@ -171,6 +186,8 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Expense: ResolverTypeWrapper<Expense>;
   ExpenseCategory: ResolverTypeWrapper<ExpenseCategory>;
+  ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
+  ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
@@ -185,6 +202,8 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Expense: Expense;
   ExpenseCategory: ExpenseCategory;
+  ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
+  ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
   Float: Scalars['Float']['output'];
@@ -211,10 +230,11 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
+  createExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseCategoryArgs, 'expenseCategory'>>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
   deleteExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseCategoryArgs, 'id'>>;
   updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
-  upsertExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpsertExpenseCategoryArgs, 'name'>>;
+  updateExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseCategoryArgs, 'expenseCategory'>>;
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
