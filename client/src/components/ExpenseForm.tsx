@@ -1,11 +1,9 @@
 import React from "react";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { Button, MenuItem, Select, TextField } from '@mui/material';
-import { Link } from 'react-router';
+import { MenuItem, Select, TextField } from '@mui/material';
 import { type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
-import { AppRoutes } from '../routes/routes';
 import { formatNumberString } from '../tools/formatNumberString';
 
 type ExpenseFormProps = {
@@ -49,7 +47,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form id="expenseForm" onSubmit={formik.handleSubmit}>
       <div>
         <TextField
           id="description"
@@ -113,24 +111,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
             </MenuItem>
           ))}
         </Select>
-      </div>
-
-      <div style={{ marginTop: '1rem' }}>
-        <Button
-          type="button"
-          variant="outlined"
-          style={{ marginRight: '1rem' }}
-          component={Link}
-          to={AppRoutes.Expenses}
-        >
-          Back
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-        >
-          {expense?.id ? 'Save' : 'Add'}
-        </Button>
       </div>
     </form>
   );

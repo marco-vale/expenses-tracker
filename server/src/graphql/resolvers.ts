@@ -5,9 +5,29 @@ import { Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
+import { UserToken } from '../types/types';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
+    me: async (parent, { userToken }, context) => {
+      try {
+        const decodedUserToken = jwt.verify(userToken, process.env.JWT_SECRET!) as UserToken;
+
+        const user: User | null = await context.prisma.user.findUnique({
+          where: { id: decodedUserToken.id },
+        });
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        return user;
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
+
     expenseCategories: async (parent, { }, context) => {
       return context.prisma.expenseCategory.findMany({
         orderBy: { name: 'asc' },
@@ -59,6 +79,47 @@ export const resolvers: Resolvers<GraphQLContext> = {
   },
 
   Mutation: {
+    login: async (parent, { login }, context) => {
+      try {
+        const loginSchema = Yup.object({
+          email: Yup.string().required('E-mail is required').email('Invalid e-mail address'),
+          password: Yup.string().required('Password is required'),
+        });
+
+        await loginSchema.validate(login);
+
+        const existingUser: User | null = await context.prisma.user.findUnique({
+          where: { email: login.email },
+        });
+
+        if (!existingUser) {
+          throw new Error('Invalid e-mail or password');
+        }
+
+        const passwordValid: boolean = await argon2.verify(
+          existingUser.password,
+          login.password,
+        );
+
+        if (!passwordValid) {
+          throw new Error('Invalid e-mail or password');
+        }
+
+        const userToken: string = jwt.sign(
+          {
+            id: existingUser.id,
+            email: existingUser.email,
+          },
+          process.env.JWT_SECRET!,
+          { expiresIn: '4h' }
+        );
+
+        return userToken;
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
+
     createUser: async (parent, { user }, context) => {
       try {
         const userSchema = Yup.object({
@@ -78,34 +139,6 @@ export const resolvers: Resolvers<GraphQLContext> = {
         });
 
         return newUser.id;
-      } catch (ex) {
-        throw handleException(ex);
-      }
-    },
-
-    loginUser: async (parent, { user }, context) => {
-      try {
-        const userSchema = Yup.object({
-          email: Yup.string().required('E-mail is required').email('Invalid e-mail address'),
-          password: Yup.string().required('Password is required'),
-        });
-
-        await userSchema.validate(user);
-
-        const existingUser: User | null = await context.prisma.user.findUnique({
-          where: { email: user.email },
-        });
-
-        if (!existingUser) {
-          throw new Error('Invalid e-mail or password');
-        }
-
-        const passwordValid = await argon2.verify(existingUser.password, user.password);
-        if (!passwordValid) {
-          throw new Error('Invalid e-mail or password');
-        }
-
-        return existingUser.id;
       } catch (ex) {
         throw handleException(ex);
       }

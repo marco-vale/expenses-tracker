@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client/react';
-import { Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Grid, Typography } from '@mui/material';
 import { useCallback, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
@@ -57,13 +57,34 @@ const EditExpense: React.FC = () => {
       </Typography>
 
       <Container maxWidth="md">
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="center" direction="column">
           {!expenseLoading && (
-            <ExpenseForm
-              expense={expense}
-              expenseCategories={expenseCategories}
-              onSubmit={onSubmit}
-            />
+            <>
+              <ExpenseForm
+                expense={expense}
+                expenseCategories={expenseCategories}
+                onSubmit={onSubmit}
+              />
+
+              <div>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  style={{ marginRight: '1rem' }}
+                  component={Link}
+                  to={AppRoutes.Expenses}
+                >
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  form="expenseForm"
+                  variant="contained"
+                >
+                  Save
+                </Button>
+              </div>
+            </>
           )}
         </Grid>
       </Container>

@@ -21,7 +21,7 @@ export const CreateUser: React.FC = () => {
         },
       },
     }).then(() => {
-      navigate(AppRoutes.LoginUser);
+      navigate(AppRoutes.Login);
     });
   }, [createUserMutation, navigate]);
 
@@ -43,7 +43,7 @@ export const CreateUser: React.FC = () => {
               variant="outlined"
               style={{ marginRight: '1rem' }}
               component={Link}
-              to={AppRoutes.LoginUser}
+              to={AppRoutes.Login}
             >
               Back
             </Button>

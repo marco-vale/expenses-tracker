@@ -1,5 +1,5 @@
 export enum AppRoutes {
-  LoginUser = '/login',
+  Login = '/login',
   CreateUser = '/users/create',
   ExpenseCategories = '/expense-categories',
   Expenses = '/',

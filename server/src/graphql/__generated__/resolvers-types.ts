@@ -58,6 +58,11 @@ export type ExpenseUpdateInput = {
   id: Scalars['ID']['input'];
 };
 
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createExpense: Scalars['ID']['output'];
@@ -65,7 +70,7 @@ export type Mutation = {
   createUser: Scalars['ID']['output'];
   deleteExpense: Scalars['ID']['output'];
   deleteExpenseCategory: Scalars['ID']['output'];
-  loginUser: Scalars['ID']['output'];
+  login: Scalars['String']['output'];
   updateExpense: Scalars['ID']['output'];
   updateExpenseCategory: Scalars['ID']['output'];
 };
@@ -96,8 +101,8 @@ export type MutationDeleteExpenseCategoryArgs = {
 };
 
 
-export type MutationLoginUserArgs = {
-  user: UserLoginInput;
+export type MutationLoginArgs = {
+  login: LoginInput;
 };
 
 
@@ -115,6 +120,7 @@ export type Query = {
   expense: Expense;
   expenseCategories: Array<ExpenseCategory>;
   expenses: Array<Expense>;
+  me: User;
 };
 
 
@@ -122,12 +128,18 @@ export type QueryExpenseArgs = {
   id: Scalars['ID']['input'];
 };
 
-export type UserCreateInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+
+export type QueryMeArgs = {
+  userToken: Scalars['String']['input'];
 };
 
-export type UserLoginInput = {
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+};
+
+export type UserCreateInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
@@ -214,11 +226,12 @@ export type ResolversTypes = {
   ExpenseUpdateInput: ExpenseUpdateInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  User: ResolverTypeWrapper<User>;
   UserCreateInput: UserCreateInput;
-  UserLoginInput: UserLoginInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -232,11 +245,12 @@ export type ResolversParentTypes = {
   ExpenseUpdateInput: ExpenseUpdateInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
+  LoginInput: LoginInput;
   Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
+  User: User;
   UserCreateInput: UserCreateInput;
-  UserLoginInput: UserLoginInput;
 };
 
 export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Expense'] = ResolversParentTypes['Expense']> = {
@@ -260,7 +274,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createUser?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
   deleteExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseCategoryArgs, 'id'>>;
-  loginUser?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'user'>>;
+  login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'login'>>;
   updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
   updateExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseCategoryArgs, 'expenseCategory'>>;
 };
@@ -269,6 +283,12 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenseCategories?: Resolver<Array<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
   expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType>;
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryMeArgs, 'userToken'>>;
+};
+
+export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = GraphQLContext> = {
@@ -276,5 +296,6 @@ export type Resolvers<ContextType = GraphQLContext> = {
   ExpenseCategory?: ExpenseCategoryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 

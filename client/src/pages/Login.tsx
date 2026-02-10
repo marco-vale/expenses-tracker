@@ -4,18 +4,18 @@ import { Button, Container, Grid, Typography } from '@mui/material';
 import { AppRoutes } from '../routes/routes';
 import { Link, useNavigate } from 'react-router';
 import { useMutation } from '@apollo/client/react';
-import { LoginUserDocument, type LoginUserMutation } from '../graphql/__generated__/graphql';
 import type { UserFormValues } from '../types/types';
+import { LoginDocument, type LoginMutation } from '../graphql/__generated__/graphql';
 
-const LoginUser: React.FC = () => {
-  const [loginUserMutation] = useMutation<LoginUserMutation>(LoginUserDocument);
+const Login: React.FC = () => {
+  const [loginMutation] = useMutation<LoginMutation>(LoginDocument);
 
   const navigate = useNavigate();
 
   const onSubmit = useCallback((values: UserFormValues) => {
-    loginUserMutation({
+    loginMutation({
       variables: {
-        user: {
+        login: {
           email: values.email,
           password: values.password,
         },
@@ -23,7 +23,7 @@ const LoginUser: React.FC = () => {
     }).then(() => {
       navigate(AppRoutes.Expenses);
     });
-  }, [loginUserMutation, navigate]);
+  }, [loginMutation, navigate]);
 
   return (
     <>
@@ -62,4 +62,4 @@ const LoginUser: React.FC = () => {
   );
 };
 
-export default LoginUser;
+export default Login;

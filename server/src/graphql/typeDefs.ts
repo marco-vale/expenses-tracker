@@ -1,4 +1,9 @@
 export const typeDefs = `#graphql
+  type User {
+    id: ID!
+    email: String!
+  }
+
   type ExpenseCategory {
     id: ID!
     name: String!
@@ -14,12 +19,12 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
-  input UserCreateInput {
+  input LoginInput {
     email: String!
     password: String!
   }
 
-  input UserLoginInput {
+  input UserCreateInput {
     email: String!
     password: String!
   }
@@ -49,6 +54,8 @@ export const typeDefs = `#graphql
   }
 
   type Query {
+    me(userToken: String!): User!
+
     expenseCategories: [ExpenseCategory!]!
 
     expenses: [Expense!]!
@@ -56,8 +63,9 @@ export const typeDefs = `#graphql
   }
 
   type Mutation {
+    login(login: LoginInput!): String!
+
     createUser(user: UserCreateInput!): ID!
-    loginUser(user: UserLoginInput!): ID!
 
     createExpenseCategory(expenseCategory: ExpenseCategoryCreateInput!): ID!
     updateExpenseCategory(expenseCategory: ExpenseCategoryUpdateInput!): ID!

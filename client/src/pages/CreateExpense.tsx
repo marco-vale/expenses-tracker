@@ -1,6 +1,6 @@
-import { Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Grid, Typography } from '@mui/material';
 import { useMutation } from '@apollo/client/react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { CreateExpenseDocument, type CreateExpenseMutation } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
@@ -37,11 +37,30 @@ const CreateExpense: React.FC = () => {
       </Typography>
 
       <Container maxWidth="md">
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="center" direction="column">
           <ExpenseForm
             expenseCategories={expenseCategories}
             onSubmit={onSubmit}
           />
+
+          <div>
+            <Button
+              type="button"
+              variant="outlined"
+              style={{ marginRight: '1rem' }}
+              component={Link}
+              to={AppRoutes.Expenses}
+            >
+              Back
+            </Button>
+            <Button
+              type="submit"
+              form="expenseForm"
+              variant="contained"
+            >
+              Add
+            </Button>
+          </div>
         </Grid>
       </Container>
     </>
