@@ -4,7 +4,7 @@ import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, 
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 
-interface ExpenseCategoriesListProps {
+type ExpenseCategoriesListProps = {
   expenseCategories: ExpenseCategory[];
   openExpenseCategoryFormDialog: (expenseCategory: ExpenseCategory) => void;
   deleteExpenseCategory: (id: string) => void;
