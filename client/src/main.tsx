@@ -13,6 +13,8 @@ import ExpenseCategories from './pages/ExpenseCategories.tsx'
 import Layout from './layouts/Layout.tsx'
 import CreateUser from './pages/CreateUser.tsx'
 import Login from './pages/Login.tsx'
+import AuthProvider from './providers/AuthProvider.tsx'
+import AuthRoute from './routes/AuthRoute.tsx'
 
 const theme = createTheme({
   palette: {
@@ -22,22 +24,26 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ApolloProvider client={apollo}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Routes>
-            <Route path={AppRoutes.Login} element={<Login />} />
-            <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
-            <Route element={<Layout />}>
-              <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
-              <Route path={AppRoutes.Expenses} element={<Expenses />} />
-              <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
-              <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </ApolloProvider>
+    <AuthProvider>
+      <ApolloProvider client={apollo}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <Routes>
+              <Route path={AppRoutes.Login} element={<Login />} />
+              <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
+              <Route element={<AuthRoute />}>
+                <Route element={<Layout />}>
+                  <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
+                  <Route path={AppRoutes.Expenses} element={<Expenses />} />
+                  <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
+                  <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
+                </Route>
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
+      </ApolloProvider>
+    </AuthProvider>
   </StrictMode>,
 )

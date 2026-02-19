@@ -1,3 +1,10 @@
+export type AuthContextData = {
+  token: string | null;
+  isAuthenticated: boolean;
+  login: (token: string) => void;
+  logout: () => void;
+};
+
 export type UserFormValues = {
   email: string;
   password: string;

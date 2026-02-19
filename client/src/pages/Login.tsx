@@ -6,10 +6,12 @@ import { Link, useNavigate } from 'react-router';
 import { useMutation } from '@apollo/client/react';
 import type { UserFormValues } from '../types/types';
 import { LoginDocument, type LoginMutation } from '../graphql/__generated__/graphql';
+import { useAuth } from '../hooks/useAuth';
 
 const Login: React.FC = () => {
   const [loginMutation] = useMutation<LoginMutation>(LoginDocument);
 
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = useCallback((values: UserFormValues) => {
@@ -20,10 +22,13 @@ const Login: React.FC = () => {
           password: values.password,
         },
       },
-    }).then(() => {
-      navigate(AppRoutes.Expenses);
+    }).then((loginResult) => {
+      if (loginResult.data?.login) {
+        login(loginResult.data.login);
+        navigate(AppRoutes.Expenses);
+      }
     });
-  }, [loginMutation, navigate]);
+  }, [login, loginMutation, navigate]);
 
   return (
     <>
