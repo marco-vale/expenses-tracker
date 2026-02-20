@@ -1,7 +1,12 @@
+export enum AuthRouteMode {
+  AuthCheck,
+  NoAuthCheck,
+};
+
 export type AuthContextData = {
-  token: string | null;
+  userToken: string | null;
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  login: (userToken: string) => void;
   logout: () => void;
 };
 

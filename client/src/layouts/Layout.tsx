@@ -1,11 +1,19 @@
 import React from 'react';
 import { Box, Button } from '@mui/material';
-import { Link, Outlet, useLocation, type Location } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate, type Location } from 'react-router';
 import { AppRoutes } from '../routes/routes';
-import { Category, Euro } from '@mui/icons-material';
+import { Category, Euro, Logout } from '@mui/icons-material';
+import { useAuth } from '../hooks/useAuth';
 
 const Layout: React.FC = () => {
   const location: Location = useLocation();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate(AppRoutes.Login);
+  };
 
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
@@ -16,6 +24,9 @@ const Layout: React.FC = () => {
           borderRight: 1,
           borderColor: 'divider',
           p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -38,6 +49,16 @@ const Layout: React.FC = () => {
             Categories
           </Button>
         </Box>
+
+        <Button
+          variant="outlined"
+          color="error"
+          fullWidth
+          onClick={handleLogout}
+        >
+          <Logout sx={{ mr: 1 }} />
+          Logout
+        </Button>
       </Box>
 
       <Box

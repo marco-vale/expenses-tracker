@@ -15,6 +15,7 @@ import CreateUser from './pages/CreateUser.tsx'
 import Login from './pages/Login.tsx'
 import AuthProvider from './providers/AuthProvider.tsx'
 import AuthRoute from './routes/AuthRoute.tsx'
+import { AuthRouteMode } from './types/types.ts'
 
 const theme = createTheme({
   palette: {
@@ -24,15 +25,18 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <ApolloProvider client={apollo}>
-        <ThemeProvider theme={theme}>
+    <ApolloProvider client={apollo}>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
           <CssBaseline />
           <BrowserRouter>
             <Routes>
-              <Route path={AppRoutes.Login} element={<Login />} />
-              <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
-              <Route element={<AuthRoute />}>
+              <Route element={<AuthRoute mode={AuthRouteMode.AuthCheck} />}>
+                <Route path={AppRoutes.Login} element={<Login />} />
+                <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
+              </Route>
+
+              <Route element={<AuthRoute mode={AuthRouteMode.NoAuthCheck} />}>
                 <Route element={<Layout />}>
                   <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
                   <Route path={AppRoutes.Expenses} element={<Expenses />} />
@@ -42,8 +46,8 @@ createRoot(document.getElementById('root')!).render(
               </Route>
             </Routes>
           </BrowserRouter>
-        </ThemeProvider>
-      </ApolloProvider>
-    </AuthProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ApolloProvider>
   </StrictMode>,
 )

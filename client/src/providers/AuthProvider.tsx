@@ -1,30 +1,30 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
-const TOKEN_KEY = 'auth_token';
+const LOCALSTORAGE_USERTOKEN_KEY = 'user_token';
 
 type AuthProviderProps = {
   children: React.ReactNode;
 };
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem(TOKEN_KEY));
+  const [userToken, setUserToken] = useState<string | null>(localStorage.getItem(LOCALSTORAGE_USERTOKEN_KEY));
   const isAuthenticated = useMemo<boolean>(() => {
-    return token !== null;
-  }, [token]);
+    return userToken !== null;
+  }, [userToken]);
 
-  const login = useCallback((newToken: string) => {
-    localStorage.setItem(TOKEN_KEY, newToken);
-    setToken(newToken);
+  const login = useCallback((userToken: string) => {
+    localStorage.setItem(LOCALSTORAGE_USERTOKEN_KEY, userToken);
+    setUserToken(userToken);
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY);
-    setToken(null);
+    localStorage.removeItem(LOCALSTORAGE_USERTOKEN_KEY);
+    setUserToken(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ userToken, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
