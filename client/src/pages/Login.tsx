@@ -3,32 +3,18 @@ import UserForm from '../components/UserForm';
 import { Button, Container, Grid, Typography } from '@mui/material';
 import { AppRoutes } from '../routes/routes';
 import { Link, useNavigate } from 'react-router';
-import { useMutation } from '@apollo/client/react';
 import type { UserFormValues } from '../types/types';
-import { LoginDocument, type LoginMutation } from '../graphql/__generated__/graphql';
 import { useAuth } from '../hooks/useAuth';
 
 const Login: React.FC = () => {
-  const [loginMutation] = useMutation<LoginMutation>(LoginDocument);
-
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const onSubmit = useCallback((values: UserFormValues) => {
-    loginMutation({
-      variables: {
-        login: {
-          email: values.email,
-          password: values.password,
-        },
-      },
-    }).then((loginResult) => {
-      if (loginResult.data?.login) {
-        login(loginResult.data.login);
-        navigate(AppRoutes.Expenses);
-      }
+    login(values.email, values.password, () => {
+      navigate(AppRoutes.Expenses);
     });
-  }, [login, loginMutation, navigate]);
+  }, [login, navigate]);
 
   return (
     <>

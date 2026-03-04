@@ -1,3 +1,5 @@
+import type { User } from '../graphql/__generated__/graphql';
+
 export enum AuthRouteMode {
   AuthCheck,
   NoAuthCheck,
@@ -5,9 +7,10 @@ export enum AuthRouteMode {
 
 export type AuthContextData = {
   userToken: string | null;
+  user: User | null;
   isAuthenticated: boolean;
-  login: (userToken: string) => void;
-  logout: () => void;
+  login: (email: string, password: string, onLogin?: () => void) => void;
+  logout: (onLogout?: () => void) => void;
 };
 
 export type UserFormValues = {

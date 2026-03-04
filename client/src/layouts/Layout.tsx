@@ -1,75 +1,104 @@
-import React from 'react';
-import { Box, Button } from '@mui/material';
-import { Link, Outlet, useLocation, useNavigate, type Location } from 'react-router';
+import React, { useCallback } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
-import { Category, Euro, Logout } from '@mui/icons-material';
+import { AccountCircle, Category, Euro, Logout } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 
 const Layout: React.FC = () => {
-  const location: Location = useLocation();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
-    navigate(AppRoutes.Login);
-  };
+  const handleLogout = useCallback(() => {
+    logout(() => {
+      navigate(AppRoutes.Login);
+    });
+  }, [logout, navigate]);
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Box
-        component="aside"
+        component="header"
         sx={{
-          width: 240,
-          borderRight: 1,
+          height: 56,
+          borderBottom: 1,
           borderColor: 'divider',
-          p: 2,
           display: 'flex',
-          flexDirection: 'column',
+          alignItems: 'center',
+          px: 3,
           justifyContent: 'space-between',
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Typography variant="h6">
+          Expenses Tracker
+        </Typography>
+
+        {user && (
+          <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+            <Typography variant="subtitle1">
+              {`Welcome, ${user.email}!`}
+            </Typography>
+            <AccountCircle sx={{ fontSize: 32, ml: 1 }} />
+          </Box>
+        )}
+      </Box>
+
+      <Box sx={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
+        <Box
+          component="aside"
+          sx={{
+            width: 240,
+            borderRight: 1,
+            borderColor: 'divider',
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Button
+              component={Link}
+              to={AppRoutes.Expenses}
+              variant={location.pathname === AppRoutes.Expenses ? 'contained' : 'outlined'}
+              fullWidth
+            >
+              <Euro sx={{ mr: 1 }} />
+              Expenses
+            </Button>
+            <Button
+              component={Link}
+              to={AppRoutes.ExpenseCategories}
+              variant={location.pathname === AppRoutes.ExpenseCategories ? 'contained' : 'outlined'}
+              fullWidth
+            >
+              <Category sx={{ mr: 1 }} />
+              Categories
+            </Button>
+          </Box>
+
           <Button
-            component={Link}
-            to={AppRoutes.Expenses}
-            variant={location.pathname === AppRoutes.Expenses ? 'contained' : 'outlined'}
+            variant="outlined"
+            color="error"
             fullWidth
+            onClick={handleLogout}
           >
-            <Euro sx={{ mr: 1 }} />
-            Expenses
-          </Button>
-          <Button
-            component={Link}
-            to={AppRoutes.ExpenseCategories}
-            variant={location.pathname === AppRoutes.ExpenseCategories ? 'contained' : 'outlined'}
-            fullWidth
-          >
-            <Category sx={{ mr: 1 }} />
-            Categories
+            <Logout sx={{ mr: 1 }} />
+            Logout
           </Button>
         </Box>
 
-        <Button
-          variant="outlined"
-          color="error"
-          fullWidth
-          onClick={handleLogout}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            overflow: 'auto',
+          }}
         >
-          <Logout sx={{ mr: 1 }} />
-          Logout
-        </Button>
-      </Box>
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          overflow: 'auto',
-        }}
-      >
-        <Outlet />
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );
