@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { LoginDocument, MeDocument, type LoginMutation, type MeQuery, type User } from '../graphql/__generated__/graphql';
+import { LoginDocument, MeDocument, type LoginMutation, type LoginMutationVariables, type MeQuery, type User } from '../graphql/__generated__/graphql';
 
 const LOCALSTORAGE_USERTOKEN_KEY = 'user_token';
 
@@ -23,7 +23,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   );
 
-  const [loginMutation] = useMutation<LoginMutation>(LoginDocument);
+  const [loginMutation] = useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 
   const isAuthenticated = useMemo<boolean>(() => {
     return userToken !== null;

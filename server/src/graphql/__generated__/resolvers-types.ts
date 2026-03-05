@@ -59,6 +59,10 @@ export type ExpenseUpdateInput = {
   id: Scalars['ID']['input'];
 };
 
+export type ExpensesImportInput = {
+  file: Scalars['Upload']['input'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -71,6 +75,7 @@ export type Mutation = {
   createUser: Scalars['ID']['output'];
   deleteExpense: Scalars['ID']['output'];
   deleteExpenseCategory: Scalars['ID']['output'];
+  importExpenses: Array<Scalars['ID']['output']>;
   login: Scalars['String']['output'];
   updateExpense: Scalars['ID']['output'];
   updateExpenseCategory: Scalars['ID']['output'];
@@ -99,6 +104,11 @@ export type MutationDeleteExpenseArgs = {
 
 export type MutationDeleteExpenseCategoryArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationImportExpensesArgs = {
+  importData: ExpensesImportInput;
 };
 
 
@@ -229,6 +239,7 @@ export type ResolversTypes = {
   ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
+  ExpensesImportInput: ExpensesImportInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   LoginInput: LoginInput;
@@ -249,6 +260,7 @@ export type ResolversParentTypes = {
   ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
+  ExpensesImportInput: ExpensesImportInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   LoginInput: LoginInput;
@@ -281,6 +293,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createUser?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
   deleteExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseCategoryArgs, 'id'>>;
+  importExpenses?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType, RequireFields<MutationImportExpensesArgs, 'importData'>>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'login'>>;
   updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
   updateExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseCategoryArgs, 'expenseCategory'>>;

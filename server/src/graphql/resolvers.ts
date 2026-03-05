@@ -272,6 +272,37 @@ export const resolvers: Resolvers<GraphQLContext> = {
         throw handleException(ex);
       }
     },
+
+    importExpenses: async (parent, { importData }, context) => {
+      try {
+        const importDataSchema = Yup.object({
+          file: Yup.mixed<Promise<FileUpload>>().required('File is required'),
+        });
+
+        await importDataSchema.validate(importData);
+
+        const filePath = await uploadFile(importData.file);
+
+        // Here you would parse the CSV file and create expenses accordingly.
+        // For simplicity, let's assume we parsed the file and got an array of expenses to create.
+
+        const createdExpenseIds: string[] = [];
+
+        // Example of creating an expense after parsing the CSV
+        // const newExpense = await context.prisma.expense.create({
+        //   data: {
+        //     description: 'Example Expense',
+        //     amount: 100,
+        //     date: new Date(),
+        //   },
+        // });
+        // createdExpenseIds.push(newExpense.id);
+
+        return createdExpenseIds;
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
   },
 
   Upload: GraphQLUpload,

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useMutation } from '@apollo/client/react';
-import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type DeleteExpenseCategoryMutation, type ExpenseCategory, type UpdateExpenseCategoryMutation } from '../graphql/__generated__/graphql';
+import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategory, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
 import { Button, Container, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
@@ -11,17 +11,17 @@ import type { ExpenseCategoryFormValues } from '../types/types';
 const ExpenseCategories: React.FC = () => {
   const { expenseCategories } = useExpenseCategories(true, true);
 
-  const [createExpenseCategoryMutation] = useMutation<CreateExpenseCategoryMutation>(
+  const [createExpenseCategoryMutation] = useMutation<CreateExpenseCategoryMutation, CreateExpenseCategoryMutationVariables>(
     CreateExpenseCategoryDocument,
     { refetchQueries: [GetExpenseCategoriesDocument] },
   );
 
-  const [updateExpenseCategoryMutation] = useMutation<UpdateExpenseCategoryMutation>(
+  const [updateExpenseCategoryMutation] = useMutation<UpdateExpenseCategoryMutation, UpdateExpenseCategoryMutationVariables>(
     UpdateExpenseCategoryDocument,
     { refetchQueries: [GetExpenseCategoriesDocument] },
   );
 
-  const [deleteExpenseCategoryMutation] = useMutation<DeleteExpenseCategoryMutation>(
+  const [deleteExpenseCategoryMutation] = useMutation<DeleteExpenseCategoryMutation, DeleteExpenseCategoryMutationVariables>(
     DeleteExpenseCategoryDocument,
     { refetchQueries: [GetExpenseCategoriesDocument] },
   );

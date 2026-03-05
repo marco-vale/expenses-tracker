@@ -24,6 +24,8 @@ export const CreateUser: React.FC = () => {
     initialValues: {
       email: '',
       password: '',
+      name: undefined,
+      picture: undefined,
     },
     validationSchema,
     validateOnChange: false,

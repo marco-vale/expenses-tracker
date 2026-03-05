@@ -35,3 +35,7 @@ export type ExpenseFormValues = {
   date: string;
   categoryId?: string;
 };
+
+export type ExpensesImportFormValues = {
+  file: File | null;
+};

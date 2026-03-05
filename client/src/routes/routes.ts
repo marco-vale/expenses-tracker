@@ -5,6 +5,7 @@ export enum AppRoutes {
   Expenses = '/',
   CreateExpense = '/create',
   EditExpense = '/edit/:id',
+  ImportExpenses='/import',
 };
 
 export const buildRoute = (route: AppRoutes, id: string): string => {

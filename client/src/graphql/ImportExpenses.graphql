@@ -1,0 +1,3 @@
+mutation ImportExpenses($importData: ExpensesImportInput!) {
+  importExpenses(importData: $importData)
+}

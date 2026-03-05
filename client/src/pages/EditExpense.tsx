@@ -2,7 +2,7 @@ import { useMutation, useQuery } from '@apollo/client/react';
 import { Button, Container, Grid, Typography } from '@mui/material';
 import { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation } from '../graphql/__generated__/graphql';
+import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation, type UpdateExpenseMutationVariables } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
@@ -22,7 +22,7 @@ const EditExpense: React.FC = () => {
   );
 
   const { expenseCategories } = useExpenseCategories(false);
-  const [updateExpenseMutation] = useMutation<UpdateExpenseMutation>(UpdateExpenseDocument);
+  const [updateExpenseMutation] = useMutation<UpdateExpenseMutation, UpdateExpenseMutationVariables>(UpdateExpenseDocument);
 
   const navigate = useNavigate();
 

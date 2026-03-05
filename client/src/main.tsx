@@ -16,6 +16,7 @@ import Login from './pages/Login.tsx'
 import AuthProvider from './providers/AuthProvider.tsx'
 import AuthRoute from './routes/AuthRoute.tsx'
 import { AuthRouteMode } from './types/types.ts'
+import ImportExpenses from './pages/ImportExpenses.tsx'
 
 const theme = createTheme({
   palette: {
@@ -42,6 +43,7 @@ createRoot(document.getElementById('root')!).render(
                   <Route path={AppRoutes.Expenses} element={<Expenses />} />
                   <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
                   <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
+                  <Route path={AppRoutes.ImportExpenses} element={<ImportExpenses />} />
                 </Route>
               </Route>
             </Routes>

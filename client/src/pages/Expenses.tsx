@@ -6,6 +6,7 @@ import {
   DeleteExpenseDocument,
   GetExpensesDocument,
   type DeleteExpenseMutation,
+  type DeleteExpenseMutationVariables,
   type Expense,
   type GetExpensesQuery,
 } from '../graphql/__generated__/graphql';
@@ -19,7 +20,7 @@ const Expenses: React.FC = () => {
   const { expenseCategories } = useExpenseCategories();
   const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
 
-  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation>(
+  const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation, DeleteExpenseMutationVariables>(
     DeleteExpenseDocument,
     { refetchQueries: [GetExpensesDocument] },
   );
@@ -67,6 +68,13 @@ const Expenses: React.FC = () => {
             to={AppRoutes.CreateExpense}
           >
             Add Expense
+          </Button>
+          <Button
+            variant="contained"
+            component={Link}
+            to={AppRoutes.ImportExpenses}
+          >
+            Import Expenses
           </Button>
         </Stack>
       </Container>
