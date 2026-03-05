@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { UserToken } from '../types/types';
+import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
+import uploadFile from '../helpers/uploadFile';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -125,16 +127,21 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const userSchema = Yup.object({
           email: Yup.string().required('E-mail is required').email('Invalid e-mail address'),
           password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+          name: Yup.string(),
+          picture: Yup.mixed<Promise<FileUpload>>(),
         });
 
         await userSchema.validate(user);
 
         const hashedPassword: string = await argon2.hash(user.password);
+        const picturePath = await uploadFile(user.picture);
 
         const newUser = await context.prisma.user.create({
           data: {
             email: user.email,
             password: hashedPassword,
+            name: user.name,
+            picture: picturePath,
           },
         });
 
@@ -154,7 +161,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
         const newExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.create({
           data: {
-            name: expenseCategory.name,
+            ...expenseCategory
           },
         });
 
@@ -266,4 +273,6 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
   },
+
+  Upload: GraphQLUpload,
 };

@@ -13,9 +13,16 @@ export type AuthContextData = {
   logout: (onLogout?: () => void) => void;
 };
 
+export type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
 export type UserFormValues = {
   email: string;
   password: string;
+  name?: string;
+  picture?: File;
 };
 
 export type ExpenseCategoryFormValues = {

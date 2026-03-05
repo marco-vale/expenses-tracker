@@ -10,7 +10,12 @@ const config: CodegenConfig = {
             useTypeImports: true,
          },
       }
-   }
+   },
+   config: {
+    scalars: {
+      Upload: 'File',
+    },
+  },
 };
 
 export default config;

@@ -11,6 +11,11 @@ const config: CodegenConfig = {
       },
     },
   },
+  config: {
+    scalars: {
+      Upload: 'FileUpload',
+    },
+  },
 };
 
 export default config;

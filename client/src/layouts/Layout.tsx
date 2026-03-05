@@ -37,9 +37,13 @@ const Layout: React.FC = () => {
         {user && (
           <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
             <Typography variant="subtitle1">
-              {`Welcome, ${user.email}!`}
+              {`Welcome, ${user.name ?? user.email}!`}
             </Typography>
-            <AccountCircle sx={{ fontSize: 32, ml: 1 }} />
+            {user.picture ? (
+              <img src={`http://localhost:3001${user.picture}`} alt={user.name ?? user.email} style={{ width: 32, height: 32, borderRadius: '50%', marginLeft: 8 }} />
+            ) : (
+              <AccountCircle sx={{ fontSize: 32, ml: 1 }} />
+            )}
           </Box>
         )}
       </Box>

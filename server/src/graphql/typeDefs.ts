@@ -1,7 +1,11 @@
 export const typeDefs = `#graphql
+  scalar Upload
+
   type User {
     id: ID!
     email: String!
+    name: String
+    picture: String
   }
 
   type ExpenseCategory {
@@ -27,6 +31,8 @@ export const typeDefs = `#graphql
   input UserCreateInput {
     email: String!
     password: String!
+    name: String
+    picture: Upload
   }
 
   input ExpenseCategoryCreateInput {

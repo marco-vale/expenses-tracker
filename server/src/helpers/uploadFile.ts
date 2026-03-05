@@ -1,0 +1,30 @@
+import { createWriteStream, mkdirSync } from 'fs';
+import { FileUpload } from 'graphql-upload/processRequest.mjs';
+import path from 'path';
+
+const uploadFile = async (file?: Promise<FileUpload> | null) => {
+  if (!file) {
+    return '';
+  }
+
+  let filePath: string | null = null;
+
+  const { createReadStream, filename } = await file;
+
+  const uploadDir = path.join(process.cwd(), 'uploads');
+  mkdirSync(uploadDir, { recursive: true });
+
+  const uniqueName = `${Date.now()}-${filename}`;
+  filePath = `/uploads/${uniqueName}`;
+
+  await new Promise<void>((resolve, reject) => {
+    createReadStream()
+      .pipe(createWriteStream(path.join(uploadDir, uniqueName)))
+      .on('finish', resolve)
+      .on('error', reject);
+  });
+
+  return filePath;
+};
+
+export default uploadFile;

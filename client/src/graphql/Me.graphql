@@ -2,5 +2,7 @@ query Me($userToken: String!) {
   me(userToken: $userToken) {
     id
     email
+    name
+    picture
   }
 }
