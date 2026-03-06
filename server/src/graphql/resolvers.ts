@@ -1,14 +1,18 @@
 import { Expense, ExpenseCategory, User } from '../../generated/prisma/client';
 import { convertDateToString } from '../tools/convertDateToString';
 import { handleException } from '../tools/handleException';
-import { Resolvers } from './__generated__/resolvers-types';
+import { ExpenseCreateInput, Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { UserToken } from '../types/types';
+import { ExpenseImportRow, UserToken } from '../types/types';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import uploadFile from '../helpers/uploadFile';
+import XLSX from 'xlsx';
+import path from 'path';
+import { parseNumber } from '../tools/parseNumber';
+import { parseDate } from '../tools/parseDate';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -282,23 +286,30 @@ export const resolvers: Resolvers<GraphQLContext> = {
         await importDataSchema.validate(importData);
 
         const filePath = await uploadFile(importData.file);
+        if (!filePath) {
+          throw new Error('File upload failed');
+        }
 
-        // Here you would parse the CSV file and create expenses accordingly.
-        // For simplicity, let's assume we parsed the file and got an array of expenses to create.
+        const file = XLSX.readFile(path.join(process.cwd(), filePath), { raw: true });
+        const sheetName = file.SheetNames[0];
+        const sheet = file.Sheets[sheetName];
 
-        const createdExpenseIds: string[] = [];
+        const rows: ExpenseImportRow[] = XLSX.utils.sheet_to_json<ExpenseImportRow>(sheet, { range: 6 })
+          .filter((r: ExpenseImportRow) => r['Débito '] && r['Débito '].trim());
 
-        // Example of creating an expense after parsing the CSV
-        // const newExpense = await context.prisma.expense.create({
-        //   data: {
-        //     description: 'Example Expense',
-        //     amount: 100,
-        //     date: new Date(),
-        //   },
-        // });
-        // createdExpenseIds.push(newExpense.id);
+        const importedExpenses: Expense[] = await context.prisma.$transaction(
+          rows.map((r: ExpenseImportRow) => {
+            return context.prisma.expense.create({
+              data: {
+                description: r['Descrição '].trim(),
+                amount: parseNumber(r['Débito ']),
+                date: parseDate(r['Data mov. ']),
+              },
+            });
+          })
+        );
 
-        return createdExpenseIds;
+        return importedExpenses.map(e => e.id);
       } catch (ex) {
         throw handleException(ex);
       }
