@@ -1,4 +1,4 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Button, Container, FormControlLabel, Grid, Switch, TextField, Typography } from '@mui/material';
 import React from "react";
 import { Link, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
@@ -20,6 +20,7 @@ const ImportExpenses: React.FC = () => {
   const formik = useFormik<ExpensesImportFormValues>({
     initialValues: {
       file: null,
+      importCategories: true,
     },
     validationSchema,
     validateOnChange: false,
@@ -33,6 +34,7 @@ const ImportExpenses: React.FC = () => {
         variables: {
           importData: {
             file: values.file,
+            importCategories: values.importCategories,
           },
         },
       }).then(() => {
@@ -69,6 +71,17 @@ const ImportExpenses: React.FC = () => {
               }}
               error={formik.touched.file && Boolean(formik.errors.file)}
               helperText={formik.touched.file && formik.errors.file}
+            />
+
+            <FormControlLabel
+              control={
+                <Switch
+                  name="importCategories"
+                  checked={formik.values.importCategories}
+                  onChange={formik.handleChange}
+                />
+              }
+              label="Import Categories"
             />
           </form>
 

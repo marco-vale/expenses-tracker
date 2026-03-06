@@ -22,6 +22,7 @@ const Layout: React.FC = () => {
         component="header"
         sx={{
           height: 56,
+          flexShrink: 0,
           borderBottom: 1,
           borderColor: 'divider',
           display: 'flex',

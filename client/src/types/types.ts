@@ -38,4 +38,5 @@ export type ExpenseFormValues = {
 
 export type ExpensesImportFormValues = {
   file: File | null;
+  importCategories?: boolean;
 };

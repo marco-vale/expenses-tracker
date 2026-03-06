@@ -7,4 +7,5 @@ export type ExpenseImportRow = {
   'Data mov. ': string;
   'Descrição ': string;
   'Débito ': string;
+  'Categoria ': string;
 };

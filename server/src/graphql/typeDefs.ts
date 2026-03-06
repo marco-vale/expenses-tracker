@@ -61,6 +61,7 @@ export const typeDefs = `#graphql
 
   input ExpensesImportInput {
     file: Upload!
+    importCategories: Boolean
   }
 
   type Query {
@@ -84,6 +85,7 @@ export const typeDefs = `#graphql
     createExpense(expense: ExpenseCreateInput!): ID!
     updateExpense(expense: ExpenseUpdateInput!): ID!
     deleteExpense(id: ID!): ID!
+    deleteAllExpenses: Int!
 
     importExpenses(importData: ExpensesImportInput!): [ID!]!
   }

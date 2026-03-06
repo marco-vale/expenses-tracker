@@ -13,6 +13,7 @@ import XLSX from 'xlsx';
 import path from 'path';
 import { parseNumber } from '../tools/parseNumber';
 import { parseDate } from '../tools/parseDate';
+import { BatchPayload } from '../../generated/prisma/internal/prismaNamespace';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -277,6 +278,16 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
 
+    deleteAllExpenses: async (parent, { }, context) => {
+      try {
+        const deletedExpenses: BatchPayload = await context.prisma.expense.deleteMany({});
+
+        return deletedExpenses.count
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
+
     importExpenses: async (parent, { importData }, context) => {
       try {
         const importDataSchema = Yup.object({
@@ -299,11 +310,24 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
         const importedExpenses: Expense[] = await context.prisma.$transaction(
           rows.map((r: ExpenseImportRow) => {
+            let category: string | undefined;
+            if (importData.importCategories && r['Categoria ']) {
+              category = r['Categoria '].trim();
+            }
+
             return context.prisma.expense.create({
               data: {
                 description: r['Descrição '].trim(),
                 amount: parseNumber(r['Débito ']),
                 date: parseDate(r['Data mov. ']),
+                category: category
+                  ? {
+                    connectOrCreate: {
+                      where: { name: category },
+                      create: { name: category },
+                    }
+                  }
+                  : undefined,
               },
             });
           })

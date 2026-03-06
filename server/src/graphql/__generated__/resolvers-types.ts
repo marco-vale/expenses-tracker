@@ -61,6 +61,7 @@ export type ExpenseUpdateInput = {
 
 export type ExpensesImportInput = {
   file: Scalars['Upload']['input'];
+  importCategories?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type LoginInput = {
@@ -73,6 +74,7 @@ export type Mutation = {
   createExpense: Scalars['ID']['output'];
   createExpenseCategory: Scalars['ID']['output'];
   createUser: Scalars['ID']['output'];
+  deleteAllExpenses: Scalars['Int']['output'];
   deleteExpense: Scalars['ID']['output'];
   deleteExpenseCategory: Scalars['ID']['output'];
   importExpenses: Array<Scalars['ID']['output']>;
@@ -242,6 +244,7 @@ export type ResolversTypes = {
   ExpensesImportInput: ExpensesImportInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
@@ -263,6 +266,7 @@ export type ResolversParentTypes = {
   ExpensesImportInput: ExpensesImportInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
   Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
@@ -291,6 +295,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
   createExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseCategoryArgs, 'expenseCategory'>>;
   createUser?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
+  deleteAllExpenses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
   deleteExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseCategoryArgs, 'id'>>;
   importExpenses?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType, RequireFields<MutationImportExpensesArgs, 'importData'>>;
