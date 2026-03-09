@@ -7,11 +7,16 @@ import { useFormik } from 'formik';
 import type { ExpensesImportFormValues } from '../types/types';
 import { ImportExpensesDocument, type ImportExpensesMutation, type ImportExpensesMutationVariables } from '../graphql/__generated__/graphql';
 import { useMutation } from '@apollo/client/react';
+import { useErrors } from '../hooks/useErrors';
 
 const ImportExpenses: React.FC = () => {
-  const [importExpensesMutation] = useMutation<ImportExpensesMutation, ImportExpensesMutationVariables>(ImportExpensesDocument);
-
   const navigate = useNavigate();
+  const { onError } = useErrors();
+
+  const [importExpensesMutation] = useMutation<ImportExpensesMutation, ImportExpensesMutationVariables>(
+    ImportExpensesDocument,
+    { onError },
+  );
 
   const validationSchema = Yup.object({
     file: Yup.mixed<File>().required('File is required'),

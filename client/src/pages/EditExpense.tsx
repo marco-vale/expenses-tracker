@@ -8,9 +8,13 @@ import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { formatNumberString } from '../tools/formatNumberString';
+import { useErrors } from '../hooks/useErrors';
 
 const EditExpense: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { expenseCategories } = useExpenseCategories(false);
+  const navigate = useNavigate();
+  const { onError } = useErrors();
 
   const { data: expenseData, loading: expenseLoading } = useQuery<GetExpenseQuery>(
     GetExpenseDocument,
@@ -21,10 +25,10 @@ const EditExpense: React.FC = () => {
     },
   );
 
-  const { expenseCategories } = useExpenseCategories(false);
-  const [updateExpenseMutation] = useMutation<UpdateExpenseMutation, UpdateExpenseMutationVariables>(UpdateExpenseDocument);
-
-  const navigate = useNavigate();
+  const [updateExpenseMutation] = useMutation<UpdateExpenseMutation, UpdateExpenseMutationVariables>(
+    UpdateExpenseDocument,
+    { onError },
+  );
 
   const expense = useMemo<Expense | undefined>(() => {
     if (!expenseData?.expense || expenseLoading) {

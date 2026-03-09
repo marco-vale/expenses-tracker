@@ -18,19 +18,25 @@ import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { useDialog } from '../hooks/useDialog';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
+import { useErrors } from '../hooks/useErrors';
 
 const Expenses: React.FC = () => {
   const { expenseCategories } = useExpenseCategories();
-  const { data: expensesData } = useQuery<GetExpensesQuery>(GetExpensesDocument, { fetchPolicy: 'network-only' });
+  const { onError } = useErrors();
+
+  const { data: expensesData } = useQuery<GetExpensesQuery>(
+    GetExpensesDocument,
+    { fetchPolicy: 'network-only' }
+  );
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation, DeleteExpenseMutationVariables>(
     DeleteExpenseDocument,
-    { refetchQueries: [GetExpensesDocument] },
+    { refetchQueries: [GetExpensesDocument], onError },
   );
 
   const [deleteAllMutation] = useMutation<DeleteAllMutation, DeleteAllMutationVariables>(
     DeleteAllDocument,
-    { refetchQueries: [GetExpensesDocument] },
+    { refetchQueries: [GetExpensesDocument], onError },
   );
 
   const {

@@ -6,11 +6,15 @@ const ErrorsAlert: React.FC = () => {
   const { errors } = useErrors();
 
   return (
-    <Alert severity="error" sx={{ mb: 2 }}>
-      {errors.map((error, index) => (
-        <div key={index}>{error}</div>
-      ))}
-    </Alert>
+    <>
+      {errors.length > 0 && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errors.map((error, index) => (
+            <div key={index}>{error}</div>
+          ))}
+        </Alert>
+      )}
+    </>
   );
 };
 

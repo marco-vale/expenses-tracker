@@ -7,11 +7,16 @@ import { CreateUserDocument, type CreateUserMutation, type CreateUserMutationVar
 import type { UserFormValues } from '../types/types';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useErrors } from '../hooks/useErrors';
 
 export const CreateUser: React.FC = () => {
-  const [createUserMutation] = useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument);
-
   const navigate = useNavigate();
+  const { onError } = useErrors();
+
+  const [createUserMutation] = useMutation<CreateUserMutation, CreateUserMutationVariables>(
+    CreateUserDocument,
+    { onError },
+  );
 
   const validationSchema = Yup.object({
     email: Yup.string().required('E-mail is required').email('Invalid e-mail address'),

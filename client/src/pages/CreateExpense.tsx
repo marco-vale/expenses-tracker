@@ -8,12 +8,17 @@ import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { formatNumberString } from '../tools/formatNumberString';
 import { useCallback } from 'react';
+import { useErrors } from '../hooks/useErrors';
 
 const CreateExpense: React.FC = () => {
   const { expenseCategories } = useExpenseCategories(false);
-  const [createExpenseMutation] = useMutation<CreateExpenseMutation, CreateExpenseMutationVariables>(CreateExpenseDocument);
-
   const navigate = useNavigate();
+  const { onError } = useErrors();
+
+  const [createExpenseMutation] = useMutation<CreateExpenseMutation, CreateExpenseMutationVariables>(
+    CreateExpenseDocument,
+    { onError },
+  );
 
   const onSubmit = useCallback((values: ExpenseFormValues) => {
     createExpenseMutation({

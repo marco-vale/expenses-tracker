@@ -1,6 +1,7 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { ErrorsContext } from '../contexts/ErrorsContext';
 import type { ErrorsContextData } from '../types/types';
+import type { ErrorLike } from '@apollo/client';
 
 /**
  * Custom hook to access the errors context.
@@ -23,5 +24,11 @@ export const useErrors = () => {
     throw new Error('useErrors must be used within an ErrorsProvider');
   }
 
-  return context;
+  const { errors, setErrors } = context;
+
+  const onError = useCallback((error: ErrorLike) => {
+    setErrors([error.message]);
+  }, [setErrors]);
+
+  return { errors, onError };
 };

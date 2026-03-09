@@ -7,23 +7,25 @@ import { Button, Container, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import type { ExpenseCategoryFormValues } from '../types/types';
+import { useErrors } from '../hooks/useErrors';
 
 const ExpenseCategories: React.FC = () => {
   const { expenseCategories } = useExpenseCategories(true, true);
+  const { onError } = useErrors();
 
   const [createExpenseCategoryMutation] = useMutation<CreateExpenseCategoryMutation, CreateExpenseCategoryMutationVariables>(
     CreateExpenseCategoryDocument,
-    { refetchQueries: [GetExpenseCategoriesDocument] },
+    { refetchQueries: [GetExpenseCategoriesDocument], onError },
   );
 
   const [updateExpenseCategoryMutation] = useMutation<UpdateExpenseCategoryMutation, UpdateExpenseCategoryMutationVariables>(
     UpdateExpenseCategoryDocument,
-    { refetchQueries: [GetExpenseCategoriesDocument] },
+    { refetchQueries: [GetExpenseCategoriesDocument], onError },
   );
 
   const [deleteExpenseCategoryMutation] = useMutation<DeleteExpenseCategoryMutation, DeleteExpenseCategoryMutationVariables>(
     DeleteExpenseCategoryDocument,
-    { refetchQueries: [GetExpenseCategoriesDocument] },
+    { refetchQueries: [GetExpenseCategoriesDocument], onError },
   );
 
   const {

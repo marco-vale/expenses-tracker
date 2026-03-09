@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { LoginDocument, MeDocument, type LoginMutation, type LoginMutationVariables, type MeQuery, type User } from '../graphql/__generated__/graphql';
+import { useErrors } from '../hooks/useErrors';
 
 const LOCALSTORAGE_USERTOKEN_KEY = 'user_token';
 
@@ -11,6 +12,8 @@ type AuthProviderProps = {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(localStorage.getItem(LOCALSTORAGE_USERTOKEN_KEY));
+
+  const { onError } = useErrors();
 
   const { data: meData } = useQuery<MeQuery>(
     MeDocument,
@@ -23,7 +26,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   );
 
-  const [loginMutation] = useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+  const [loginMutation] = useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    { onError },
+  );
 
   const isAuthenticated = useMemo<boolean>(() => {
     return userToken !== null;
