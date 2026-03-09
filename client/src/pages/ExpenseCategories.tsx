@@ -3,14 +3,14 @@ import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useMutation } from '@apollo/client/react';
 import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategory, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
-import { Button, Container, Stack, Typography } from '@mui/material';
+import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import type { ExpenseCategoryFormValues } from '../types/types';
 import { useErrors } from '../hooks/useErrors';
 
 const ExpenseCategories: React.FC = () => {
-  const { expenseCategories } = useExpenseCategories(true, true);
+  const { expenseCategories, expenseCategoriesLoading } = useExpenseCategories(true, true);
   const { onError } = useErrors();
 
   const [createExpenseCategoryMutation] = useMutation<CreateExpenseCategoryMutation, CreateExpenseCategoryMutationVariables>(
@@ -66,29 +66,35 @@ const ExpenseCategories: React.FC = () => {
 
   return (
     <>
-      <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-        <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
-          Expense Categories
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom>
-          Manage your expense categories here.
-        </Typography>
+      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+        Expense Categories
+      </Typography>
+      <Typography variant="body1" align="center" gutterBottom>
+        Manage your expense categories here.
+      </Typography>
 
+      {expenseCategoriesLoading && (
+        <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
+          <CircularProgress size={100} />
+        </Stack>
+      )}
+
+      {!expenseCategoriesLoading && (
         <ExpenseCategoriesList
           expenseCategories={expenseCategories}
           openExpenseCategoryFormDialog={openExpenseCategoryFormDialog}
           deleteExpenseCategory={deleteExpenseCategory}
         />
+      )}
 
-        <Stack direction="row" spacing={2} marginTop="2rem">
-          <Button
-            variant="contained"
-            onClick={() => openExpenseCategoryFormDialog()}
-          >
-            Add Category
-          </Button>
-        </Stack>
-      </Container>
+      <Stack direction="row" spacing={2} marginTop="2rem">
+        <Button
+          variant="contained"
+          onClick={() => openExpenseCategoryFormDialog()}
+        >
+          Add Category
+        </Button>
+      </Stack>
 
       <ExpenseCategoryFormDialog
         open={isExpenseCategoryFormDialogOpen}

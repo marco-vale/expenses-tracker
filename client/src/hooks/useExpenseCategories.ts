@@ -20,7 +20,7 @@ export const useExpenseCategories = (
   getAmount: boolean = true,
   getDeletable: boolean = false,
 ) => {
-  const { data: expenseCategoriesData } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument, {
+  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument, {
     fetchPolicy: 'network-only',
     variables: {
       getAmount,
@@ -34,5 +34,6 @@ export const useExpenseCategories = (
 
   return {
     expenseCategories,
+    expenseCategoriesLoading,
   };
 };

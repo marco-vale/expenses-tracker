@@ -1,4 +1,4 @@
-import { Button, Container, FormControlLabel, Grid, Switch, TextField, Typography } from '@mui/material';
+import { Button, FormControlLabel, Grid, Switch, TextField, Typography } from '@mui/material';
 import React from "react";
 import { Link, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
@@ -58,58 +58,56 @@ const ImportExpenses: React.FC = () => {
         Import Expenses
       </Typography>
 
-      <Container maxWidth="md">
-        <Grid container spacing={2} justifyContent="center" direction="column">
-          <form id="expensesImportForm" onSubmit={formik.handleSubmit}>
-            <TextField
-              id="file"
-              name="file"
-              label="File"
-              type="file"
-              fullWidth
-              margin="normal"
-              onChange={onFileChange}
-              onBlur={formik.handleBlur}
-              slotProps={{
-                inputLabel: { shrink: true },
-                htmlInput: { accept: 'text/csv' },
-              }}
-              error={formik.touched.file && Boolean(formik.errors.file)}
-              helperText={formik.touched.file && formik.errors.file}
-            />
+      <Grid container spacing={2} justifyContent="center" direction="column">
+        <form id="expensesImportForm" onSubmit={formik.handleSubmit}>
+          <TextField
+            id="file"
+            name="file"
+            label="File"
+            type="file"
+            fullWidth
+            margin="normal"
+            onChange={onFileChange}
+            onBlur={formik.handleBlur}
+            slotProps={{
+              inputLabel: { shrink: true },
+              htmlInput: { accept: 'text/csv' },
+            }}
+            error={formik.touched.file && Boolean(formik.errors.file)}
+            helperText={formik.touched.file && formik.errors.file}
+          />
 
-            <FormControlLabel
-              control={
-                <Switch
-                  name="importCategories"
-                  checked={formik.values.importCategories}
-                  onChange={formik.handleChange}
-                />
-              }
-              label="Import Categories"
-            />
-          </form>
+          <FormControlLabel
+            control={
+              <Switch
+                name="importCategories"
+                checked={formik.values.importCategories}
+                onChange={formik.handleChange}
+              />
+            }
+            label="Import Categories"
+          />
+        </form>
 
-          <div>
-            <Button
-              type="button"
-              variant="outlined"
-              style={{ marginRight: '1rem' }}
-              component={Link}
-              to={AppRoutes.Expenses}
-            >
-              Back
-            </Button>
-            <Button
-              type="submit"
-              form="expensesImportForm"
-              variant="contained"
-            >
-              Import
-            </Button>
-          </div>
-        </Grid>
-      </Container>
+        <div>
+          <Button
+            type="button"
+            variant="outlined"
+            style={{ marginRight: '1rem' }}
+            component={Link}
+            to={AppRoutes.Expenses}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            form="expensesImportForm"
+            variant="contained"
+          >
+            Import
+          </Button>
+        </div>
+      </Grid>
     </>
   );
 };

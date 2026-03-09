@@ -1,4 +1,4 @@
-import { Button, Container, Stack, Typography } from '@mui/material';
+import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import ExpensesList from '../components/ExpensesList';
 import { Link } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client/react';
@@ -24,7 +24,7 @@ const Expenses: React.FC = () => {
   const { expenseCategories } = useExpenseCategories();
   const { onError } = useErrors();
 
-  const { data: expensesData } = useQuery<GetExpensesQuery>(
+  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery>(
     GetExpensesDocument,
     { fetchPolicy: 'network-only' }
   );
@@ -58,47 +58,53 @@ const Expenses: React.FC = () => {
 
   return (
     <>
-      <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-        <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
-          Expenses
-        </Typography>
-        <Typography variant="body1" align="center" gutterBottom>
-          Manage your expenses here.
-        </Typography>
+      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+        Expenses
+      </Typography>
+      <Typography variant="body1" align="center" gutterBottom>
+        Manage your expenses here.
+      </Typography>
 
-        <ExpensesSummary
-          expenseCategories={expenseCategories}
-        />
+      <ExpensesSummary
+        expenseCategories={expenseCategories}
+      />
 
+      {expensesLoading && (
+        <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
+          <CircularProgress size={100} />
+        </Stack>
+      )}
+
+      {!expensesLoading && (
         <ExpensesList
           expenses={expenses}
           openExpenseDeleteDialog={openExpenseDeleteDialog}
         />
+      )}
 
-        <Stack direction="row" spacing={2} marginTop="2rem">
-          <Button
-            variant="contained"
-            component={Link}
-            to={AppRoutes.CreateExpense}
-          >
-            Add Expense
-          </Button>
-          <Button
-            variant="contained"
-            component={Link}
-            to={AppRoutes.ImportExpenses}
-          >
-            Import Expenses
-          </Button>
-          <Button
-            color="error"
-            variant="contained"
-            onClick={() => deleteAllMutation()}
-          >
-            Delete All
-          </Button>
-        </Stack>
-      </Container>
+      <Stack direction="row" spacing={2} marginTop="2rem">
+        <Button
+          variant="contained"
+          component={Link}
+          to={AppRoutes.CreateExpense}
+        >
+          Add Expense
+        </Button>
+        <Button
+          variant="contained"
+          component={Link}
+          to={AppRoutes.ImportExpenses}
+        >
+          Import Expenses
+        </Button>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={() => deleteAllMutation()}
+        >
+          Delete All
+        </Button>
+      </Stack>
 
       <ExpenseDeleteDialog
         open={isExpenseDeleteDialogOpen}

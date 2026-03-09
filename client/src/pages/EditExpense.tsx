@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client/react';
-import { Button, Container, Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type UpdateExpenseMutation, type UpdateExpenseMutationVariables } from '../graphql/__generated__/graphql';
@@ -60,38 +60,36 @@ const EditExpense: React.FC = () => {
         Edit Expense
       </Typography>
 
-      <Container maxWidth="md">
-        <Grid container spacing={2} justifyContent="center" direction="column">
-          {!expenseLoading && (
-            <>
-              <ExpenseForm
-                expense={expense}
-                expenseCategories={expenseCategories}
-                onSubmit={onSubmit}
-              />
+      <Grid container spacing={2} justifyContent="center" direction="column">
+        {!expenseLoading && (
+          <>
+            <ExpenseForm
+              expense={expense}
+              expenseCategories={expenseCategories}
+              onSubmit={onSubmit}
+            />
 
-              <div>
-                <Button
-                  type="button"
-                  variant="outlined"
-                  style={{ marginRight: '1rem' }}
-                  component={Link}
-                  to={AppRoutes.Expenses}
-                >
-                  Back
-                </Button>
-                <Button
-                  type="submit"
-                  form="expenseForm"
-                  variant="contained"
-                >
-                  Save
-                </Button>
-              </div>
-            </>
-          )}
-        </Grid>
-      </Container>
+            <div>
+              <Button
+                type="button"
+                variant="outlined"
+                style={{ marginRight: '1rem' }}
+                component={Link}
+                to={AppRoutes.Expenses}
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                form="expenseForm"
+                variant="contained"
+              >
+                Save
+              </Button>
+            </div>
+          </>
+        )}
+      </Grid>
     </>
   );
 };

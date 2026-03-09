@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, Typography } from '@mui/material';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
 import { Category, Euro, Logout } from '@mui/icons-material';
@@ -104,7 +104,10 @@ const Layout: React.FC = () => {
           }}
         >
           <ErrorsAlert />
-          <Outlet />
+
+          <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
+            <Outlet />
+          </Container>
         </Box>
       </Box>
     </Box>

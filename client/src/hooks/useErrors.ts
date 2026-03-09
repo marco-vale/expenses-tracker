@@ -24,11 +24,11 @@ export const useErrors = () => {
     throw new Error('useErrors must be used within an ErrorsProvider');
   }
 
-  const { errors, setErrors } = context;
+  const { setErrors } = context;
 
   const onError = useCallback((error: ErrorLike) => {
     setErrors([error.message]);
   }, [setErrors]);
 
-  return { errors, onError };
+  return { ...context, onError };
 };
