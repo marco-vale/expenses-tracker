@@ -139,9 +139,9 @@ export const resolvers: Resolvers<GraphQLContext> = {
         await userSchema.validate(user);
 
         const hashedPassword: string = await argon2.hash(user.password);
-        const picturePath = await uploadFile(user.picture);
+        const picturePath: string = await uploadFile(user.picture);
 
-        const newUser = await context.prisma.user.create({
+        const newUser: User = await context.prisma.user.create({
           data: {
             email: user.email,
             password: hashedPassword,
@@ -278,16 +278,6 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
 
-    deleteAllExpenses: async (parent, { }, context) => {
-      try {
-        const deletedExpenses: BatchPayload = await context.prisma.expense.deleteMany({});
-
-        return deletedExpenses.count
-      } catch (ex) {
-        throw handleException(ex);
-      }
-    },
-
     importExpenses: async (parent, { importData }, context) => {
       try {
         const importDataSchema = Yup.object({
@@ -334,6 +324,19 @@ export const resolvers: Resolvers<GraphQLContext> = {
         );
 
         return importedExpenses.map(e => e.id);
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
+
+    deleteAll: async (parent, { }, context) => {
+      try {
+        const transaction: BatchPayload[] = await context.prisma.$transaction([
+          context.prisma.expense.deleteMany({}),
+          context.prisma.expenseCategory.deleteMany({}),
+        ]);
+
+        return transaction.reduce((count, batch) => count + batch.count, 0);
       } catch (ex) {
         throw handleException(ex);
       }

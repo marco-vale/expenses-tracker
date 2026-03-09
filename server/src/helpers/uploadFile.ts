@@ -2,12 +2,12 @@ import { createWriteStream, mkdirSync } from 'fs';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import path from 'path';
 
-const uploadFile = async (file?: Promise<FileUpload> | null) => {
+const uploadFile = async (file?: Promise<FileUpload> | null): Promise<string> => {
   if (!file) {
     return '';
   }
 
-  let filePath: string | null = null;
+  let filePath: string = '';
 
   const { createReadStream, filename } = await file;
 

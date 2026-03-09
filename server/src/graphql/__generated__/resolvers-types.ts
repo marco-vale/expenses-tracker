@@ -74,7 +74,7 @@ export type Mutation = {
   createExpense: Scalars['ID']['output'];
   createExpenseCategory: Scalars['ID']['output'];
   createUser: Scalars['ID']['output'];
-  deleteAllExpenses: Scalars['Int']['output'];
+  deleteAll: Scalars['Int']['output'];
   deleteExpense: Scalars['ID']['output'];
   deleteExpenseCategory: Scalars['ID']['output'];
   importExpenses: Array<Scalars['ID']['output']>;
@@ -295,7 +295,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
   createExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseCategoryArgs, 'expenseCategory'>>;
   createUser?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'user'>>;
-  deleteAllExpenses?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  deleteAll?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   deleteExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseArgs, 'id'>>;
   deleteExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteExpenseCategoryArgs, 'id'>>;
   importExpenses?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType, RequireFields<MutationImportExpensesArgs, 'importData'>>;

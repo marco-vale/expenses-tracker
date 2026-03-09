@@ -3,11 +3,11 @@ import ExpensesList from '../components/ExpensesList';
 import { Link } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
-  DeleteAllExpensesDocument,
+  DeleteAllDocument,
   DeleteExpenseDocument,
   GetExpensesDocument,
-  type DeleteAllExpensesMutation,
-  type DeleteAllExpensesMutationVariables,
+  type DeleteAllMutation,
+  type DeleteAllMutationVariables,
   type DeleteExpenseMutation,
   type DeleteExpenseMutationVariables,
   type Expense,
@@ -28,8 +28,8 @@ const Expenses: React.FC = () => {
     { refetchQueries: [GetExpensesDocument] },
   );
 
-  const [deleteAllExpensesMutation] = useMutation<DeleteAllExpensesMutation, DeleteAllExpensesMutationVariables>(
-    DeleteAllExpensesDocument,
+  const [deleteAllMutation] = useMutation<DeleteAllMutation, DeleteAllMutationVariables>(
+    DeleteAllDocument,
     { refetchQueries: [GetExpensesDocument] },
   );
 
@@ -48,10 +48,6 @@ const Expenses: React.FC = () => {
         id,
       },
     });
-  };
-
-  const deleteAllExpenses = () => {
-    deleteAllExpensesMutation();
   };
 
   return (
@@ -91,9 +87,9 @@ const Expenses: React.FC = () => {
           <Button
             color="error"
             variant="contained"
-            onClick={deleteAllExpenses}
+            onClick={() => deleteAllMutation()}
           >
-            Delete All Expenses
+            Delete All
           </Button>
         </Stack>
       </Container>

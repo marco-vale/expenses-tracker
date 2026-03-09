@@ -85,8 +85,9 @@ export const typeDefs = `#graphql
     createExpense(expense: ExpenseCreateInput!): ID!
     updateExpense(expense: ExpenseUpdateInput!): ID!
     deleteExpense(id: ID!): ID!
-    deleteAllExpenses: Int!
 
     importExpenses(importData: ExpensesImportInput!): [ID!]!
+
+    deleteAll: Int!
   }
 `;
