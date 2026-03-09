@@ -17,6 +17,7 @@ import AuthProvider from './providers/AuthProvider.tsx'
 import AuthRoute from './routes/AuthRoute.tsx'
 import { AuthRouteMode } from './types/types.ts'
 import ImportExpenses from './pages/ImportExpenses.tsx'
+import ErrorsProvider from './providers/ErrorsProvider.tsx'
 
 const theme = createTheme({
   palette: {
@@ -28,27 +29,29 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ApolloProvider client={apollo}>
       <ThemeProvider theme={theme}>
-        <AuthProvider>
-          <CssBaseline />
-          <BrowserRouter>
-            <Routes>
-              <Route element={<AuthRoute mode={AuthRouteMode.AuthCheck} />}>
-                <Route path={AppRoutes.Login} element={<Login />} />
-                <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
-              </Route>
-
-              <Route element={<AuthRoute mode={AuthRouteMode.NoAuthCheck} />}>
-                <Route element={<Layout />}>
-                  <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
-                  <Route path={AppRoutes.Expenses} element={<Expenses />} />
-                  <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
-                  <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
-                  <Route path={AppRoutes.ImportExpenses} element={<ImportExpenses />} />
+        <ErrorsProvider>
+          <AuthProvider>
+            <CssBaseline />
+            <BrowserRouter>
+              <Routes>
+                <Route element={<AuthRoute mode={AuthRouteMode.AuthCheck} />}>
+                  <Route path={AppRoutes.Login} element={<Login />} />
+                  <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
                 </Route>
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
+
+                <Route element={<AuthRoute mode={AuthRouteMode.NoAuthCheck} />}>
+                  <Route element={<Layout />}>
+                    <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
+                    <Route path={AppRoutes.Expenses} element={<Expenses />} />
+                    <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />
+                    <Route path={AppRoutes.EditExpense} element={<EditExpense />} />
+                    <Route path={AppRoutes.ImportExpenses} element={<ImportExpenses />} />
+                  </Route>
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </ErrorsProvider>
       </ThemeProvider>
     </ApolloProvider>
   </StrictMode>,

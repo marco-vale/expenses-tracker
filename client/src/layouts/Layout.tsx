@@ -4,6 +4,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
 import { Category, Euro, Logout } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
+import ErrorsAlert from '../components/ErrorsAlert';
 
 const Layout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -102,6 +103,7 @@ const Layout: React.FC = () => {
             overflow: 'auto',
           }}
         >
+          <ErrorsAlert />
           <Outlet />
         </Box>
       </Box>

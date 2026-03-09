@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { LoginDocument, MeDocument, type LoginMutation, type LoginMutationVariables, type MeQuery, type User } from '../graphql/__generated__/graphql';
@@ -6,7 +6,7 @@ import { LoginDocument, MeDocument, type LoginMutation, type LoginMutationVariab
 const LOCALSTORAGE_USERTOKEN_KEY = 'user_token';
 
 type AuthProviderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -49,10 +49,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (loginResult.data?.login) {
         localStorage.setItem(LOCALSTORAGE_USERTOKEN_KEY, loginResult.data.login);
         setUserToken(loginResult.data.login);
-
-        if (onLogin) {
-          onLogin();
-        }
+        onLogin?.();
       }
     });
   }, [loginMutation]);
@@ -60,10 +57,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = useCallback((onLogout?: () => void) => {
     localStorage.removeItem(LOCALSTORAGE_USERTOKEN_KEY);
     setUserToken(null);
-
-    if (onLogout) {
-      onLogout();
-    }
+    onLogout?.();
   }, []);
 
   return (

@@ -13,6 +13,11 @@ export type AuthContextData = {
   logout: (onLogout?: () => void) => void;
 };
 
+export type ErrorsContextData = {
+  errors: string[];
+  setErrors: (errors: string[]) => void;
+};
+
 export type LoginFormValues = {
   email: string;
   password: string;

@@ -5,8 +5,9 @@ import { AuthContext } from '../contexts/AuthContext';
 /**
  * Custom hook to access the authentication context.
  *
- * @throws {Error} Throws an error if the hook is used outside of an AuthProvider.
  * @returns {AuthContextData} The authentication context data containing user authentication information and methods.
+ *
+ * @throws {Error} Throws an error if the hook is used outside of an AuthProvider.
  *
  * @example
  * ```tsx
