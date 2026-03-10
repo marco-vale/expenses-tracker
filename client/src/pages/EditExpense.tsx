@@ -22,6 +22,7 @@ const EditExpense: React.FC = () => {
       variables: {
         id,
       },
+      fetchPolicy: 'network-only',
     },
   );
 

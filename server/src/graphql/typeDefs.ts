@@ -37,6 +37,12 @@ export const typeDefs = `#graphql
     startingBalance: Float
   }
 
+  input UserUpdateInput {
+    id: ID!
+    name: String
+    picture: Upload
+  }
+
   input ExpenseCategoryCreateInput {
     name: String!
   }
@@ -79,6 +85,7 @@ export const typeDefs = `#graphql
     login(login: LoginInput!): String!
 
     createUser(user: UserCreateInput!): ID!
+    updateUser(user: UserUpdateInput!): ID!
 
     createExpenseCategory(expenseCategory: ExpenseCategoryCreateInput!): ID!
     updateExpenseCategory(expenseCategory: ExpenseCategoryUpdateInput!): ID!

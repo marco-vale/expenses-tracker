@@ -23,13 +23,18 @@ export type LoginFormValues = {
   password: string;
 };
 
-export type UserFormValues = {
-  email: string;
-  password: string;
+export type UserFormProfileValues = {
   name?: string;
   picture?: File;
-  startingBalance?: string;
 };
+
+export type CreateUserFormValues = {
+  email: string;
+  password: string;
+  startingBalance?: string;
+} & UserFormProfileValues;
+
+export type EditUserFormValues = UserFormProfileValues;
 
 export type ExpenseCategoryFormValues = {
   name: string;

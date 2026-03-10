@@ -37,7 +37,10 @@ const MainLayout: React.FC = () => {
         </Typography>
 
         {user && (
-          <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary', cursor: 'pointer' }}
+            onClick={() => navigate(AppRoutes.EditUser)}
+          >
             <Typography variant="subtitle1">
               {`Welcome, ${user.name ?? user.email}!`}
             </Typography>

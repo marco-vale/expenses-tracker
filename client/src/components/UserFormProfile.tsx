@@ -1,0 +1,72 @@
+import { Box, TextField } from '@mui/material';
+import React from "react";
+import type { User } from '../graphql/__generated__/graphql';
+import { useFormikContext } from 'formik';
+import type { UserFormProfileValues } from '../types/types';
+
+type UserFormProfileProps = {
+  user?: User | null;
+};
+
+const UserFormProfile: React.FC<UserFormProfileProps> = ({ user }) => {
+  const formik = useFormikContext<UserFormProfileValues>();
+
+  const onPictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    formik.setFieldValue('picture', event.currentTarget.files?.[0]);
+  };
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <TextField
+          id="name"
+          name="name"
+          label="Name"
+          fullWidth
+          margin="normal"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.name}
+          slotProps={{ inputLabel: { shrink: true } }}
+        />
+
+        <TextField
+          id="picture"
+          name="picture"
+          label="Profile picture"
+          type="file"
+          fullWidth
+          margin="normal"
+          onChange={onPictureChange}
+          onBlur={formik.handleBlur}
+          slotProps={{
+            inputLabel: { shrink: true },
+            htmlInput: { accept: 'image/*' },
+          }}
+        />
+      </Box>
+
+      {(formik.values.picture || user?.picture) && (
+        <Box sx={{ marginTop: '1rem' }}>
+          <img
+            src={
+              formik.values.picture
+                ? URL.createObjectURL(formik.values.picture)
+                : user?.picture ? `http://localhost:3001${user.picture}` : undefined
+            }
+            alt="Profile picture preview"
+            style={{
+              width: 120,
+              height: 120,
+              objectFit: 'cover',
+              borderRadius: '50%',
+              border: '1px solid #ddd',
+            }}
+          />
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+export default UserFormProfile;

@@ -8,12 +8,12 @@ import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import { ExpenseImportRow, UserToken } from '../types/types';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
-import uploadFile from '../helpers/uploadFile';
 import XLSX from 'xlsx';
 import path from 'path';
 import { parseNumber } from '../tools/parseNumber';
 import { parseDate } from '../tools/parseDate';
 import { BatchPayload } from '../../generated/prisma/internal/prismaNamespace';
+import { uploadFile } from '../tools/uploadFile';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -143,7 +143,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         await userSchema.validate(user);
 
         const hashedPassword: string = await argon2.hash(user.password);
-        const picturePath: string = await uploadFile(user.picture);
+        const picturePath: string | undefined = await uploadFile(user.picture);
 
         const newUser: User = await context.prisma.user.create({
           data: {
@@ -156,6 +156,32 @@ export const resolvers: Resolvers<GraphQLContext> = {
         });
 
         return newUser.id;
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
+
+    updateUser: async (parent, { user }, context) => {
+      try {
+        const userSchema = Yup.object({
+          id: Yup.string().required('ID is required'),
+          name: Yup.string(),
+          picture: Yup.mixed<Promise<FileUpload>>(),
+        });
+
+        await userSchema.validate(user);
+
+        const picturePath: string | undefined = await uploadFile(user.picture);
+
+        const updatedUser: User = await context.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            name: user.name,
+            picture: picturePath,
+          },
+        });
+
+        return updatedUser.id;
       } catch (ex) {
         throw handleException(ex);
       }

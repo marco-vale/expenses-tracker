@@ -81,6 +81,7 @@ export type Mutation = {
   login: Scalars['String']['output'];
   updateExpense: Scalars['ID']['output'];
   updateExpenseCategory: Scalars['ID']['output'];
+  updateUser: Scalars['ID']['output'];
 };
 
 
@@ -128,6 +129,11 @@ export type MutationUpdateExpenseCategoryArgs = {
   expenseCategory: ExpenseCategoryUpdateInput;
 };
 
+
+export type MutationUpdateUserArgs = {
+  user: UserUpdateInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   expense: Expense;
@@ -161,6 +167,12 @@ export type UserCreateInput = {
   password: Scalars['String']['input'];
   picture?: InputMaybe<Scalars['Upload']['input']>;
   startingBalance?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type UserUpdateInput = {
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  picture?: InputMaybe<Scalars['Upload']['input']>;
 };
 
 
@@ -254,6 +266,7 @@ export type ResolversTypes = {
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
   User: ResolverTypeWrapper<User>;
   UserCreateInput: UserCreateInput;
+  UserUpdateInput: UserUpdateInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -276,6 +289,7 @@ export type ResolversParentTypes = {
   Upload: Scalars['Upload']['output'];
   User: User;
   UserCreateInput: UserCreateInput;
+  UserUpdateInput: UserUpdateInput;
 };
 
 export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Expense'] = ResolversParentTypes['Expense']> = {
@@ -304,6 +318,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'login'>>;
   updateExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseArgs, 'expense'>>;
   updateExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateExpenseCategoryArgs, 'expenseCategory'>>;
+  updateUser?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'user'>>;
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

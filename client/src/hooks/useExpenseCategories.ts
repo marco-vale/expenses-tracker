@@ -20,13 +20,16 @@ export const useExpenseCategories = (
   getAmount: boolean = true,
   getDeletable: boolean = false,
 ) => {
-  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery>(GetExpenseCategoriesDocument, {
-    fetchPolicy: 'network-only',
-    variables: {
-      getAmount,
-      getDeletable,
-    },
-  });
+  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery>(
+    GetExpenseCategoriesDocument,
+    {
+      variables: {
+        getAmount,
+        getDeletable,
+      },
+      fetchPolicy: 'network-only',
+    }
+  );
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
     return expenseCategoriesData?.expenseCategories ?? [];

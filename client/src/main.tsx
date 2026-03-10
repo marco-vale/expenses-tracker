@@ -19,6 +19,7 @@ import { AuthRouteMode } from './types/types.ts'
 import ImportExpenses from './pages/ImportExpenses.tsx'
 import ErrorsProvider from './providers/ErrorsProvider.tsx'
 import AuthLayout from './layouts/AuthLayout.tsx'
+import EditUser from './pages/EditUser.tsx'
 
 const theme = createTheme({
   palette: {
@@ -44,6 +45,7 @@ createRoot(document.getElementById('root')!).render(
 
                 <Route element={<AuthRoute mode={AuthRouteMode.NoAuthCheck} />}>
                   <Route element={<MainLayout />}>
+                    <Route path={AppRoutes.EditUser} element={<EditUser />} />
                     <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
                     <Route path={AppRoutes.Expenses} element={<Expenses />} />
                     <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />

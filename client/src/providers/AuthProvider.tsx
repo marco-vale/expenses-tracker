@@ -15,13 +15,13 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const { onError } = useErrors();
 
-  const { data: meData } = useQuery<MeQuery>(
+  const { data: meData, error: meError } = useQuery<MeQuery>(
     MeDocument,
     {
       variables: {
         userToken,
       },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       skip: !userToken,
     },
   );
@@ -65,6 +65,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUserToken(null);
     onLogout?.();
   }, []);
+
+  if (meError) {
+    logout();
+  }
 
   return (
     <AuthContext.Provider value={{ userToken, user, isAuthenticated, login, logout }}>
