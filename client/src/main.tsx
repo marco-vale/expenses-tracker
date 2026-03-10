@@ -10,7 +10,7 @@ import { AppRoutes } from './routes/routes.ts'
 import CreateExpense from './pages/CreateExpense.tsx'
 import EditExpense from './pages/EditExpense.tsx'
 import ExpenseCategories from './pages/ExpenseCategories.tsx'
-import Layout from './layouts/Layout.tsx'
+import MainLayout from './layouts/MainLayout.tsx'
 import CreateUser from './pages/CreateUser.tsx'
 import Login from './pages/Login.tsx'
 import AuthProvider from './providers/AuthProvider.tsx'
@@ -18,6 +18,7 @@ import AuthRoute from './routes/AuthRoute.tsx'
 import { AuthRouteMode } from './types/types.ts'
 import ImportExpenses from './pages/ImportExpenses.tsx'
 import ErrorsProvider from './providers/ErrorsProvider.tsx'
+import AuthLayout from './layouts/AuthLayout.tsx'
 
 const theme = createTheme({
   palette: {
@@ -35,12 +36,14 @@ createRoot(document.getElementById('root')!).render(
             <BrowserRouter>
               <Routes>
                 <Route element={<AuthRoute mode={AuthRouteMode.AuthCheck} />}>
-                  <Route path={AppRoutes.Login} element={<Login />} />
-                  <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
+                  <Route element={<AuthLayout />}>
+                    <Route path={AppRoutes.Login} element={<Login />} />
+                    <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
+                  </Route>
                 </Route>
 
                 <Route element={<AuthRoute mode={AuthRouteMode.NoAuthCheck} />}>
-                  <Route element={<Layout />}>
+                  <Route element={<MainLayout />}>
                     <Route path={AppRoutes.ExpenseCategories} element={<ExpenseCategories />} />
                     <Route path={AppRoutes.Expenses} element={<Expenses />} />
                     <Route path={AppRoutes.CreateExpense} element={<CreateExpense />} />

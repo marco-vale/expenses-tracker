@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { MenuItem, Select, TextField } from '@mui/material';
 import { type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
-import { formatNumberString } from '../tools/formatNumberString';
 
 type ExpenseFormProps = {
   expense?: Expense;
@@ -18,9 +17,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
     description: Yup.string().required('Description is required'),
     amount: Yup.string()
       .required('Amount is required')
-      .transform((value) => {
-        return formatNumberString(value);
-      })
       .test('is-number', 'Amount must be a valid number', (value) => {
         return !isNaN(parseFloat(value));
       })

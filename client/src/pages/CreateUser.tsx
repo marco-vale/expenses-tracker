@@ -1,4 +1,4 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { AppRoutes } from '../routes/routes';
 import { Link, useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ import type { UserFormValues } from '../types/types';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useErrors } from '../hooks/useErrors';
+import { formatNumberString } from '../tools/formatNumberString';
 
 export const CreateUser: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ export const CreateUser: React.FC = () => {
     password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
     name: Yup.string(),
     picture: Yup.mixed<File>(),
+    startingBalance: Yup.string()
+      .test('is-number', 'Starting balance must be a valid number', (value) => {
+        return !isNaN(parseFloat(value ?? '0'));
+      })
+      .test('is-positive', 'Starting balance must be positive or 0', (value) => {
+        return parseFloat(value ?? '0') >= 0;
+      }),
   });
 
   const formik = useFormik<UserFormValues>({
@@ -31,6 +39,7 @@ export const CreateUser: React.FC = () => {
       password: '',
       name: undefined,
       picture: undefined,
+      startingBalance: '',
     },
     validationSchema,
     validateOnChange: false,
@@ -43,6 +52,7 @@ export const CreateUser: React.FC = () => {
             password: values.password,
             name: values.name,
             picture: values.picture,
+            startingBalance: Number(formatNumberString(values.startingBalance))
           },
         },
       }).then(() => {
@@ -61,90 +71,102 @@ export const CreateUser: React.FC = () => {
         Sign Up
       </Typography>
 
-      <Container maxWidth="md">
-        <Grid container spacing={2} justifyContent="center" direction="column">
-          <form id="userForm" onSubmit={formik.handleSubmit}>
-            <div>
-              <TextField
-                id="email"
-                name="email"
-                label="E-mail"
-                fullWidth
-                autoFocus
-                margin="normal"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
-                slotProps={{ inputLabel: { shrink: true } }}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-              />
-
-              <TextField
-                id="password"
-                name="password"
-                label="Password"
-                type="password"
-                fullWidth
-                margin="normal"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
-                slotProps={{ inputLabel: { shrink: true } }}
-                error={formik.touched.password && Boolean(formik.errors.password)}
-                helperText={formik.touched.password && formik.errors.password}
-              />
-
-              <TextField
-                id="name"
-                name="name"
-                label="Name"
-                fullWidth
-                margin="normal"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.name}
-                slotProps={{ inputLabel: { shrink: true } }}
-              />
-
-              <TextField
-                id="picture"
-                name="picture"
-                label="Picture"
-                type="file"
-                fullWidth
-                margin="normal"
-                onChange={onPictureChange}
-                onBlur={formik.handleBlur}
-                slotProps={{
-                  inputLabel: { shrink: true },
-                  htmlInput: { accept: 'image/*' },
-                }}
-              />
-            </div>
-          </form>
-
+      <Grid container spacing={2} justifyContent="center" direction="column">
+        <form id="userForm" onSubmit={formik.handleSubmit}>
           <div>
-            <Button
-              type="button"
-              variant="outlined"
-              style={{ marginRight: '1rem' }}
-              component={Link}
-              to={AppRoutes.Login}
-            >
-              Back
-            </Button>
-            <Button
-              type="submit"
-              form="userForm"
-              variant="contained"
-              color="primary"
-            >
-              Sign Up
-            </Button>
+            <TextField
+              id="email"
+              name="email"
+              label="E-mail"
+              fullWidth
+              autoFocus
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+
+            <TextField
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
+
+            <TextField
+              id="name"
+              name="name"
+              label="Name"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+              slotProps={{ inputLabel: { shrink: true } }}
+            />
+
+            <TextField
+              id="picture"
+              name="picture"
+              label="Picture"
+              type="file"
+              fullWidth
+              margin="normal"
+              onChange={onPictureChange}
+              onBlur={formik.handleBlur}
+              slotProps={{
+                inputLabel: { shrink: true },
+                htmlInput: { accept: 'image/*' },
+              }}
+            />
+
+            <TextField
+              id="startingBalance"
+              name="startingBalance"
+              label="Starting balance"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.startingBalance}
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={formik.touched.startingBalance && Boolean(formik.errors.startingBalance)}
+              helperText={formik.touched.startingBalance && formik.errors.startingBalance ? formik.errors.startingBalance : ''}
+            />
           </div>
-        </Grid>
-      </Container>
+        </form>
+
+        <div>
+          <Button
+            type="button"
+            variant="outlined"
+            style={{ marginRight: '1rem' }}
+            component={Link}
+            to={AppRoutes.Login}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            form="userForm"
+            variant="contained"
+            color="primary"
+          >
+            Sign Up
+          </Button>
+        </div>
+      </Grid>
     </>
   );
 };

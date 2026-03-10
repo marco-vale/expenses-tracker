@@ -4,5 +4,6 @@ query Me($userToken: String!) {
     email
     name
     picture
+    startingBalance
   }
 }

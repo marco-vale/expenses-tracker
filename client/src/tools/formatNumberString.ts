@@ -11,8 +11,9 @@
  * ```typescript
  * formatNumberString("1,5") // returns "1.5"
  * formatNumberString(" 10,50 ") // returns "10.50"
+ * formatNumberString(undefined) // returns "0"
  * ```
  */
-export const formatNumberString = (numberString: string): string => {
-  return numberString.trim().replace(',', '.');
+export const formatNumberString = (numberString: string | undefined): string => {
+  return numberString?.trim().replace(',', '.') ?? '0';
 };

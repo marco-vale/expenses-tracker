@@ -6,7 +6,7 @@ import { Category, Euro, Logout } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import ErrorsAlert from '../components/ErrorsAlert';
 
-const Layout: React.FC = () => {
+const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,4 +114,4 @@ const Layout: React.FC = () => {
   );
 };
 
-export default Layout;
+export default MainLayout;

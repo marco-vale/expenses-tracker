@@ -19,8 +19,10 @@ import ExpensesSummary from '../components/ExpensesSummary';
 import { useDialog } from '../hooks/useDialog';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { useErrors } from '../hooks/useErrors';
+import { useAuth } from '../hooks/useAuth';
 
 const Expenses: React.FC = () => {
+  const { user } = useAuth();
   const { expenseCategories } = useExpenseCategories();
   const { onError } = useErrors();
 
@@ -66,6 +68,7 @@ const Expenses: React.FC = () => {
       </Typography>
 
       <ExpensesSummary
+        user={user}
         expenseCategories={expenseCategories}
       />
 

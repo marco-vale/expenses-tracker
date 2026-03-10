@@ -152,6 +152,7 @@ export type User = {
   id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   picture?: Maybe<Scalars['String']['output']>;
+  startingBalance: Scalars['Float']['output'];
 };
 
 export type UserCreateInput = {
@@ -159,6 +160,7 @@ export type UserCreateInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   password: Scalars['String']['input'];
   picture?: InputMaybe<Scalars['Upload']['input']>;
+  startingBalance?: InputMaybe<Scalars['Float']['input']>;
 };
 
 
@@ -320,6 +322,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   picture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  startingBalance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = GraphQLContext> = {

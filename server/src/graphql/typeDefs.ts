@@ -6,6 +6,7 @@ export const typeDefs = `#graphql
     email: String!
     name: String
     picture: String
+    startingBalance: Float!
   }
 
   type ExpenseCategory {
@@ -33,6 +34,7 @@ export const typeDefs = `#graphql
     password: String!
     name: String
     picture: Upload
+    startingBalance: Float
   }
 
   input ExpenseCategoryCreateInput {

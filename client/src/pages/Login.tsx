@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import { AppRoutes } from '../routes/routes';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
@@ -37,63 +37,61 @@ const Login: React.FC = () => {
         Login
       </Typography>
 
-      <Container maxWidth="md">
-        <Grid container spacing={2} justifyContent="center" direction="column">
-          <form id="userForm" onSubmit={formik.handleSubmit}>
-            <div>
-              <TextField
-                id="email"
-                name="email"
-                label="E-mail"
-                fullWidth
-                autoFocus
-                margin="normal"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
-                slotProps={{ inputLabel: { shrink: true } }}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-              />
-
-              <TextField
-                id="password"
-                name="password"
-                label="Password"
-                type="password"
-                fullWidth
-                margin="normal"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
-                slotProps={{ inputLabel: { shrink: true } }}
-                error={formik.touched.password && Boolean(formik.errors.password)}
-                helperText={formik.touched.password && formik.errors.password}
-              />
-            </div>
-          </form>
-
+      <Grid container spacing={2} justifyContent="center" direction="column">
+        <form id="userForm" onSubmit={formik.handleSubmit}>
           <div>
-            <Button
-              type="button"
-              variant="outlined"
-              style={{ marginRight: '1rem' }}
-              component={Link}
-              to={AppRoutes.CreateUser}
-            >
-              Sign Up
-            </Button>
-            <Button
-              type="submit"
-              form="userForm"
-              variant="contained"
-              color="primary"
-            >
-              Sign In
-            </Button>
+            <TextField
+              id="email"
+              name="email"
+              label="E-mail"
+              fullWidth
+              autoFocus
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+
+            <TextField
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
           </div>
-        </Grid>
-      </Container>
+        </form>
+
+        <div>
+          <Button
+            type="button"
+            variant="outlined"
+            style={{ marginRight: '1rem' }}
+            component={Link}
+            to={AppRoutes.CreateUser}
+          >
+            Sign Up
+          </Button>
+          <Button
+            type="submit"
+            form="userForm"
+            variant="contained"
+            color="primary"
+          >
+            Sign In
+          </Button>
+        </div>
+      </Grid>
     </>
   );
 };

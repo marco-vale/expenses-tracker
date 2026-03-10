@@ -134,6 +134,10 @@ export const resolvers: Resolvers<GraphQLContext> = {
           password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
           name: Yup.string(),
           picture: Yup.mixed<Promise<FileUpload>>(),
+          startingBalance: Yup.number()
+            .test('is-positive', 'Starting balance must be positive or 0', (value) => {
+              return (value ?? 0) >= 0;
+            }),
         });
 
         await userSchema.validate(user);
@@ -147,6 +151,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
             password: hashedPassword,
             name: user.name,
             picture: picturePath,
+            startingBalance: user.startingBalance ?? 0,
           },
         });
 

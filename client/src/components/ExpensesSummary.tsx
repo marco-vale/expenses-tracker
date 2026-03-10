@@ -1,14 +1,15 @@
 import { Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { formatAmount } from '../tools/formatAmount';
-import type { ExpenseCategory } from '../graphql/__generated__/graphql';
+import type { ExpenseCategory, User } from '../graphql/__generated__/graphql';
 import { ExpandMore } from '@mui/icons-material';
 
 type ExpensesSummaryProps = {
+  user: User | null;
   expenseCategories: ExpenseCategory[];
 };
 
-const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expenseCategories }) => {
+const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expenseCategories, user }) => {
   const totalAmount: number = expenseCategories.reduce((sum, ec) => sum + (ec.amount ?? 0), 0);
 
   return (
@@ -19,6 +20,12 @@ const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expenseCategories }) 
         </AccordionSummary>
         <AccordionDetails>
           <List>
+            {user && (
+              <ListItem divider>
+                <ListItemText primary="Balance" />
+                <Typography variant="body2">{formatAmount(user.startingBalance - totalAmount)}</Typography>
+              </ListItem>
+            )}
             <ListItem divider>
               <ListItemText primary="Total expenses" />
               <Typography variant="body2">{formatAmount(totalAmount)}</Typography>

@@ -28,6 +28,7 @@ export type UserFormValues = {
   password: string;
   name?: string;
   picture?: File;
+  startingBalance?: string;
 };
 
 export type ExpenseCategoryFormValues = {
