@@ -45,6 +45,7 @@ const EditExpense: React.FC = () => {
         expense: {
           id: expense?.id ?? '',
           description: values.description,
+          type: values.type,
           amount: Number(formatNumberString(values.amount)),
           date: new Date(values.date).toISOString(),
           categoryId: values.categoryId || undefined,

@@ -1,8 +1,8 @@
 import React from "react";
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { MenuItem, Select, TextField } from '@mui/material';
-import { type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
+import { MenuItem, TextField } from '@mui/material';
+import { ExpenseType, type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 
 type ExpenseFormProps = {
@@ -14,6 +14,7 @@ type ExpenseFormProps = {
 const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, onSubmit }) => {
   const validationSchema = Yup.object({
     description: Yup.string().required('Description is required'),
+    type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
     amount: Yup.string()
       .required('Amount is required')
       .test('is-number', 'Amount must be a valid number', (value) => {
@@ -29,6 +30,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
   const formik = useFormik<ExpenseFormValues>({
     initialValues: {
       description: expense?.description ?? '',
+      type: expense?.type ?? ExpenseType.Expense,
       amount: expense?.amount.toString() ?? '',
       date: expense?.date
         ? new Date(expense.date).toISOString().slice(0, 16)
@@ -60,6 +62,24 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
         />
 
         <TextField
+          id="type"
+          name="type"
+          label="Type"
+          select
+          fullWidth
+          margin="normal"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.type}
+          slotProps={{ inputLabel: { shrink: true } }}
+          error={formik.touched.type && Boolean(formik.errors.type)}
+          helperText={formik.touched.type && formik.errors.type ? formik.errors.type : ''}
+        >
+          <MenuItem value={ExpenseType.Expense}>Expense</MenuItem>
+          <MenuItem value={ExpenseType.Income}>Income</MenuItem>
+        </TextField>
+
+        <TextField
           id="amount"
           name="amount"
           label="Amount"
@@ -88,14 +108,19 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
           helperText={formik.touched.date && formik.errors.date ? formik.errors.date : ''}
         />
 
-        <Select
+        <TextField
           id="categoryId"
           name="categoryId"
+          label="Category"
+          select
           fullWidth
+          margin="normal"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.categoryId}
-          style={{ marginTop: '1rem' }}
+          slotProps={{ inputLabel: { shrink: true } }}
+          error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+          helperText={formik.touched.categoryId && formik.errors.categoryId ? formik.errors.categoryId : ''}
         >
           {expenseCategories.map((ec) => (
             <MenuItem
@@ -105,7 +130,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
               {ec.name}
             </MenuItem>
           ))}
-        </Select>
+        </TextField>
       </div>
     </form>
   );

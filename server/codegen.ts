@@ -8,6 +8,9 @@ const config: CodegenConfig = {
       config: {
         useTypeImports: true,
         contextType: './src/graphql/context.ts#GraphQLContext',
+        enumValues: {
+          ExpenseType: './generated/prisma/client#ExpenseType',
+        }
       },
     },
   },

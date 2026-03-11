@@ -2,6 +2,7 @@ query GetExpenses {
   expenses {
     id
     description
+    type
     amount
     date
     category {

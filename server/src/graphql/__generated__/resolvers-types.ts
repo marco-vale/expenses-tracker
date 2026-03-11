@@ -1,3 +1,4 @@
+import type { ExpenseType } from './generated/prisma/client';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import type { GraphQLContext } from './src/graphql/context.ts';
 export type Maybe<T> = T | null;
@@ -7,6 +8,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -25,6 +27,7 @@ export type Expense = {
   date: Scalars['String']['output'];
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  type: ExpenseType;
 };
 
 export type ExpenseCategory = {
@@ -49,7 +52,10 @@ export type ExpenseCreateInput = {
   categoryId?: InputMaybe<Scalars['ID']['input']>;
   date: Scalars['String']['input'];
   description: Scalars['String']['input'];
+  type: ExpenseType;
 };
+
+export { ExpenseType };
 
 export type ExpenseUpdateInput = {
   amount: Scalars['Float']['input'];
@@ -57,6 +63,7 @@ export type ExpenseUpdateInput = {
   date: Scalars['String']['input'];
   description: Scalars['String']['input'];
   id: Scalars['ID']['input'];
+  type: ExpenseType;
 };
 
 export type ExpensesImportInput = {
@@ -254,6 +261,7 @@ export type ResolversTypes = {
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
   ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
   ExpenseCreateInput: ExpenseCreateInput;
+  ExpenseType: ExpenseType;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
@@ -298,6 +306,7 @@ export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends Re
   date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['ExpenseType'], ParentType, ContextType>;
 };
 
 export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpenseCategory'] = ResolversParentTypes['ExpenseCategory']> = {
@@ -306,6 +315,8 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
+
+export type ExpenseTypeResolvers = EnumResolverSignature<{ EXPENSE?: any, INCOME?: any }, ResolversTypes['ExpenseType']>;
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
@@ -343,6 +354,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 export type Resolvers<ContextType = GraphQLContext> = {
   Expense?: ExpenseResolvers<ContextType>;
   ExpenseCategory?: ExpenseCategoryResolvers<ContextType>;
+  ExpenseType?: ExpenseTypeResolvers;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Upload?: GraphQLScalarType;

@@ -1,6 +1,6 @@
 import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import React from "react";
-import type { Expense } from '../graphql/__generated__/graphql';
+import { ExpenseType, type Expense } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
@@ -36,7 +36,11 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
               {expenses.map((e) => (
                 <TableRow key={e.id}>
                   <TableCell>{e.description}</TableCell>
-                  <TableCell>{formatAmount(e.amount)}</TableCell>
+                  <TableCell>
+                    <Typography variant="body2" fontWeight="bold" color={e.type === ExpenseType.Expense ? 'error' : 'success'}>
+                      {formatAmount(e.amount)}
+                    </Typography>
+                  </TableCell>
                   <TableCell>{formatDateString(e.date)}</TableCell>
                   <TableCell>{e.category ? e.category.name : '---'}</TableCell>
                   <TableCell>

@@ -1,4 +1,4 @@
-import type { User } from '../graphql/__generated__/graphql';
+import type { ExpenseType, User } from '../graphql/__generated__/graphql';
 
 export enum AuthRouteMode {
   AuthCheck,
@@ -42,6 +42,7 @@ export type ExpenseCategoryFormValues = {
 
 export type ExpenseFormValues = {
   description: string;
+  type: ExpenseType;
   amount: string;
   date: string;
   categoryId?: string;

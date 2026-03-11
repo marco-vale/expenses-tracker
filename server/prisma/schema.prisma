@@ -28,9 +28,15 @@ model ExpenseCategory {
   expenses Expense[]
 }
 
+enum ExpenseType {
+  EXPENSE
+  INCOME
+}
+
 model Expense {
   id          String           @id @default(cuid())
   description String
+  type        ExpenseType
   amount      Float
   date        DateTime
   categoryId  String?

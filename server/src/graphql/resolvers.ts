@@ -1,19 +1,16 @@
-import { Expense, ExpenseCategory, User } from '../../generated/prisma/client';
+import { Expense, ExpenseCategory, ExpenseType, User } from '../../generated/prisma/client';
 import { convertDateToString } from '../tools/convertDateToString';
 import { handleException } from '../tools/handleException';
-import { ExpenseCreateInput, Resolvers } from './__generated__/resolvers-types';
+import { Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { ExpenseImportRow, UserToken } from '../types/types';
+import { UserToken } from '../types/types';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
-import XLSX from 'xlsx';
-import path from 'path';
-import { parseNumber } from '../tools/parseNumber';
-import { parseDate } from '../tools/parseDate';
 import { BatchPayload } from '../../generated/prisma/internal/prismaNamespace';
-import { uploadFile } from '../tools/uploadFile';
+import { uploadFile } from '../helpers/uploadFile';
+import importExpenses from '../helpers/importExpenses';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -245,6 +242,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
       try {
         const expenseSchema = Yup.object({
           description: Yup.string().required('Description is required'),
+          type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
           amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
           date: Yup.string().required('Date is required'),
           categoryId: Yup.string(),
@@ -255,6 +253,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const newExpense: Expense = await context.prisma.expense.create({
           data: {
             description: expense.description,
+            type: expense.type,
             amount: expense.amount,
             date: new Date(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : undefined,
@@ -273,6 +272,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const expenseSchema = Yup.object({
           id: Yup.string().required('ID is required'),
           description: Yup.string().required('Description is required'),
+          type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
           amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
           date: Yup.string().required('Date is required'),
           categoryId: Yup.string(),
@@ -284,6 +284,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           where: { id: expense.id },
           data: {
             description: expense.description,
+            type: expense.type,
             amount: expense.amount,
             date: new Date(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : { disconnect: true },
@@ -322,36 +323,10 @@ export const resolvers: Resolvers<GraphQLContext> = {
           throw new Error('File upload failed');
         }
 
-        const file = XLSX.readFile(path.join(process.cwd(), filePath), { raw: true });
-        const sheetName = file.SheetNames[0];
-        const sheet = file.Sheets[sheetName];
-
-        const rows: ExpenseImportRow[] = XLSX.utils.sheet_to_json<ExpenseImportRow>(sheet, { range: 6 })
-          .filter((r: ExpenseImportRow) => r['Débito '] && r['Débito '].trim());
-
-        const importedExpenses: Expense[] = await context.prisma.$transaction(
-          rows.map((r: ExpenseImportRow) => {
-            let category: string | undefined;
-            if (importData.importCategories && r['Categoria ']) {
-              category = r['Categoria '].trim();
-            }
-
-            return context.prisma.expense.create({
-              data: {
-                description: r['Descrição '].trim(),
-                amount: parseNumber(r['Débito ']),
-                date: parseDate(r['Data mov. ']),
-                category: category
-                  ? {
-                    connectOrCreate: {
-                      where: { name: category },
-                      create: { name: category },
-                    }
-                  }
-                  : undefined,
-              },
-            });
-          })
+        const importedExpenses: Expense[] = await importExpenses(
+          filePath,
+          context.prisma,
+          importData.importCategories ?? false,
         );
 
         return importedExpenses.map(e => e.id);

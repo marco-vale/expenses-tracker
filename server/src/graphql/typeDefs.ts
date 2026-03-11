@@ -16,9 +16,15 @@ export const typeDefs = `#graphql
     deletable: Boolean
   }
 
+  enum ExpenseType {
+    EXPENSE
+    INCOME
+  }
+
   type Expense {
     id: ID!
     description: String!
+    type: ExpenseType!
     amount: Float!
     date: String!
     category: ExpenseCategory
@@ -54,6 +60,7 @@ export const typeDefs = `#graphql
 
   input ExpenseCreateInput {
     description: String!
+    type: ExpenseType!
     amount: Float!
     date: String!
     categoryId: ID
@@ -62,6 +69,7 @@ export const typeDefs = `#graphql
   input ExpenseUpdateInput {
     id: ID!
     description: String!
+    type: ExpenseType!
     amount: Float!
     date: String!
     categoryId: ID
