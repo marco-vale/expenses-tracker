@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client/react';
-import { GetExpenseCategoriesDocument, type ExpenseCategory, type GetExpenseCategoriesQuery } from '../graphql/__generated__/graphql';
+import { GetExpenseCategoriesDocument, type ExpenseCategory, type GetExpenseCategoriesQuery, type GetExpenseCategoriesQueryVariables } from '../graphql/__generated__/graphql';
 import { useMemo } from 'react';
 
 /**
@@ -20,7 +20,7 @@ export const useExpenseCategories = (
   getAmount: boolean = true,
   getDeletable: boolean = false,
 ) => {
-  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery>(
+  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery, GetExpenseCategoriesQueryVariables>(
     GetExpenseCategoriesDocument,
     {
       variables: {

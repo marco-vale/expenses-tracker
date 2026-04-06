@@ -1,7 +1,7 @@
 import { Expense, ExpenseCategory, ExpenseType, User } from '../../generated/prisma/client';
 import { convertDateToString } from '../tools/convertDateToString';
 import { handleException } from '../tools/handleException';
-import { Resolvers } from './__generated__/resolvers-types';
+import { ExpensesSummary, Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
@@ -11,22 +11,13 @@ import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import { BatchPayload } from '../../generated/prisma/internal/prismaNamespace';
 import { uploadFile } from '../helpers/uploadFile';
 import importExpenses from '../helpers/importExpenses';
+import getUserByUserToken from '../helpers/getUserByToken';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
     me: async (parent, { userToken }, context) => {
       try {
-        const decodedUserToken = jwt.verify(userToken, process.env.JWT_SECRET!) as UserToken;
-
-        const user: User | null = await context.prisma.user.findUnique({
-          where: { id: decodedUserToken.id },
-        });
-
-        if (!user) {
-          throw new Error('User not found');
-        }
-
-        return user;
+        return getUserByUserToken(userToken, context.prisma);
       } catch (ex) {
         throw handleException(ex);
       }
@@ -67,6 +58,57 @@ export const resolvers: Resolvers<GraphQLContext> = {
           ...expense,
           date: convertDateToString(expense.date),
         };
+      } catch (ex) {
+        throw handleException(ex);
+      }
+    },
+
+    expensesSummary: async (parent, { userToken }, context) => {
+      try {
+        const user: User = await getUserByUserToken(userToken, context.prisma);
+
+        const expensesSummary: ExpensesSummary = {
+          expensesAmount: 0,
+          incomeAmount: 0,
+          balance: user.startingBalance,
+          categories: [],
+        };
+
+        const expenseAmountsByType = await context.prisma.expense.groupBy({
+          by: ['type'],
+          _sum: { amount: true },
+        });
+
+        expenseAmountsByType.forEach((eat) => {
+          if (eat.type === ExpenseType.EXPENSE) {
+            expensesSummary.expensesAmount = eat._sum.amount ?? 0;
+          }
+
+          if (eat.type === ExpenseType.INCOME) {
+            expensesSummary.incomeAmount = eat._sum.amount ?? 0;
+          }
+
+          expensesSummary.balance += eat._sum.amount ?? 0;
+        });
+
+        const expenseAmountsByCategory = await context.prisma.expense.groupBy({
+          by: ['categoryId'],
+          _sum: { amount: true },
+        });
+
+        const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany();
+
+        expensesSummary.categories = expenseAmountsByCategory.map((eac) => {
+          const expensesCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === eac.categoryId);
+
+          return {
+            id: eac.categoryId,
+            name: expensesCategory ? expensesCategory.name : 'Uncategorized',
+            amount: eac._sum.amount ?? 0,
+          };
+        })
+
+        return expensesSummary;
       } catch (ex) {
         throw handleException(ex);
       }
@@ -254,7 +296,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           data: {
             description: expense.description,
             type: expense.type,
-            amount: expense.amount,
+            amount: expense.type === ExpenseType.EXPENSE ? -expense.amount : expense.amount,
             date: new Date(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : undefined,
           },
@@ -285,7 +327,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           data: {
             description: expense.description,
             type: expense.type,
-            amount: expense.amount,
+            amount: expense.type === ExpenseType.EXPENSE ? -expense.amount : expense.amount,
             date: new Date(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : { disconnect: true },
           },
@@ -329,7 +371,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           importData.importCategories ?? false,
         );
 
-        return importedExpenses.map(e => e.id);
+        return importedExpenses.map(ie => ie.id);
       } catch (ex) {
         throw handleException(ex);
       }

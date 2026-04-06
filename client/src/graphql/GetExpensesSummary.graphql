@@ -1,0 +1,12 @@
+query GetExpensesSummary($userToken: String!) {
+  expensesSummary(userToken: $userToken) {
+    expensesAmount
+    incomeAmount
+    balance
+    categories {
+      id
+      name
+      amount
+    }
+  }
+}

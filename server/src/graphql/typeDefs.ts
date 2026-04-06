@@ -30,6 +30,19 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
+  type ExpensesSummaryCategory {
+    id: ID
+    name: String!
+    amount: Float!
+  }
+
+  type ExpensesSummary {
+    expensesAmount: Float!
+    incomeAmount: Float!
+    balance: Float!
+    categories: [ExpensesSummaryCategory!]!
+  }
+
   input LoginInput {
     email: String!
     password: String!
@@ -87,6 +100,8 @@ export const typeDefs = `#graphql
 
     expenses: [Expense!]!
     expense(id: ID!): Expense!
+
+    expensesSummary(userToken: String!): ExpensesSummary!
   }
 
   type Mutation {

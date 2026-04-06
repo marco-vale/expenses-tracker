@@ -45,7 +45,7 @@ const importExpenses = async (filePath: string, prisma: PrismaClient, importCate
         data: {
           description: r['Descrição '].trim(),
           type,
-          amount,
+          amount: type === ExpenseType.EXPENSE ? -amount : amount,
           date: parseDate(r['Data mov. ']),
           category: category
             ? {

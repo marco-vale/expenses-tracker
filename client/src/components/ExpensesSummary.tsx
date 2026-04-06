@@ -1,16 +1,17 @@
 import { Accordion, AccordionDetails, AccordionSummary, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { formatAmount } from '../tools/formatAmount';
-import type { ExpenseCategory, User } from '../graphql/__generated__/graphql';
+import type { ExpensesSummary as ExpensesSummaryType } from '../graphql/__generated__/graphql';
 import { ExpandMore } from '@mui/icons-material';
 
 type ExpensesSummaryProps = {
-  user: User | null;
-  expenseCategories: ExpenseCategory[];
+  expensesSummary: ExpensesSummaryType | null;
 };
 
-const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expenseCategories, user }) => {
-  const totalAmount: number = expenseCategories.reduce((sum, ec) => sum + (ec.amount ?? 0), 0);
+const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expensesSummary }) => {
+  if (!expensesSummary) {
+    return null;
+  }
 
   return (
     <Stack spacing={2} marginTop="2rem">
@@ -20,20 +21,40 @@ const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expenseCategories, us
         </AccordionSummary>
         <AccordionDetails>
           <List>
-            {user && (
-              <ListItem divider>
-                <ListItemText primary="Balance" />
-                <Typography variant="body2">{formatAmount(user.startingBalance - totalAmount)}</Typography>
-              </ListItem>
-            )}
             <ListItem divider>
-              <ListItemText primary="Total expenses" />
-              <Typography variant="body2">{formatAmount(totalAmount)}</Typography>
+              <ListItemText>
+                <Typography variant="body2" fontWeight="bold">
+                  Balance
+                </Typography>
+              </ListItemText>
+              <Typography variant="body2" fontWeight="bold">
+                {formatAmount(expensesSummary.balance)}
+              </Typography>
             </ListItem>
-            {expenseCategories.map((ec) => (
-              <ListItem key={ec.id} divider>
-                <ListItemText primary={ec.name} />
-                <Typography variant="body2">{formatAmount(ec.amount ?? 0)}</Typography>
+            <ListItem divider>
+              <ListItemText>
+                <Typography variant="body2" fontWeight="bold" color="error">
+                  Total expenses
+                </Typography>
+              </ListItemText>
+              <Typography variant="body2" fontWeight="bold" color="error">
+                {formatAmount(Math.abs(expensesSummary.expensesAmount))}
+              </Typography>
+            </ListItem>
+            <ListItem divider>
+              <ListItemText>
+                <Typography variant="body2" fontWeight="bold" color="success">
+                  Total income
+                </Typography>
+              </ListItemText>
+              <Typography variant="body2" fontWeight="bold" color="success">
+                {formatAmount(Math.abs(expensesSummary.incomeAmount))}
+              </Typography>
+            </ListItem>
+            {expensesSummary.categories.map((esc) => (
+              <ListItem key={esc.id} divider>
+                <ListItemText primary={esc.name} />
+                <Typography variant="body2">{formatAmount(Math.abs(esc.amount))}</Typography>
               </ListItem>
             ))}
           </List>

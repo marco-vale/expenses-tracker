@@ -6,29 +6,42 @@ import {
   DeleteAllDocument,
   DeleteExpenseDocument,
   GetExpensesDocument,
+  GetExpensesSummaryDocument,
   type DeleteAllMutation,
   type DeleteAllMutationVariables,
   type DeleteExpenseMutation,
   type DeleteExpenseMutationVariables,
   type Expense,
+  type ExpensesSummary as ExpensesSummaryType,
   type GetExpensesQuery,
+  type GetExpensesQueryVariables,
+  type GetExpensesSummaryQuery,
+  type GetExpensesSummaryQueryVariables,
 } from '../graphql/__generated__/graphql';
 import { AppRoutes } from '../routes/routes';
 import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
-import ExpensesSummary from '../components/ExpensesSummary';
 import { useDialog } from '../hooks/useDialog';
-import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { useErrors } from '../hooks/useErrors';
 import { useAuth } from '../hooks/useAuth';
+import ExpensesSummary from '../components/ExpensesSummary';
 
 const Expenses: React.FC = () => {
-  const { user } = useAuth();
-  const { expenseCategories } = useExpenseCategories();
+  const { userToken } = useAuth();
   const { onError } = useErrors();
 
-  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery>(
+  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery, GetExpensesQueryVariables>(
     GetExpensesDocument,
     { fetchPolicy: 'network-only' }
+  );
+
+  const { data: expensesSummaryData } = useQuery<GetExpensesSummaryQuery, GetExpensesSummaryQueryVariables>(
+    GetExpensesSummaryDocument,
+    {
+      variables: {
+        userToken: userToken ?? '',
+      },
+      fetchPolicy: 'network-only',
+    },
   );
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation, DeleteExpenseMutationVariables>(
@@ -49,6 +62,7 @@ const Expenses: React.FC = () => {
   } = useDialog<string>();
 
   const expenses: Expense[] = expensesData?.expenses ?? [];
+  const expensesSummary: ExpensesSummaryType | null = expensesSummaryData?.expensesSummary ?? null;
 
   const deleteExpense = (id: string) => {
     deleteExpenseMutation({
@@ -68,8 +82,7 @@ const Expenses: React.FC = () => {
       </Typography>
 
       <ExpensesSummary
-        user={user}
-        expenseCategories={expenseCategories}
+        expensesSummary={expensesSummary}
       />
 
       {expensesLoading && (

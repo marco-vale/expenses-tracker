@@ -38,24 +38,26 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
                   <TableCell>{e.description}</TableCell>
                   <TableCell>
                     <Typography variant="body2" fontWeight="bold" color={e.type === ExpenseType.Expense ? 'error' : 'success'}>
-                      {formatAmount(e.amount)}
+                      {formatAmount(Math.abs(e.amount))}
                     </Typography>
                   </TableCell>
                   <TableCell>{formatDateString(e.date)}</TableCell>
                   <TableCell>{e.category ? e.category.name : '---'}</TableCell>
                   <TableCell>
-                    <Tooltip title="Edit expense">
+                    <Stack direction="row" alignItems="center">
+                      <Tooltip title="Edit expense">
                       <span>
                         <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
-                          <Edit fontSize="small" />
+                        <Edit fontSize="small" />
                         </IconButton>
                       </span>
-                    </Tooltip>
-                    <Tooltip title="Delete expense">
+                      </Tooltip>
+                      <Tooltip title="Delete expense">
                       <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
                         <Delete fontSize="small" />
                       </IconButton>
-                    </Tooltip>
+                      </Tooltip>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}

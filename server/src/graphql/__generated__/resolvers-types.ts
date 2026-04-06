@@ -71,6 +71,21 @@ export type ExpensesImportInput = {
   importCategories?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type ExpensesSummary = {
+  __typename?: 'ExpensesSummary';
+  balance: Scalars['Float']['output'];
+  categories: Array<ExpensesSummaryCategory>;
+  expensesAmount: Scalars['Float']['output'];
+  incomeAmount: Scalars['Float']['output'];
+};
+
+export type ExpensesSummaryCategory = {
+  __typename?: 'ExpensesSummaryCategory';
+  amount: Scalars['Float']['output'];
+  id?: Maybe<Scalars['ID']['output']>;
+  name: Scalars['String']['output'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -146,12 +161,18 @@ export type Query = {
   expense: Expense;
   expenseCategories: Array<ExpenseCategory>;
   expenses: Array<Expense>;
+  expensesSummary: ExpensesSummary;
   me: User;
 };
 
 
 export type QueryExpenseArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryExpensesSummaryArgs = {
+  userToken: Scalars['String']['input'];
 };
 
 
@@ -264,6 +285,8 @@ export type ResolversTypes = {
   ExpenseType: ExpenseType;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
+  ExpensesSummary: ResolverTypeWrapper<ExpensesSummary>;
+  ExpensesSummaryCategory: ResolverTypeWrapper<ExpensesSummaryCategory>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -287,6 +310,8 @@ export type ResolversParentTypes = {
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
+  ExpensesSummary: ExpensesSummary;
+  ExpensesSummaryCategory: ExpensesSummaryCategory;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -318,6 +343,19 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
 
 export type ExpenseTypeResolvers = EnumResolverSignature<{ EXPENSE?: any, INCOME?: any }, ResolversTypes['ExpenseType']>;
 
+export type ExpensesSummaryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpensesSummary'] = ResolversParentTypes['ExpensesSummary']> = {
+  balance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  categories?: Resolver<Array<ResolversTypes['ExpensesSummaryCategory']>, ParentType, ContextType>;
+  expensesAmount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  incomeAmount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+};
+
+export type ExpensesSummaryCategoryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpensesSummaryCategory'] = ResolversParentTypes['ExpensesSummaryCategory']> = {
+  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createExpense?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseArgs, 'expense'>>;
   createExpenseCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationCreateExpenseCategoryArgs, 'expenseCategory'>>;
@@ -336,6 +374,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenseCategories?: Resolver<Array<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
   expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType>;
+  expensesSummary?: Resolver<ResolversTypes['ExpensesSummary'], ParentType, ContextType, RequireFields<QueryExpensesSummaryArgs, 'userToken'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryMeArgs, 'userToken'>>;
 };
 
@@ -355,6 +394,8 @@ export type Resolvers<ContextType = GraphQLContext> = {
   Expense?: ExpenseResolvers<ContextType>;
   ExpenseCategory?: ExpenseCategoryResolvers<ContextType>;
   ExpenseType?: ExpenseTypeResolvers;
+  ExpensesSummary?: ExpensesSummaryResolvers<ContextType>;
+  ExpensesSummaryCategory?: ExpensesSummaryCategoryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Upload?: GraphQLScalarType;

@@ -5,21 +5,15 @@ import { handleException } from '../../tools/handleException';
 export const expenseCategoryAmountLoader = (prisma: PrismaClient) => {
   return new DataLoader<string, number>(async (categoryIds: readonly string[]) => {
     try {
-      const expenseAmounts = await prisma.expense.groupBy({
+      const expenseAmountsByCategory = await prisma.expense.groupBy({
         by: ['categoryId'],
         where: {
           categoryId: { in: [...categoryIds] },
         },
-        _sum: {
-          amount: true,
-        },
+        _sum: { amount: true },
       });
 
-      const expenseAmountsMap = new Map(
-        expenseAmounts.map(ea => [ea.categoryId!, ea._sum.amount ?? 0])
-      );
-
-      return categoryIds.map(id => expenseAmountsMap.get(id) ?? 0);
+      return categoryIds.map(cid => expenseAmountsByCategory.find(eac => eac.categoryId === cid)?._sum.amount ?? 0);
     } catch (ex) {
       throw handleException(ex);
     }

@@ -33,22 +33,28 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCa
               {expenseCategories.map((ec) => (
                 <TableRow key={ec.id}>
                   <TableCell>{ec.name}</TableCell>
-                  <TableCell>{formatAmount(ec.amount ?? 0)}</TableCell>
                   <TableCell>
-                    <Tooltip title="Edit category">
-                      <span>
-                        <IconButton size="small" color="primary" onClick={() => openExpenseCategoryFormDialog(ec)}>
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title={ec.deletable ? "Delete category" : "This category is in use and cannot be deleted"}>
-                      <span>
-                        <IconButton size="small" color="error" disabled={!ec.deletable} onClick={() => deleteExpenseCategory(ec.id)}>
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
+                    <Typography variant="body2" fontWeight="bold" color={(ec.amount ?? 0) < 0 ? 'error' : 'success'}>
+                      {formatAmount(Math.abs(ec.amount ?? 0))}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Stack direction="row" alignItems="center">
+                      <Tooltip title="Edit category">
+                        <span>
+                          <IconButton size="small" color="primary" onClick={() => openExpenseCategoryFormDialog(ec)}>
+                            <Edit fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                      <Tooltip title={ec.deletable ? "Delete category" : "This category is in use and cannot be deleted"}>
+                        <span>
+                          <IconButton size="small" color="error" disabled={!ec.deletable} onClick={() => deleteExpenseCategory(ec.id)}>
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}
