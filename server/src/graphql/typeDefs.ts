@@ -30,6 +30,11 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
+  input ExpensesOptions {
+    page: Int!
+    rowsPerPage: Int!
+  }
+
   type ExpensesSummaryCategory {
     id: ID
     name: String!
@@ -98,7 +103,7 @@ export const typeDefs = `#graphql
 
     expenseCategories: [ExpenseCategory!]!
 
-    expenses: [Expense!]!
+    expenses(options: ExpensesOptions): [Expense!]!
     expense(id: ID!): Expense!
 
     expensesSummary(userToken: String!): ExpensesSummary!

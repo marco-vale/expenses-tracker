@@ -3,7 +3,7 @@ import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useMutation } from '@apollo/client/react';
 import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategory, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
-import { Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import type { ExpenseCategoryFormValues } from '../types/types';
@@ -73,19 +73,12 @@ const ExpenseCategories: React.FC = () => {
         Manage your expense categories here.
       </Typography>
 
-      {expenseCategoriesLoading && (
-        <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
-          <CircularProgress size={100} />
-        </Stack>
-      )}
-
-      {!expenseCategoriesLoading && (
-        <ExpenseCategoriesList
-          expenseCategories={expenseCategories}
-          openExpenseCategoryFormDialog={openExpenseCategoryFormDialog}
-          deleteExpenseCategory={deleteExpenseCategory}
-        />
-      )}
+      <ExpenseCategoriesList
+        expenseCategories={expenseCategories}
+        expenseCategoriesLoading={expenseCategoriesLoading}
+        openExpenseCategoryFormDialog={openExpenseCategoryFormDialog}
+        deleteExpenseCategory={deleteExpenseCategory}
+      />
 
       <Stack direction="row" spacing={2} marginTop="2rem">
         <Button

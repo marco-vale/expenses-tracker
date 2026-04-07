@@ -6,7 +6,6 @@ import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { UserToken } from '../types/types';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import { BatchPayload } from '../../generated/prisma/internal/prismaNamespace';
 import { uploadFile } from '../helpers/uploadFile';
@@ -29,10 +28,12 @@ export const resolvers: Resolvers<GraphQLContext> = {
       });
     },
 
-    expenses: async (parent, { }, context) => {
+    expenses: async (parent, { options }, context) => {
       const expenses: Expense[] = await context.prisma.expense.findMany({
         include: { category: true },
         orderBy: { date: 'desc' },
+        skip: options ? options.page * options.rowsPerPage : undefined,
+        take: options ? options.rowsPerPage : undefined,
       });
 
       return expenses.map((e) => {

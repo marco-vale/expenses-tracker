@@ -1,16 +1,25 @@
 import React from 'react';
 import type { ExpenseCategory } from '../graphql/__generated__/graphql';
-import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 
 type ExpenseCategoriesListProps = {
   expenseCategories: ExpenseCategory[];
+  expenseCategoriesLoading: boolean;
   openExpenseCategoryFormDialog: (expenseCategory: ExpenseCategory) => void;
   deleteExpenseCategory: (id: string) => void;
 }
 
-const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCategories, openExpenseCategoryFormDialog, deleteExpenseCategory }) => {
+const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCategories, expenseCategoriesLoading, openExpenseCategoryFormDialog, deleteExpenseCategory }) => {
+  if (expenseCategoriesLoading) {
+    return (
+      <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
+        <CircularProgress size={100} />
+      </Stack>
+    );
+  }
+
   return (
     <Stack width="100%" marginTop="2rem" spacing={2}>
       {expenseCategories.length === 0 && (

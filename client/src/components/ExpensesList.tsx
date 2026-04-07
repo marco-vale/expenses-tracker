@@ -1,5 +1,5 @@
-import { IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import React from "react";
+import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
+import React, { useState } from "react";
 import { ExpenseType, type Expense } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
@@ -8,10 +8,37 @@ import { AppRoutes, buildRoute } from '../routes/routes';
 
 type ExpensesListProps = {
   expenses: Expense[];
+  expensesLoading: boolean;
+  refetchExpenses: (page: number, rowsPerPage: number) => void;
   openExpenseDeleteDialog: (expenseId: string) => void;
 };
 
-const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDeleteDialog }) => {
+const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, expensesLoading, refetchExpenses, openExpenseDeleteDialog }) => {
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+  const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+    setPage(page);
+    refetchExpenses(page, rowsPerPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rowsPerPage: number = Number(event.target.value);
+
+    setPage(0);
+    setRowsPerPage(rowsPerPage);
+
+    refetchExpenses(page, rowsPerPage);
+  };
+
+  if (expensesLoading) {
+    return (
+      <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
+        <CircularProgress size={100} />
+      </Stack>
+    );
+  }
+
   return (
     <Stack width="100%" marginTop="2rem" spacing={2}>
       {expenses.length === 0 && (
@@ -46,16 +73,16 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
                   <TableCell>
                     <Stack direction="row" alignItems="center">
                       <Tooltip title="Edit expense">
-                      <span>
-                        <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
-                        <Edit fontSize="small" />
-                        </IconButton>
-                      </span>
+                        <span>
+                          <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
+                            <Edit fontSize="small" />
+                          </IconButton>
+                        </span>
                       </Tooltip>
                       <Tooltip title="Delete expense">
-                      <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
-                        <Delete fontSize="small" />
-                      </IconButton>
+                        <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
+                          <Delete fontSize="small" />
+                        </IconButton>
                       </Tooltip>
                     </Stack>
                   </TableCell>
@@ -63,6 +90,15 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, openExpenseDelete
               ))}
             </TableBody>
           </Table>
+          <TablePagination
+            component="div"
+            count={-1}
+            page={page}
+            onPageChange={handlePageChange}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            rowsPerPageOptions={[5, 10, 25]}
+          />
         </TableContainer>
       )}
     </Stack>

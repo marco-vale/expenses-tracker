@@ -71,6 +71,11 @@ export type ExpensesImportInput = {
   importCategories?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type ExpensesOptions = {
+  page: Scalars['Int']['input'];
+  rowsPerPage: Scalars['Int']['input'];
+};
+
 export type ExpensesSummary = {
   __typename?: 'ExpensesSummary';
   balance: Scalars['Float']['output'];
@@ -168,6 +173,11 @@ export type Query = {
 
 export type QueryExpenseArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryExpensesArgs = {
+  options?: InputMaybe<ExpensesOptions>;
 };
 
 
@@ -285,6 +295,7 @@ export type ResolversTypes = {
   ExpenseType: ExpenseType;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
+  ExpensesOptions: ExpensesOptions;
   ExpensesSummary: ResolverTypeWrapper<ExpensesSummary>;
   ExpensesSummaryCategory: ResolverTypeWrapper<ExpensesSummaryCategory>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
@@ -310,6 +321,7 @@ export type ResolversParentTypes = {
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
+  ExpensesOptions: ExpensesOptions;
   ExpensesSummary: ExpensesSummary;
   ExpensesSummaryCategory: ExpensesSummaryCategory;
   Float: Scalars['Float']['output'];
@@ -373,7 +385,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenseCategories?: Resolver<Array<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
-  expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType>;
+  expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType, Partial<QueryExpensesArgs>>;
   expensesSummary?: Resolver<ResolversTypes['ExpensesSummary'], ParentType, ContextType, RequireFields<QueryExpensesSummaryArgs, 'userToken'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryMeArgs, 'userToken'>>;
 };

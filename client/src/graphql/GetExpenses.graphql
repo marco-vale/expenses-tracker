@@ -1,5 +1,5 @@
-query GetExpenses {
-  expenses {
+query GetExpenses($options: ExpensesOptions) {
+  expenses(options: $options) {
     id
     description
     type

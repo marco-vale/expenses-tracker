@@ -31,10 +31,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     { onError },
   );
 
-  const isAuthenticated = useMemo<boolean>(() => {
-    return userToken !== null;
-  }, [userToken]);
-
   const user = useMemo<User | null>(() => {
     if (meData?.me) {
       return meData.me;
@@ -42,6 +38,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return null;
   }, [meData]);
+
+  const isAuthenticated = useMemo<boolean>(() => {
+    return userToken !== null && !!user;
+  }, [user, userToken]);
 
   const login = useCallback((email: string, password: string, onLogin?: () => void) => {
     loginMutation({
@@ -51,10 +51,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           password,
         },
       },
-    }).then((loginResult) => {
-      if (loginResult.data?.login) {
-        localStorage.setItem(LOCALSTORAGE_USERTOKEN_KEY, loginResult.data.login);
-        setUserToken(loginResult.data.login);
+    }).then((result) => {
+      if (result.data?.login) {
+        localStorage.setItem(LOCALSTORAGE_USERTOKEN_KEY, result.data.login);
+        setUserToken(result.data.login);
         onLogin?.();
       }
     });

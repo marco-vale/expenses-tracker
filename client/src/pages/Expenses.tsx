@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import ExpensesList from '../components/ExpensesList';
 import { Link } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client/react';
@@ -24,14 +24,23 @@ import { useDialog } from '../hooks/useDialog';
 import { useErrors } from '../hooks/useErrors';
 import { useAuth } from '../hooks/useAuth';
 import ExpensesSummary from '../components/ExpensesSummary';
+import { useCallback } from 'react';
 
 const Expenses: React.FC = () => {
   const { userToken } = useAuth();
   const { onError } = useErrors();
 
-  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery, GetExpensesQueryVariables>(
+  const { data: expensesData, loading: expensesLoading, refetch: refetchExpensesQuery } = useQuery<GetExpensesQuery, GetExpensesQueryVariables>(
     GetExpensesDocument,
-    { fetchPolicy: 'network-only' }
+    {
+      variables: {
+        options: {
+          page: 0,
+          rowsPerPage: 10,
+        },
+      },
+      fetchPolicy: 'network-only',
+    }
   );
 
   const { data: expensesSummaryData } = useQuery<GetExpensesSummaryQuery, GetExpensesSummaryQueryVariables>(
@@ -64,6 +73,10 @@ const Expenses: React.FC = () => {
   const expenses: Expense[] = expensesData?.expenses ?? [];
   const expensesSummary: ExpensesSummaryType | null = expensesSummaryData?.expensesSummary ?? null;
 
+  const refetchExpenses = useCallback((page: number, rowsPerPage: number) => {
+    refetchExpensesQuery({ options: { page, rowsPerPage } });
+  }, [refetchExpensesQuery]);
+
   const deleteExpense = (id: string) => {
     deleteExpenseMutation({
       variables: {
@@ -85,18 +98,12 @@ const Expenses: React.FC = () => {
         expensesSummary={expensesSummary}
       />
 
-      {expensesLoading && (
-        <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
-          <CircularProgress size={100} />
-        </Stack>
-      )}
-
-      {!expensesLoading && (
-        <ExpensesList
-          expenses={expenses}
-          openExpenseDeleteDialog={openExpenseDeleteDialog}
-        />
-      )}
+      <ExpensesList
+        expenses={expenses}
+        expensesLoading={expensesLoading}
+        refetchExpenses={refetchExpenses}
+        openExpenseDeleteDialog={openExpenseDeleteDialog}
+      />
 
       <Stack direction="row" spacing={2} marginTop="2rem">
         <Button
