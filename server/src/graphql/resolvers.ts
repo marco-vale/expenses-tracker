@@ -22,10 +22,19 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
 
-    expenseCategories: async (parent, { }, context) => {
-      return context.prisma.expenseCategory.findMany({
+    expenseCategories: async (parent, { options }, context) => {
+      const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany({
         orderBy: { name: 'asc' },
+        skip: options ? options.page * options.rowsPerPage : undefined,
+        take: options ? options.rowsPerPage : undefined,
       });
+
+      const count: number = await context.prisma.expenseCategory.count();
+
+      return {
+        expenseCategories,
+        count,
+      };
     },
 
     expenses: async (parent, { options }, context) => {
@@ -36,12 +45,17 @@ export const resolvers: Resolvers<GraphQLContext> = {
         take: options ? options.rowsPerPage : undefined,
       });
 
-      return expenses.map((e) => {
-        return {
-          ...e,
-          date: convertDateToString(e.date),
-        };
-      });
+      const count: number = await context.prisma.expense.count();
+
+      return {
+        expenses: expenses.map((e) => {
+          return {
+            ...e,
+            date: convertDateToString(e.date),
+          };
+        }),
+        count,
+      };
     },
 
     expense: async (parent, { id }, context) => {

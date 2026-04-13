@@ -16,24 +16,21 @@ import { useMemo } from 'react';
  * const { expenseCategories } = useExpenseCategories(true, false);
  * ```
  */
-export const useExpenseCategories = (
-  getAmount: boolean = true,
-  getDeletable: boolean = false,
-) => {
+export const useExpenseCategories = () => {
   const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery, GetExpenseCategoriesQueryVariables>(
     GetExpenseCategoriesDocument,
     {
       variables: {
-        getAmount,
-        getDeletable,
+        getAmount: false,
+        getDeletable: false,
       },
       fetchPolicy: 'network-only',
     }
   );
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
-    return expenseCategoriesData?.expenseCategories ?? [];
-  }, [expenseCategoriesData?.expenseCategories]);
+    return expenseCategoriesData?.expenseCategories?.expenseCategories ?? [];
+  }, [expenseCategoriesData?.expenseCategories?.expenseCategories]);
 
   return {
     expenseCategories,

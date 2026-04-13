@@ -11,7 +11,7 @@ import { useCallback } from 'react';
 import { useErrors } from '../hooks/useErrors';
 
 const CreateExpense: React.FC = () => {
-  const { expenseCategories } = useExpenseCategories(false);
+  const { expenseCategories } = useExpenseCategories();
   const navigate = useNavigate();
   const { onError } = useErrors();
 

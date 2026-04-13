@@ -70,7 +70,8 @@ const Expenses: React.FC = () => {
     close: closeExpenseDeleteDialog,
   } = useDialog<string>();
 
-  const expenses: Expense[] = expensesData?.expenses ?? [];
+  const expenses: Expense[] = expensesData?.expenses?.expenses ?? [];
+  const expensesCount: number = expensesData?.expenses?.count ?? 0;
   const expensesSummary: ExpensesSummaryType | null = expensesSummaryData?.expensesSummary ?? null;
 
   const refetchExpenses = useCallback((page: number, rowsPerPage: number) => {
@@ -100,6 +101,7 @@ const Expenses: React.FC = () => {
 
       <ExpensesList
         expenses={expenses}
+        expensesCount={expensesCount}
         expensesLoading={expensesLoading}
         refetchExpenses={refetchExpenses}
         openExpenseDeleteDialog={openExpenseDeleteDialog}

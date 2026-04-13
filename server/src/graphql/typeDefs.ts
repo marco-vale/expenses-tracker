@@ -16,6 +16,16 @@ export const typeDefs = `#graphql
     deletable: Boolean
   }
 
+  input ExpenseCategoriesOptions {
+    page: Int!
+    rowsPerPage: Int!
+  }
+
+  type ExpenseCategoriesReturn {
+    expenseCategories: [ExpenseCategory!]!
+    count: Int!
+  }
+
   enum ExpenseType {
     EXPENSE
     INCOME
@@ -33,6 +43,11 @@ export const typeDefs = `#graphql
   input ExpensesOptions {
     page: Int!
     rowsPerPage: Int!
+  }
+
+  type ExpensesReturn {
+    expenses: [Expense!]!
+    count: Int!
   }
 
   type ExpensesSummaryCategory {
@@ -101,9 +116,9 @@ export const typeDefs = `#graphql
   type Query {
     me(userToken: String!): User!
 
-    expenseCategories: [ExpenseCategory!]!
+    expenseCategories(options: ExpenseCategoriesOptions): ExpenseCategoriesReturn
 
-    expenses(options: ExpensesOptions): [Expense!]!
+    expenses(options: ExpensesOptions): ExpensesReturn
     expense(id: ID!): Expense!
 
     expensesSummary(userToken: String!): ExpensesSummary!

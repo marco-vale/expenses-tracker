@@ -1,13 +1,16 @@
 query GetExpenses($options: ExpensesOptions) {
   expenses(options: $options) {
-    id
-    description
-    type
-    amount
-    date
-    category {
+    expenses {
       id
-      name
+      description
+      type
+      amount
+      date
+      category {
+        id
+        name
+      }
     }
+    count
   }
 }

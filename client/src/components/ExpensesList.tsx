@@ -8,12 +8,19 @@ import { AppRoutes, buildRoute } from '../routes/routes';
 
 type ExpensesListProps = {
   expenses: Expense[];
+  expensesCount: number;
   expensesLoading: boolean;
   refetchExpenses: (page: number, rowsPerPage: number) => void;
   openExpenseDeleteDialog: (expenseId: string) => void;
 };
 
-const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, expensesLoading, refetchExpenses, openExpenseDeleteDialog }) => {
+const ExpensesList: React.FC<ExpensesListProps> = ({
+  expenses,
+  expensesCount,
+  expensesLoading,
+  refetchExpenses,
+  openExpenseDeleteDialog,
+}) => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
@@ -92,7 +99,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({ expenses, expensesLoading, 
           </Table>
           <TablePagination
             component="div"
-            count={-1}
+            count={expensesCount}
             page={page}
             onPageChange={handlePageChange}
             rowsPerPage={rowsPerPage}

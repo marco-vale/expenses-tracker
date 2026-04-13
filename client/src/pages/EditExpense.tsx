@@ -12,7 +12,7 @@ import { useErrors } from '../hooks/useErrors';
 
 const EditExpense: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { expenseCategories } = useExpenseCategories(false);
+  const { expenseCategories } = useExpenseCategories();
   const navigate = useNavigate();
   const { onError } = useErrors();
 

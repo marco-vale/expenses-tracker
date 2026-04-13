@@ -30,6 +30,17 @@ export type Expense = {
   type: ExpenseType;
 };
 
+export type ExpenseCategoriesOptions = {
+  page: Scalars['Int']['input'];
+  rowsPerPage: Scalars['Int']['input'];
+};
+
+export type ExpenseCategoriesReturn = {
+  __typename?: 'ExpenseCategoriesReturn';
+  count: Scalars['Int']['output'];
+  expenseCategories: Array<ExpenseCategory>;
+};
+
 export type ExpenseCategory = {
   __typename?: 'ExpenseCategory';
   amount?: Maybe<Scalars['Float']['output']>;
@@ -74,6 +85,12 @@ export type ExpensesImportInput = {
 export type ExpensesOptions = {
   page: Scalars['Int']['input'];
   rowsPerPage: Scalars['Int']['input'];
+};
+
+export type ExpensesReturn = {
+  __typename?: 'ExpensesReturn';
+  count: Scalars['Int']['output'];
+  expenses: Array<Expense>;
 };
 
 export type ExpensesSummary = {
@@ -164,8 +181,8 @@ export type MutationUpdateUserArgs = {
 export type Query = {
   __typename?: 'Query';
   expense: Expense;
-  expenseCategories: Array<ExpenseCategory>;
-  expenses: Array<Expense>;
+  expenseCategories?: Maybe<ExpenseCategoriesReturn>;
+  expenses?: Maybe<ExpensesReturn>;
   expensesSummary: ExpensesSummary;
   me: User;
 };
@@ -173,6 +190,11 @@ export type Query = {
 
 export type QueryExpenseArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryExpenseCategoriesArgs = {
+  options?: InputMaybe<ExpenseCategoriesOptions>;
 };
 
 
@@ -288,6 +310,8 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Expense: ResolverTypeWrapper<Expense>;
+  ExpenseCategoriesOptions: ExpenseCategoriesOptions;
+  ExpenseCategoriesReturn: ResolverTypeWrapper<ExpenseCategoriesReturn>;
   ExpenseCategory: ResolverTypeWrapper<ExpenseCategory>;
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
   ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
@@ -296,6 +320,7 @@ export type ResolversTypes = {
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
   ExpensesOptions: ExpensesOptions;
+  ExpensesReturn: ResolverTypeWrapper<ExpensesReturn>;
   ExpensesSummary: ResolverTypeWrapper<ExpensesSummary>;
   ExpensesSummaryCategory: ResolverTypeWrapper<ExpensesSummaryCategory>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
@@ -315,6 +340,8 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Expense: Expense;
+  ExpenseCategoriesOptions: ExpenseCategoriesOptions;
+  ExpenseCategoriesReturn: ExpenseCategoriesReturn;
   ExpenseCategory: ExpenseCategory;
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
   ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
@@ -322,6 +349,7 @@ export type ResolversParentTypes = {
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
   ExpensesOptions: ExpensesOptions;
+  ExpensesReturn: ExpensesReturn;
   ExpensesSummary: ExpensesSummary;
   ExpensesSummaryCategory: ExpensesSummaryCategory;
   Float: Scalars['Float']['output'];
@@ -346,6 +374,11 @@ export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends Re
   type?: Resolver<ResolversTypes['ExpenseType'], ParentType, ContextType>;
 };
 
+export type ExpenseCategoriesReturnResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpenseCategoriesReturn'] = ResolversParentTypes['ExpenseCategoriesReturn']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  expenseCategories?: Resolver<Array<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
+};
+
 export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpenseCategory'] = ResolversParentTypes['ExpenseCategory']> = {
   amount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   deletable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -354,6 +387,11 @@ export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType ex
 };
 
 export type ExpenseTypeResolvers = EnumResolverSignature<{ EXPENSE?: any, INCOME?: any }, ResolversTypes['ExpenseType']>;
+
+export type ExpensesReturnResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpensesReturn'] = ResolversParentTypes['ExpensesReturn']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType>;
+};
 
 export type ExpensesSummaryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpensesSummary'] = ResolversParentTypes['ExpensesSummary']> = {
   balance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -384,8 +422,8 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
-  expenseCategories?: Resolver<Array<ResolversTypes['ExpenseCategory']>, ParentType, ContextType>;
-  expenses?: Resolver<Array<ResolversTypes['Expense']>, ParentType, ContextType, Partial<QueryExpensesArgs>>;
+  expenseCategories?: Resolver<Maybe<ResolversTypes['ExpenseCategoriesReturn']>, ParentType, ContextType, Partial<QueryExpenseCategoriesArgs>>;
+  expenses?: Resolver<Maybe<ResolversTypes['ExpensesReturn']>, ParentType, ContextType, Partial<QueryExpensesArgs>>;
   expensesSummary?: Resolver<ResolversTypes['ExpensesSummary'], ParentType, ContextType, RequireFields<QueryExpensesSummaryArgs, 'userToken'>>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryMeArgs, 'userToken'>>;
 };
@@ -404,8 +442,10 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 
 export type Resolvers<ContextType = GraphQLContext> = {
   Expense?: ExpenseResolvers<ContextType>;
+  ExpenseCategoriesReturn?: ExpenseCategoriesReturnResolvers<ContextType>;
   ExpenseCategory?: ExpenseCategoryResolvers<ContextType>;
   ExpenseType?: ExpenseTypeResolvers;
+  ExpensesReturn?: ExpensesReturnResolvers<ContextType>;
   ExpensesSummary?: ExpensesSummaryResolvers<ContextType>;
   ExpensesSummaryCategory?: ExpensesSummaryCategoryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

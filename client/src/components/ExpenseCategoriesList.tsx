@@ -1,17 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { ExpenseCategory } from '../graphql/__generated__/graphql';
-import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 
 type ExpenseCategoriesListProps = {
   expenseCategories: ExpenseCategory[];
+  expenseCategoriesCount: number;
   expenseCategoriesLoading: boolean;
+  refetchExpenseCategories: (page: number, rowsPerPage: number) => void;
   openExpenseCategoryFormDialog: (expenseCategory: ExpenseCategory) => void;
   deleteExpenseCategory: (id: string) => void;
 }
 
-const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCategories, expenseCategoriesLoading, openExpenseCategoryFormDialog, deleteExpenseCategory }) => {
+const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
+  expenseCategories,
+  expenseCategoriesCount,
+  expenseCategoriesLoading,
+  refetchExpenseCategories,
+  openExpenseCategoryFormDialog,
+  deleteExpenseCategory,
+}) => {
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+  const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+    setPage(page);
+    refetchExpenseCategories(page, rowsPerPage);
+  };
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rowsPerPage: number = Number(event.target.value);
+
+    setPage(0);
+    setRowsPerPage(rowsPerPage);
+
+    refetchExpenseCategories(page, rowsPerPage);
+  };
+
   if (expenseCategoriesLoading) {
     return (
       <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
@@ -69,6 +95,15 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({ expenseCa
               ))}
             </TableBody>
           </Table>
+          <TablePagination
+            component="div"
+            count={expenseCategoriesCount}
+            page={page}
+            onPageChange={handlePageChange}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            rowsPerPageOptions={[5, 10, 25]}
+          />
         </TableContainer>
       )}
     </Stack>

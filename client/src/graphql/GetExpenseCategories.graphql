@@ -1,8 +1,11 @@
-query GetExpenseCategories($getAmount: Boolean!, $getDeletable: Boolean!) {
-  expenseCategories {
-    id
-    name
-    amount @include(if: $getAmount)
-    deletable @include(if: $getDeletable)
+query GetExpenseCategories($options: ExpenseCategoriesOptions, $getAmount: Boolean! = true, $getDeletable: Boolean! = true) {
+  expenseCategories(options: $options) {
+    expenseCategories {
+      id
+      name
+      amount @include(if: $getAmount)
+      deletable @include(if: $getDeletable)
+    }
+    count
   }
 }
