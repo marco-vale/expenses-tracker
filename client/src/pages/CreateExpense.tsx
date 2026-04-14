@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useMutation } from '@apollo/client/react';
 import { Link, useNavigate } from 'react-router';
 import { CreateExpenseDocument, type CreateExpenseMutation, type CreateExpenseMutationVariables } from '../graphql/__generated__/graphql';
@@ -9,6 +9,7 @@ import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { formatNumberString } from '../tools/formatNumberString';
 import { useCallback } from 'react';
 import { useErrors } from '../hooks/useErrors';
+import { Add, ArrowBack } from '@mui/icons-material';
 
 const CreateExpense: React.FC = () => {
   const { expenseCategories } = useExpenseCategories();
@@ -38,7 +39,7 @@ const CreateExpense: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Add Expense
       </Typography>
 
@@ -48,11 +49,11 @@ const CreateExpense: React.FC = () => {
           onSubmit={onSubmit}
         />
 
-        <div>
+        <Stack direction="row" spacing={2}>
           <Button
-            type="button"
-            variant="outlined"
-            style={{ marginRight: '1rem' }}
+            variant="text"
+            startIcon={<ArrowBack fontSize="small" />}
+            sx={{ textTransform: 'none' }}
             component={Link}
             to={AppRoutes.Expenses}
           >
@@ -61,11 +62,12 @@ const CreateExpense: React.FC = () => {
           <Button
             type="submit"
             form="expenseForm"
-            variant="contained"
+            variant="outlined"
+            startIcon={<Add />}
           >
             Add
           </Button>
-        </div>
+        </Stack>
       </Grid>
     </>
   );

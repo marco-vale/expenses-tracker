@@ -8,8 +8,9 @@ import type { EditUserFormValues } from '../types/types';
 import { useAuth } from '../hooks/useAuth';
 import { AppRoutes } from '../routes/routes';
 import * as Yup from 'yup';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import UserFormProfile from '../components/UserFormProfile';
+import { ArrowBack, Save } from '@mui/icons-material';
 
 const EditUser: React.FC = () => {
   const { user } = useAuth();
@@ -28,7 +29,7 @@ const EditUser: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Edit Profile
       </Typography>
 
@@ -64,25 +65,25 @@ const EditUser: React.FC = () => {
           )}
         </Formik>
 
-        <div>
+        <Stack direction="row" spacing={2}>
           <Button
-            type="button"
-            variant="outlined"
-            style={{ marginRight: '1rem' }}
+            variant="text"
+            startIcon={<ArrowBack fontSize="small" />}
+            sx={{ textTransform: 'none' }}
             component={Link}
-            to={AppRoutes.Login}
+            to={AppRoutes.Expenses}
           >
             Back
           </Button>
           <Button
             type="submit"
             form="userForm"
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            startIcon={<Save />}
           >
             Save
           </Button>
-        </div>
+        </Stack>
       </Grid>
     </>
   );

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, Stack, TextField, Typography } from '@mui/material';
 import { AppRoutes } from '../routes/routes';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
 import { useFormik } from 'formik';
 import type { LoginFormValues } from '../types/types';
 import * as Yup from 'yup';
+import { PersonAdd, ExitToApp } from '@mui/icons-material';
 
 const Login: React.FC = () => {
   const { login } = useAuth();
@@ -33,7 +34,7 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Login
       </Typography>
 
@@ -72,11 +73,10 @@ const Login: React.FC = () => {
           </div>
         </form>
 
-        <div>
+        <Stack direction="row" spacing={2}>
           <Button
-            type="button"
             variant="outlined"
-            style={{ marginRight: '1rem' }}
+            startIcon={<PersonAdd />}
             component={Link}
             to={AppRoutes.CreateUser}
           >
@@ -85,12 +85,12 @@ const Login: React.FC = () => {
           <Button
             type="submit"
             form="userForm"
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            startIcon={<ExitToApp />}
           >
             Sign In
           </Button>
-        </div>
+        </Stack>
       </Grid>
     </>
   );

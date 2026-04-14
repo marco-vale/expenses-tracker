@@ -47,7 +47,7 @@ const UserFormProfile: React.FC<UserFormProfileProps> = ({ user }) => {
       </Box>
 
       {(formik.values.picture || user?.picture) && (
-        <Box sx={{ marginTop: '1rem' }}>
+        <Box sx={{ mt: '1rem' }}>
           <img
             src={
               formik.values.picture

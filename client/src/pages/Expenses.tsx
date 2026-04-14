@@ -25,6 +25,7 @@ import { useErrors } from '../hooks/useErrors';
 import { useAuth } from '../hooks/useAuth';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { useCallback } from 'react';
+import { Add, Delete, FileUpload } from '@mui/icons-material';
 
 const Expenses: React.FC = () => {
   const { userToken } = useAuth();
@@ -88,7 +89,7 @@ const Expenses: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Expenses
       </Typography>
       <Typography variant="body1" align="center" gutterBottom>
@@ -109,22 +110,25 @@ const Expenses: React.FC = () => {
 
       <Stack direction="row" spacing={2} marginTop="2rem">
         <Button
-          variant="contained"
+          variant="outlined"
+          startIcon={<Add />}
           component={Link}
           to={AppRoutes.CreateExpense}
         >
           Add Expense
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
+          startIcon={<FileUpload />}
           component={Link}
           to={AppRoutes.ImportExpenses}
         >
           Import Expenses
         </Button>
         <Button
+          variant="outlined"
           color="error"
-          variant="contained"
+          startIcon={<Delete />}
           onClick={() => deleteAllMutation()}
         >
           Delete All

@@ -5,6 +5,7 @@ import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import { AppRoutes, buildRoute } from '../routes/routes';
+import { Link } from 'react-router';
 
 type ExpensesListProps = {
   expenses: Expense[];
@@ -81,7 +82,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
                     <Stack direction="row" alignItems="center">
                       <Tooltip title="Edit expense">
                         <span>
-                          <IconButton size="small" color="primary" href={buildRoute(AppRoutes.EditExpense, e.id)}>
+                          <IconButton size="small" color="primary" component={Link} to={buildRoute(AppRoutes.EditExpense, e.id)}>
                             <Edit fontSize="small" />
                           </IconButton>
                         </span>

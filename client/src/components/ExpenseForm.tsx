@@ -31,7 +31,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
     initialValues: {
       description: expense?.description ?? '',
       type: expense?.type ?? ExpenseType.Expense,
-      amount: expense?.amount.toString() ?? '',
+      amount: expense?.amount ? Math.abs(expense.amount).toString() : '',
       date: expense?.date
         ? new Date(expense.date).toISOString().slice(0, 16)
         : new Date().toISOString().slice(0, 16),
@@ -118,7 +118,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.categoryId}
-          slotProps={{ inputLabel: { shrink: true } }}
+          slotProps={{ inputLabel: { shrink: true }, select: { displayEmpty: true }, }}
           error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
           helperText={formik.touched.categoryId && formik.errors.categoryId ? formik.errors.categoryId : ''}
         >

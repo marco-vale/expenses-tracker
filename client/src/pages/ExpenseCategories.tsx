@@ -7,6 +7,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import type { ExpenseCategoryFormValues } from '../types/types';
 import { useErrors } from '../hooks/useErrors';
+import { Add } from '@mui/icons-material';
 
 const ExpenseCategories: React.FC = () => {
   const { onError } = useErrors();
@@ -84,11 +85,11 @@ const ExpenseCategories: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
-        Expense Categories
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
+        Categories
       </Typography>
       <Typography variant="body1" align="center" gutterBottom>
-        Manage your expense categories here.
+        Manage your categories here.
       </Typography>
 
       <ExpenseCategoriesList
@@ -102,7 +103,8 @@ const ExpenseCategories: React.FC = () => {
 
       <Stack direction="row" spacing={2} marginTop="2rem">
         <Button
-          variant="contained"
+          variant="outlined"
+          startIcon={<Add />}
           onClick={() => openExpenseCategoryFormDialog()}
         >
           Add Category

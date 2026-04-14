@@ -24,7 +24,9 @@ import EditUser from './pages/EditUser.tsx'
 const theme = createTheme({
   palette: {
     mode: 'light',
+    primary: { main: '#37474f' },
   },
+  shape: { borderRadius: 0 },
 })
 
 createRoot(document.getElementById('root')!).render(

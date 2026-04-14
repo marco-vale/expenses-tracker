@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Avatar, Box, Button, Container, Typography } from '@mui/material';
+import { Avatar, Box, Container, Divider, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
 import { Category, Euro, Logout } from '@mui/icons-material';
@@ -60,42 +60,39 @@ const MainLayout: React.FC = () => {
             width: 240,
             borderRight: 1,
             borderColor: 'divider',
-            p: 2,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
+            bgcolor: 'grey.50',
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
+          <List disablePadding>
+            <ListItemButton
               component={Link}
               to={AppRoutes.Expenses}
-              variant={location.pathname === AppRoutes.Expenses ? 'contained' : 'outlined'}
-              fullWidth
+              selected={location.pathname === AppRoutes.Expenses}
             >
-              <Euro sx={{ mr: 1 }} />
-              Expenses
-            </Button>
-            <Button
+              <ListItemIcon><Euro /></ListItemIcon>
+              <ListItemText primary="Expenses" />
+            </ListItemButton>
+
+            <ListItemButton
               component={Link}
               to={AppRoutes.ExpenseCategories}
-              variant={location.pathname === AppRoutes.ExpenseCategories ? 'contained' : 'outlined'}
-              fullWidth
+              selected={location.pathname === AppRoutes.ExpenseCategories}
             >
-              <Category sx={{ mr: 1 }} />
-              Categories
-            </Button>
-          </Box>
+              <ListItemIcon><Category /></ListItemIcon>
+              <ListItemText primary="Categories" />
+            </ListItemButton>
+          </List>
 
-          <Button
-            variant="outlined"
-            color="error"
-            fullWidth
-            onClick={handleLogout}
-          >
-            <Logout sx={{ mr: 1 }} />
-            Logout
-          </Button>
+          <List disablePadding>
+            <Divider />
+            <ListItemButton onClick={handleLogout}>
+              <ListItemIcon><Logout color="error" /></ListItemIcon>
+              <ListItemText primary="Logout" sx={{ color: 'error.main' }} />
+            </ListItemButton>
+          </List>
         </Box>
 
         <Box
@@ -108,7 +105,7 @@ const MainLayout: React.FC = () => {
         >
           <ErrorsAlert />
 
-          <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
+          <Container maxWidth="lg" sx={{ mt: '2rem' }}>
             <Outlet />
           </Container>
         </Box>

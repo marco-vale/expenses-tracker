@@ -17,7 +17,7 @@ const AuthLayout: React.FC = () => {
         >
           <ErrorsAlert />
 
-          <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
+          <Container maxWidth="lg" sx={{ mt: '2rem' }}>
             <Outlet />
           </Container>
         </Box>

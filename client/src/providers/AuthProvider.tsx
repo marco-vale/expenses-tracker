@@ -15,7 +15,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const { onError } = useErrors();
 
-  const { data: meData, error: meError } = useQuery<MeQuery, MeQueryVariables>(
+  const { data: meData, loading: meLoading, error: meError } = useQuery<MeQuery, MeQueryVariables>(
     MeDocument,
     {
       variables: {
@@ -71,7 +71,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ userToken, user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ userToken, user, userLoading: meLoading, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

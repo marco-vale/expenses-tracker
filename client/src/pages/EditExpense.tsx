@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client/react';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useCallback, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { GetExpenseDocument, UpdateExpenseDocument, type Expense, type GetExpenseQuery, type GetExpenseQueryVariables, type UpdateExpenseMutation, type UpdateExpenseMutationVariables } from '../graphql/__generated__/graphql';
@@ -9,6 +9,7 @@ import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import { formatNumberString } from '../tools/formatNumberString';
 import { useErrors } from '../hooks/useErrors';
+import { ArrowBack, Save } from '@mui/icons-material';
 
 const EditExpense: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,7 +59,7 @@ const EditExpense: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Edit Expense
       </Typography>
 
@@ -71,11 +72,11 @@ const EditExpense: React.FC = () => {
               onSubmit={onSubmit}
             />
 
-            <div>
+            <Stack direction="row" spacing={2}>
               <Button
-                type="button"
-                variant="outlined"
-                style={{ marginRight: '1rem' }}
+                variant="text"
+                startIcon={<ArrowBack fontSize="small" />}
+                sx={{ textTransform: 'none' }}
                 component={Link}
                 to={AppRoutes.Expenses}
               >
@@ -84,11 +85,12 @@ const EditExpense: React.FC = () => {
               <Button
                 type="submit"
                 form="expenseForm"
-                variant="contained"
+                variant="outlined"
+                startIcon={<Save />}
               >
                 Save
               </Button>
-            </div>
+            </Stack>
           </>
         )}
       </Grid>

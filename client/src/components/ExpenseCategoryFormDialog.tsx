@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import type { ExpenseCategoryFormValues } from '../types/types';
 import * as Yup from 'yup';
 import type { ExpenseCategory } from '../graphql/__generated__/graphql';
+import { Add, ArrowBack } from '@mui/icons-material';
 
 type ExpenseCategoryFormDialogProps = {
   open: boolean;
@@ -58,14 +59,17 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ o
         </DialogContent>
         <DialogActions>
           <Button
-            variant="outlined"
+            variant="text"
+            startIcon={<ArrowBack fontSize="small" />}
+            sx={{ textTransform: 'none' }}
             onClick={handleClose}
           >
             Back
           </Button>
           <Button
             type="submit"
-            variant="contained"
+            variant="outlined"
+            startIcon={<Add />}
           >
             {expenseCategory?.id ? 'Save' : 'Add'}
           </Button>

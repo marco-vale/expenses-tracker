@@ -1,4 +1,4 @@
-import { Button, FormControlLabel, Grid, Switch, TextField, Typography } from '@mui/material';
+import { Button, FormControlLabel, Grid, Stack, Switch, TextField, Typography } from '@mui/material';
 import React from "react";
 import { Link, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
@@ -8,6 +8,7 @@ import type { ExpensesImportFormValues } from '../types/types';
 import { ImportExpensesDocument, type ImportExpensesMutation, type ImportExpensesMutationVariables } from '../graphql/__generated__/graphql';
 import { useMutation } from '@apollo/client/react';
 import { useErrors } from '../hooks/useErrors';
+import { ArrowBack, FileUpload } from '@mui/icons-material';
 
 const ImportExpenses: React.FC = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const ImportExpenses: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Import Expenses
       </Typography>
 
@@ -89,11 +90,11 @@ const ImportExpenses: React.FC = () => {
           />
         </form>
 
-        <div>
+        <Stack direction="row" spacing={2}>
           <Button
-            type="button"
-            variant="outlined"
-            style={{ marginRight: '1rem' }}
+            variant="text"
+            startIcon={<ArrowBack fontSize="small" />}
+            sx={{ textTransform: 'none' }}
             component={Link}
             to={AppRoutes.Expenses}
           >
@@ -102,11 +103,12 @@ const ImportExpenses: React.FC = () => {
           <Button
             type="submit"
             form="expensesImportForm"
-            variant="contained"
+            variant="outlined"
+            startIcon={<FileUpload />}
           >
             Import
           </Button>
-        </div>
+        </Stack>
       </Grid>
     </>
   );

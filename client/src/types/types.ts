@@ -8,6 +8,7 @@ export enum AuthRouteMode {
 export type AuthContextData = {
   userToken: string | null;
   user: User | null;
+  userLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string, onLogin?: () => void) => void;
   logout: (onLogout?: () => void) => void;

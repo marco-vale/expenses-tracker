@@ -1,4 +1,4 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, Stack, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { AppRoutes } from '../routes/routes';
 import { Link, useNavigate } from 'react-router';
@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { useErrors } from '../hooks/useErrors';
 import { formatNumberString } from '../tools/formatNumberString';
 import UserFormProfile from '../components/UserFormProfile';
+import { ArrowBack, PersonAdd } from '@mui/icons-material';
 
 export const CreateUser: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export const CreateUser: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h3" align="center" gutterBottom style={{ marginTop: '2rem' }}>
+      <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
         Sign Up
       </Typography>
 
@@ -121,11 +122,11 @@ export const CreateUser: React.FC = () => {
           )}
         </Formik>
 
-        <div>
+        <Stack direction="row" spacing={2}>
           <Button
-            type="button"
-            variant="outlined"
-            style={{ marginRight: '1rem' }}
+            variant="text"
+            startIcon={<ArrowBack fontSize="small" />}
+            sx={{ textTransform: 'none' }}
             component={Link}
             to={AppRoutes.Login}
           >
@@ -134,12 +135,12 @@ export const CreateUser: React.FC = () => {
           <Button
             type="submit"
             form="userForm"
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            startIcon={<PersonAdd />}
           >
             Sign Up
           </Button>
-        </div>
+        </Stack>
       </Grid>
     </>
   );

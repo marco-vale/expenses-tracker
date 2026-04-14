@@ -1,3 +1,4 @@
+import { ArrowBack, Delete } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import type React from 'react';
 import { useCallback } from 'react';
@@ -23,13 +24,16 @@ const ExpenseDeleteDialog: React.FC<ExpenseDeleteDialogProps> = ({ open, expense
       </DialogContent>
       <DialogActions>
         <Button
-          variant="outlined"
+          variant="text"
+          startIcon={<ArrowBack fontSize="small" />}
+          sx={{ textTransform: 'none' }}
           onClick={close}
         >
-          Cancel
+          Back
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
+          startIcon={<Delete />}
           color="error"
           onClick={handleDelete}
         >

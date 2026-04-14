@@ -3,17 +3,15 @@ import { GetExpenseCategoriesDocument, type ExpenseCategory, type GetExpenseCate
 import { useMemo } from 'react';
 
 /**
- * Custom hook to fetch expense categories.
- *
- * @param getAmount - Whether to include the expenses amount in the query. Defaults to `true`.
- * @param getDeletable - Whether to include if the category is deletable in the query. Defaults to `false`.
+ * Custom hook to fetch expense categories, intended to be used in forms.
  *
  * @returns An object containing:
  * - `expenseCategories`: An array of expense categories retrieved from the GraphQL query.
+ * - `expenseCategoriesLoading`: A boolean indicating whether the query is currently loading.
  *
  * @example
  * ```tsx
- * const { expenseCategories } = useExpenseCategories(true, false);
+ * const { expenseCategories, expenseCategoriesLoading } = useExpenseCategories();
  * ```
  */
 export const useExpenseCategories = () => {
@@ -29,7 +27,13 @@ export const useExpenseCategories = () => {
   );
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
-    return expenseCategoriesData?.expenseCategories?.expenseCategories ?? [];
+    return [
+      {
+        id: '',
+        name: 'Uncategorized',
+      },
+      ...(expenseCategoriesData?.expenseCategories?.expenseCategories ?? [])
+    ];
   }, [expenseCategoriesData?.expenseCategories?.expenseCategories]);
 
   return {
