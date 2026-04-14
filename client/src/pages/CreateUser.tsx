@@ -103,20 +103,6 @@ export const CreateUser: React.FC = () => {
                 />
 
                 <UserFormProfile />
-
-                <TextField
-                  id="startingBalance"
-                  name="startingBalance"
-                  label="Starting balance"
-                  fullWidth
-                  margin="normal"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.startingBalance}
-                  slotProps={{ inputLabel: { shrink: true } }}
-                  error={touched.startingBalance && Boolean(errors.startingBalance)}
-                  helperText={touched.startingBalance && errors.startingBalance}
-                />
               </div>
             </form>
           )}

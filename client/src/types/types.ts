@@ -27,12 +27,12 @@ export type LoginFormValues = {
 export type UserFormProfileValues = {
   name?: string;
   picture?: File;
+  startingBalance?: string;
 };
 
 export type CreateUserFormValues = {
   email: string;
   password: string;
-  startingBalance?: string;
 } & UserFormProfileValues;
 
 export type EditUserFormValues = UserFormProfileValues;

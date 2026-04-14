@@ -38,6 +38,7 @@ const EditUser: React.FC = () => {
           initialValues={{
             name: user?.name ?? undefined,
             picture: undefined,
+            startingBalance: user?.startingBalance ? user.startingBalance.toString() : '',
           }}
           validationSchema={validationSchema}
           validateOnChange={false}

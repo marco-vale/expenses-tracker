@@ -50,9 +50,11 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
   return (
     <Stack width="100%" marginTop="2rem" spacing={2}>
       {expenses.length === 0 && (
-        <Typography variant="h6" align="center" gutterBottom>
-          No expenses found.
-        </Typography>
+        <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+          <Typography variant="h6" gutterBottom>
+            No expenses found.
+          </Typography>
+        </Paper>
       )}
 
       {expenses.length > 0 && (
@@ -81,14 +83,21 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center">
                       <Tooltip title="Edit expense">
-                        <span>
-                          <IconButton size="small" color="primary" component={Link} to={buildRoute(AppRoutes.EditExpense, e.id)}>
-                            <Edit fontSize="small" />
-                          </IconButton>
-                        </span>
+                        <IconButton
+                          size="small"
+                          sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+                          component={Link}
+                          to={buildRoute(AppRoutes.EditExpense, e.id)}
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete expense">
-                        <IconButton size="small" color="error" onClick={() => openExpenseDeleteDialog(e.id)}>
+                        <IconButton
+                          size="small"
+                          sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }}
+                          onClick={() => openExpenseDeleteDialog(e.id)}
+                        >
                           <Delete fontSize="small" />
                         </IconButton>
                       </Tooltip>

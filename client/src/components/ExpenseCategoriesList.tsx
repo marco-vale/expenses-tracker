@@ -49,9 +49,11 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
   return (
     <Stack width="100%" marginTop="2rem" spacing={2}>
       {expenseCategories.length === 0 && (
-        <Typography variant="h6" align="center" gutterBottom>
-          No expense categories found.
-        </Typography>
+        <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+          <Typography variant="h6" align="center" gutterBottom>
+            No categories found.
+          </Typography>
+        </Paper>
       )}
 
       {expenseCategories.length > 0 && (
@@ -76,18 +78,23 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
                   <TableCell>
                     <Stack direction="row" alignItems="center">
                       <Tooltip title="Edit category">
-                        <span>
-                          <IconButton size="small" color="primary" onClick={() => openExpenseCategoryFormDialog(ec)}>
-                            <Edit fontSize="small" />
-                          </IconButton>
-                        </span>
+                        <IconButton
+                          size="small"
+                          sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+                          onClick={() => openExpenseCategoryFormDialog(ec)}
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
                       </Tooltip>
                       <Tooltip title={ec.deletable ? "Delete category" : "This category is in use and cannot be deleted"}>
-                        <span>
-                          <IconButton size="small" color="error" disabled={!ec.deletable} onClick={() => deleteExpenseCategory(ec.id)}>
-                            <Delete fontSize="small" />
-                          </IconButton>
-                        </span>
+                        <IconButton
+                          size="small"
+                          sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }}
+                          disabled={!ec.deletable}
+                          onClick={() => deleteExpenseCategory(ec.id)}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
                       </Tooltip>
                     </Stack>
                   </TableCell>
