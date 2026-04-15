@@ -2,7 +2,7 @@ import { createWriteStream, mkdirSync } from 'fs';
 import { FileUpload } from 'graphql-upload/processRequest.mjs';
 import path from 'path';
 
-export const uploadFile = async (file?: Promise<FileUpload>): Promise<string | undefined> => {
+const uploadFile = async (file?: Promise<FileUpload>): Promise<string | undefined> => {
   if (!file) {
     return undefined;
   }
@@ -26,3 +26,5 @@ export const uploadFile = async (file?: Promise<FileUpload>): Promise<string | u
 
   return filePath;
 };
+
+export default uploadFile;

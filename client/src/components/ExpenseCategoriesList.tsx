@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { ExpenseCategory } from '../graphql/__generated__/graphql';
-import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
+import { OrderDirection, type ExpenseCategory, type QueryOptions } from '../graphql/__generated__/graphql';
+import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 
@@ -8,7 +8,7 @@ type ExpenseCategoriesListProps = {
   expenseCategories: ExpenseCategory[];
   expenseCategoriesCount: number;
   expenseCategoriesLoading: boolean;
-  refetchExpenseCategories: (page: number, rowsPerPage: number) => void;
+  refetchExpenseCategories: (options: QueryOptions) => void;
   openExpenseCategoryFormDialog: (expenseCategory: ExpenseCategory) => void;
   deleteExpenseCategory: (id: string) => void;
 }
@@ -23,10 +23,30 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
 }) => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [orderBy, setOrderBy] = useState<string>('name');
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Asc);
+
+  const handleSort = (orderBy: string, orderDirection: OrderDirection) => {
+    setOrderBy(orderBy);
+    setOrderDirection(orderDirection);
+
+    refetchExpenseCategories({
+      page,
+      rowsPerPage,
+      orderBy,
+      orderDirection,
+    });
+  }
 
   const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
     setPage(page);
-    refetchExpenseCategories(page, rowsPerPage);
+
+    refetchExpenseCategories({
+      page,
+      rowsPerPage,
+      orderBy,
+      orderDirection,
+    });
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +55,12 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
     setPage(0);
     setRowsPerPage(rowsPerPage);
 
-    refetchExpenseCategories(page, rowsPerPage);
+    refetchExpenseCategories({
+      page,
+      rowsPerPage,
+      orderBy,
+      orderDirection,
+    });
   };
 
   if (expenseCategoriesLoading) {
@@ -61,7 +86,15 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'name'}
+                    direction={orderBy === 'name' ? orderDirection : OrderDirection.Asc}
+                    onClick={() => handleSort('name', orderBy === 'name' && orderDirection === OrderDirection.Asc ? OrderDirection.Desc : OrderDirection.Asc)}
+                  >
+                    Name
+                  </TableSortLabel>
+                </TableCell>
                 <TableCell>Amount</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>

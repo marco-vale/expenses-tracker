@@ -1,4 +1,4 @@
-query GetExpenses($options: ExpensesOptions) {
+query GetExpenses($options: QueryOptions) {
   expenses(options: $options) {
     expenses {
       id

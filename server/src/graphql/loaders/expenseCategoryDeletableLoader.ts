@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
 import { PrismaClient } from '../../../generated/prisma/client';
-import { handleException } from '../../tools/handleException';
+import handleException from '../../helpers/handleException';
 
 export const expenseCategoryDeletableLoader = (prisma: PrismaClient) => {
   return new DataLoader<string, boolean>(async (categoryIds: readonly string[]) => {

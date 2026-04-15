@@ -1,4 +1,4 @@
-query GetExpenseCategories($options: ExpenseCategoriesOptions, $getAmount: Boolean! = true, $getDeletable: Boolean! = true) {
+query GetExpenseCategories($options: QueryOptions, $getAmount: Boolean! = true, $getDeletable: Boolean! = true) {
   expenseCategories(options: $options) {
     expenseCategories {
       id

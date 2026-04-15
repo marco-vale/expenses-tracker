@@ -1,4 +1,4 @@
-export const handleException = (ex: unknown): Error => {
+const handleException = (ex: unknown): Error => {
   console.log(ex);
 
   if (ex instanceof Error) {
@@ -7,3 +7,5 @@ export const handleException = (ex: unknown): Error => {
 
   return new Error('Unknown error');
 };
+
+export default handleException;

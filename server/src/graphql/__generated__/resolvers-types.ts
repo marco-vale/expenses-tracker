@@ -30,11 +30,6 @@ export type Expense = {
   type: ExpenseType;
 };
 
-export type ExpenseCategoriesOptions = {
-  page: Scalars['Int']['input'];
-  rowsPerPage: Scalars['Int']['input'];
-};
-
 export type ExpenseCategoriesReturn = {
   __typename?: 'ExpenseCategoriesReturn';
   count: Scalars['Int']['output'];
@@ -80,11 +75,6 @@ export type ExpenseUpdateInput = {
 export type ExpensesImportInput = {
   file: Scalars['Upload']['input'];
   importCategories?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-export type ExpensesOptions = {
-  page: Scalars['Int']['input'];
-  rowsPerPage: Scalars['Int']['input'];
 };
 
 export type ExpensesReturn = {
@@ -178,6 +168,11 @@ export type MutationUpdateUserArgs = {
   user: UserUpdateInput;
 };
 
+export enum OrderDirection {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
 export type Query = {
   __typename?: 'Query';
   expense: Expense;
@@ -194,12 +189,12 @@ export type QueryExpenseArgs = {
 
 
 export type QueryExpenseCategoriesArgs = {
-  options?: InputMaybe<ExpenseCategoriesOptions>;
+  options?: InputMaybe<QueryOptions>;
 };
 
 
 export type QueryExpensesArgs = {
-  options?: InputMaybe<ExpensesOptions>;
+  options?: InputMaybe<QueryOptions>;
 };
 
 
@@ -210,6 +205,13 @@ export type QueryExpensesSummaryArgs = {
 
 export type QueryMeArgs = {
   userToken: Scalars['String']['input'];
+};
+
+export type QueryOptions = {
+  orderBy?: InputMaybe<Scalars['String']['input']>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  rowsPerPage?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type User = {
@@ -310,7 +312,6 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Expense: ResolverTypeWrapper<Expense>;
-  ExpenseCategoriesOptions: ExpenseCategoriesOptions;
   ExpenseCategoriesReturn: ResolverTypeWrapper<ExpenseCategoriesReturn>;
   ExpenseCategory: ResolverTypeWrapper<ExpenseCategory>;
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
@@ -319,7 +320,6 @@ export type ResolversTypes = {
   ExpenseType: ExpenseType;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
-  ExpensesOptions: ExpensesOptions;
   ExpensesReturn: ResolverTypeWrapper<ExpensesReturn>;
   ExpensesSummary: ResolverTypeWrapper<ExpensesSummary>;
   ExpensesSummaryCategory: ResolverTypeWrapper<ExpensesSummaryCategory>;
@@ -328,7 +328,9 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  OrderDirection: OrderDirection;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  QueryOptions: QueryOptions;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
   User: ResolverTypeWrapper<User>;
@@ -340,7 +342,6 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Expense: Expense;
-  ExpenseCategoriesOptions: ExpenseCategoriesOptions;
   ExpenseCategoriesReturn: ExpenseCategoriesReturn;
   ExpenseCategory: ExpenseCategory;
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
@@ -348,7 +349,6 @@ export type ResolversParentTypes = {
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
   ExpensesImportInput: ExpensesImportInput;
-  ExpensesOptions: ExpensesOptions;
   ExpensesReturn: ExpensesReturn;
   ExpensesSummary: ExpensesSummary;
   ExpensesSummaryCategory: ExpensesSummaryCategory;
@@ -358,6 +358,7 @@ export type ResolversParentTypes = {
   LoginInput: LoginInput;
   Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
+  QueryOptions: QueryOptions;
   String: Scalars['String']['output'];
   Upload: Scalars['Upload']['output'];
   User: User;

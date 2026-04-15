@@ -1,6 +1,6 @@
-import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
 import React, { useState } from "react";
-import { ExpenseType, type Expense } from '../graphql/__generated__/graphql';
+import { ExpenseType, OrderDirection, type Expense, type QueryOptions } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
@@ -11,7 +11,7 @@ type ExpensesListProps = {
   expenses: Expense[];
   expensesCount: number;
   expensesLoading: boolean;
-  refetchExpenses: (page: number, rowsPerPage: number) => void;
+  refetchExpenses: (options: QueryOptions) => void;
   openExpenseDeleteDialog: (expenseId: string) => void;
 };
 
@@ -24,10 +24,30 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
 }) => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [orderBy, setOrderBy] = useState<string>('date');
+  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Desc);
+
+  const handleSort = (orderBy: string, orderDirection: OrderDirection) => {
+    setOrderBy(orderBy);
+    setOrderDirection(orderDirection);
+
+    refetchExpenses({
+      page,
+      rowsPerPage,
+      orderBy,
+      orderDirection,
+    });
+  }
 
   const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
     setPage(page);
-    refetchExpenses(page, rowsPerPage);
+
+    refetchExpenses({
+      page,
+      rowsPerPage,
+      orderBy,
+      orderDirection,
+    });
   };
 
   const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +56,12 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
     setPage(0);
     setRowsPerPage(rowsPerPage);
 
-    refetchExpenses(page, rowsPerPage);
+    refetchExpenses({
+      page,
+      rowsPerPage,
+      orderBy,
+      orderDirection,
+    });
   };
 
   if (expensesLoading) {
@@ -62,9 +87,33 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Description</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Date</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'description'}
+                    direction={orderBy === 'description' ? orderDirection : OrderDirection.Asc}
+                    onClick={() => handleSort('description', orderBy === 'description' && orderDirection === OrderDirection.Asc ? OrderDirection.Desc : OrderDirection.Asc)}
+                  >
+                    Description
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'amount'}
+                    direction={orderBy === 'amount' ? orderDirection : OrderDirection.Asc}
+                    onClick={() => handleSort('amount', orderBy === 'amount' && orderDirection === OrderDirection.Asc ? OrderDirection.Desc : OrderDirection.Asc)}
+                  >
+                    Amount
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'date'}
+                    direction={orderBy === 'date' ? orderDirection : OrderDirection.Asc}
+                    onClick={() => handleSort('date', orderBy === 'date' && orderDirection === OrderDirection.Asc ? OrderDirection.Desc : OrderDirection.Asc)}
+                  >
+                    Date
+                  </TableSortLabel>
+                </TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>

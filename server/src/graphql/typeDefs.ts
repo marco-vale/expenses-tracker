@@ -1,6 +1,18 @@
 export const typeDefs = `#graphql
   scalar Upload
 
+  enum OrderDirection {
+    asc
+    desc
+  }
+
+  input QueryOptions {
+    page: Int
+    rowsPerPage: Int
+    orderBy: String
+    orderDirection: OrderDirection
+  }
+
   type User {
     id: ID!
     email: String!
@@ -14,11 +26,6 @@ export const typeDefs = `#graphql
     name: String!
     amount: Float
     deletable: Boolean
-  }
-
-  input ExpenseCategoriesOptions {
-    page: Int!
-    rowsPerPage: Int!
   }
 
   type ExpenseCategoriesReturn {
@@ -38,11 +45,6 @@ export const typeDefs = `#graphql
     amount: Float!
     date: String!
     category: ExpenseCategory
-  }
-
-  input ExpensesOptions {
-    page: Int!
-    rowsPerPage: Int!
   }
 
   type ExpensesReturn {
@@ -116,9 +118,9 @@ export const typeDefs = `#graphql
   type Query {
     me(userToken: String!): User!
 
-    expenseCategories(options: ExpenseCategoriesOptions): ExpenseCategoriesReturn
+    expenseCategories(options: QueryOptions): ExpenseCategoriesReturn
 
-    expenses(options: ExpensesOptions): ExpensesReturn
+    expenses(options: QueryOptions): ExpensesReturn
     expense(id: ID!): Expense!
 
     expensesSummary(userToken: String!): ExpensesSummary!

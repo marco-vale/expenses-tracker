@@ -7,6 +7,7 @@ import {
   DeleteExpenseDocument,
   GetExpensesDocument,
   GetExpensesSummaryDocument,
+  OrderDirection,
   type DeleteAllMutation,
   type DeleteAllMutationVariables,
   type DeleteExpenseMutation,
@@ -17,6 +18,7 @@ import {
   type GetExpensesQueryVariables,
   type GetExpensesSummaryQuery,
   type GetExpensesSummaryQueryVariables,
+  type QueryOptions,
 } from '../graphql/__generated__/graphql';
 import { AppRoutes } from '../routes/routes';
 import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
@@ -38,6 +40,8 @@ const Expenses: React.FC = () => {
         options: {
           page: 0,
           rowsPerPage: 10,
+          orderBy: 'date',
+          orderDirection: OrderDirection.Desc,
         },
       },
       fetchPolicy: 'network-only',
@@ -75,8 +79,8 @@ const Expenses: React.FC = () => {
   const expensesCount: number = expensesData?.expenses?.count ?? 0;
   const expensesSummary: ExpensesSummaryType | null = expensesSummaryData?.expensesSummary ?? null;
 
-  const refetchExpenses = useCallback((page: number, rowsPerPage: number) => {
-    refetchExpensesQuery({ options: { page, rowsPerPage } });
+  const refetchExpenses = useCallback((options: QueryOptions) => {
+    refetchExpensesQuery({ options });
   }, [refetchExpensesQuery]);
 
   const deleteExpense = (id: string) => {
