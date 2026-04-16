@@ -18,7 +18,6 @@ import {
   type GetExpensesQueryVariables,
   type GetExpensesSummaryQuery,
   type GetExpensesSummaryQueryVariables,
-  type QueryOptions,
 } from '../graphql/__generated__/graphql';
 import { AppRoutes } from '../routes/routes';
 import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
@@ -26,22 +25,28 @@ import { useDialog } from '../hooks/useDialog';
 import { useErrors } from '../hooks/useErrors';
 import { useAuth } from '../hooks/useAuth';
 import ExpensesSummary from '../components/ExpensesSummary';
-import { useCallback } from 'react';
 import { Add, Delete, FileUpload } from '@mui/icons-material';
+import { useTable } from '../hooks/useTable';
 
 const Expenses: React.FC = () => {
   const { userToken } = useAuth();
+  const expensesTable = useTable({
+    orderBy: 'date',
+    orderDirection: OrderDirection.Desc,
+    rowsPerPage: 10,
+  });
+  const expenseDeleteDialog = useDialog<string>();
   const { onError } = useErrors();
 
-  const { data: expensesData, loading: expensesLoading, refetch: refetchExpensesQuery } = useQuery<GetExpensesQuery, GetExpensesQueryVariables>(
+  const { data: expensesData, loading: expensesLoading } = useQuery<GetExpensesQuery, GetExpensesQueryVariables>(
     GetExpensesDocument,
     {
       variables: {
         options: {
-          page: 0,
-          rowsPerPage: 10,
-          orderBy: 'date',
-          orderDirection: OrderDirection.Desc,
+          page: expensesTable.page,
+          rowsPerPage: expensesTable.rowsPerPage,
+          orderBy: expensesTable.orderBy,
+          orderDirection: expensesTable.orderDirection,
         },
       },
       fetchPolicy: 'network-only',
@@ -68,20 +73,9 @@ const Expenses: React.FC = () => {
     { refetchQueries: [GetExpensesDocument], onError },
   );
 
-  const {
-    isOpen: isExpenseDeleteDialogOpen,
-    data: expenseToDeleteId,
-    open: openExpenseDeleteDialog,
-    close: closeExpenseDeleteDialog,
-  } = useDialog<string>();
-
   const expenses: Expense[] = expensesData?.expenses?.expenses ?? [];
   const expensesCount: number = expensesData?.expenses?.count ?? 0;
   const expensesSummary: ExpensesSummaryType | null = expensesSummaryData?.expensesSummary ?? null;
-
-  const refetchExpenses = useCallback((options: QueryOptions) => {
-    refetchExpensesQuery({ options });
-  }, [refetchExpensesQuery]);
 
   const deleteExpense = (id: string) => {
     deleteExpenseMutation({
@@ -108,8 +102,8 @@ const Expenses: React.FC = () => {
         expenses={expenses}
         expensesCount={expensesCount}
         expensesLoading={expensesLoading}
-        refetchExpenses={refetchExpenses}
-        openExpenseDeleteDialog={openExpenseDeleteDialog}
+        expensesTable={expensesTable}
+        openExpenseDeleteDialog={expenseDeleteDialog.open}
       />
 
       <Stack direction="row" spacing={2} marginTop="2rem">
@@ -140,9 +134,7 @@ const Expenses: React.FC = () => {
       </Stack>
 
       <ExpenseDeleteDialog
-        open={isExpenseDeleteDialogOpen}
-        expenseToDeleteId={expenseToDeleteId!}
-        close={closeExpenseDeleteDialog}
+        expenseDeleteDialog={expenseDeleteDialog}
         deleteExpense={deleteExpense}
       />
     </>

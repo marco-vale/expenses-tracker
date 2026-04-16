@@ -7,10 +7,10 @@ export const typeDefs = `#graphql
   }
 
   input QueryOptions {
-    page: Int
-    rowsPerPage: Int
     orderBy: String
     orderDirection: OrderDirection
+    page: Int
+    rowsPerPage: Int
   }
 
   type User {

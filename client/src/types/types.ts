@@ -1,4 +1,6 @@
-import type { ExpenseType, User } from '../graphql/__generated__/graphql';
+import type { ExpenseType, OrderDirection, User } from '../graphql/__generated__/graphql';
+import type { useDialog } from '../hooks/useDialog';
+import type { useTable } from '../hooks/useTable';
 
 export enum AuthRouteMode {
   AuthCheck,
@@ -13,6 +15,17 @@ export type AuthContextData = {
   login: (email: string, password: string, onLogin?: () => void) => void;
   logout: (onLogout?: () => void) => void;
 };
+
+export type UseTableParams = {
+  orderBy: string;
+  orderDirection: OrderDirection;
+  page?: number;
+  rowsPerPage: number;
+};
+
+export type UseTableResult = ReturnType<typeof useTable>;
+
+export type UseDialogResult<T> = ReturnType<typeof useDialog<T>>;
 
 export type ErrorsContextData = {
   errors: string[];

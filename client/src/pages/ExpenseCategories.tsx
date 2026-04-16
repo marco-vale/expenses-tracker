@@ -2,25 +2,32 @@ import React, { useCallback } from 'react';
 import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, OrderDirection, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategory, type GetExpenseCategoriesQuery, type GetExpenseCategoriesQueryVariables, type QueryOptions, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
+import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, OrderDirection, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategory, type GetExpenseCategoriesQuery, type GetExpenseCategoriesQueryVariables, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
 import { Button, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import type { ExpenseCategoryFormValues } from '../types/types';
 import { useErrors } from '../hooks/useErrors';
 import { Add } from '@mui/icons-material';
+import { useTable } from '../hooks/useTable';
 
 const ExpenseCategories: React.FC = () => {
+  const expenseCategoriesTable = useTable({
+    orderBy: 'name',
+    orderDirection: OrderDirection.Asc,
+    rowsPerPage: 10,
+  });
+  const expenseCategoryFormDialog = useDialog<ExpenseCategory>();
   const { onError } = useErrors();
 
-  const { data: expenseCategoriesData, loading: expenseCategoriesLoading, refetch: refetchExpenseCategoriesQuery } = useQuery<GetExpenseCategoriesQuery, GetExpenseCategoriesQueryVariables>(
+  const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery, GetExpenseCategoriesQueryVariables>(
     GetExpenseCategoriesDocument,
     {
       variables: {
         options: {
-          page: 0,
-          rowsPerPage: 10,
-          orderBy: 'name',
-          orderDirection: OrderDirection.Asc,
+          page: expenseCategoriesTable.page,
+          rowsPerPage: expenseCategoriesTable.rowsPerPage,
+          orderBy: expenseCategoriesTable.orderBy,
+          orderDirection: expenseCategoriesTable.orderDirection,
         },
       },
       fetchPolicy: 'network-only',
@@ -42,26 +49,15 @@ const ExpenseCategories: React.FC = () => {
     { refetchQueries: [GetExpenseCategoriesDocument], onError },
   );
 
-  const {
-    isOpen: isExpenseCategoryFormDialogOpen,
-    data: expenseCategoryToEdit,
-    open: openExpenseCategoryFormDialog,
-    close: closeExpenseCategoryFormDialog,
-  } = useDialog<ExpenseCategory>();
-
   const expenseCategories: ExpenseCategory[] = expenseCategoriesData?.expenseCategories?.expenseCategories ?? [];
   const expenseCategoriesCount: number = expenseCategoriesData?.expenseCategories?.count ?? 0;
 
-  const refetchExpenseCategories = useCallback((options: QueryOptions) => {
-    refetchExpenseCategoriesQuery({ options });
-  }, [refetchExpenseCategoriesQuery]);
-
   const onSubmit = useCallback((values: ExpenseCategoryFormValues) => {
-    if (expenseCategoryToEdit?.id) {
+    if (expenseCategoryFormDialog.data?.id) {
       updateExpenseCategoryMutation({
         variables: {
           expenseCategory: {
-            id: expenseCategoryToEdit.id,
+            id: expenseCategoryFormDialog.data.id,
             name: values.name,
           },
         },
@@ -75,7 +71,7 @@ const ExpenseCategories: React.FC = () => {
         },
       });
     }
-  }, [createExpenseCategoryMutation, expenseCategoryToEdit, updateExpenseCategoryMutation]);
+  }, [createExpenseCategoryMutation, expenseCategoryFormDialog.data, updateExpenseCategoryMutation]);
 
   const deleteExpenseCategory = (id: string) => {
     deleteExpenseCategoryMutation({
@@ -98,8 +94,8 @@ const ExpenseCategories: React.FC = () => {
         expenseCategories={expenseCategories}
         expenseCategoriesCount={expenseCategoriesCount}
         expenseCategoriesLoading={expenseCategoriesLoading}
-        refetchExpenseCategories={refetchExpenseCategories}
-        openExpenseCategoryFormDialog={openExpenseCategoryFormDialog}
+        expenseCategoriesTable={expenseCategoriesTable}
+        openExpenseCategoryFormDialog={expenseCategoryFormDialog.open}
         deleteExpenseCategory={deleteExpenseCategory}
       />
 
@@ -107,16 +103,14 @@ const ExpenseCategories: React.FC = () => {
         <Button
           variant="outlined"
           startIcon={<Add />}
-          onClick={() => openExpenseCategoryFormDialog()}
+          onClick={() => expenseCategoryFormDialog.open()}
         >
           Add Category
         </Button>
       </Stack>
 
       <ExpenseCategoryFormDialog
-        open={isExpenseCategoryFormDialogOpen}
-        close={closeExpenseCategoryFormDialog}
-        expenseCategory={expenseCategoryToEdit}
+        expenseCategoryFormDialog={expenseCategoryFormDialog}
         onSubmit={onSubmit}
       />
     </>

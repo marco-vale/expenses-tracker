@@ -1,26 +1,26 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
-import type { ExpenseCategoryFormValues } from '../types/types';
+import type { ExpenseCategoryFormValues, UseDialogResult } from '../types/types';
 import * as Yup from 'yup';
-import type { ExpenseCategory } from '../graphql/__generated__/graphql';
 import { Add, ArrowBack } from '@mui/icons-material';
+import type { ExpenseCategory } from '../graphql/__generated__/graphql';
 
 type ExpenseCategoryFormDialogProps = {
-  open: boolean;
-  close: () => void;
-  expenseCategory?: ExpenseCategory;
+  expenseCategoryFormDialog: UseDialogResult<ExpenseCategory>;
   onSubmit: (values: ExpenseCategoryFormValues) => void;
 };
 
-const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ open, close, expenseCategory, onSubmit }) => {
+const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ expenseCategoryFormDialog, onSubmit }) => {
+  const { isOpen, data, close } = expenseCategoryFormDialog;
+
   const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
   });
 
   const formik = useFormik<ExpenseCategoryFormValues>({
     initialValues: {
-      name: expenseCategory?.name ?? '',
+      name: data?.name ?? '',
     },
     validationSchema,
     validateOnChange: false,
@@ -38,7 +38,7 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ o
   }, [close, formik]);
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={isOpen} onClose={handleClose}>
       <DialogTitle>Add Category</DialogTitle>
       <form onSubmit={formik.handleSubmit}>
         <DialogContent>
@@ -71,7 +71,7 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ o
             variant="outlined"
             startIcon={<Add />}
           >
-            {expenseCategory?.id ? 'Save' : 'Add'}
+            {data?.id ? 'Save' : 'Add'}
           </Button>
         </DialogActions>
       </form>

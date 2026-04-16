@@ -1,4 +1,4 @@
-import { QueryOptions } from '../graphql/__generated__/resolvers-types';
+import { OrderDirection, QueryOptions } from '../graphql/__generated__/resolvers-types';
 
 const getPrismaArgsFromQueryOptions = (options?: QueryOptions | null): any | undefined => {
   if (!options) {
@@ -7,15 +7,15 @@ const getPrismaArgsFromQueryOptions = (options?: QueryOptions | null): any | und
 
   const prismaArgs: any = {};
 
-  if (options.page && options.rowsPerPage) {
-    prismaArgs.skip = options.page * options.rowsPerPage;
-    prismaArgs.take = options.rowsPerPage;
-  }
-
   if (options.orderBy) {
     prismaArgs.orderBy = {
-      [options.orderBy]: options.orderDirection ?? 'asc',
+      [options.orderBy]: options.orderDirection ?? OrderDirection.Asc,
     };
+  }
+
+  if (typeof options.page === 'number' && typeof options.rowsPerPage === 'number') {
+    prismaArgs.skip = options.page * options.rowsPerPage;
+    prismaArgs.take = options.rowsPerPage;
   }
 
   return prismaArgs;

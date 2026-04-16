@@ -2,22 +2,23 @@ import { ArrowBack, Delete } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import type React from 'react';
 import { useCallback } from 'react';
+import type { UseDialogResult } from '../types/types';
 
 type ExpenseDeleteDialogProps = {
-  open: boolean;
-  expenseToDeleteId: string;
-  close: () => void;
+  expenseDeleteDialog: UseDialogResult<string>;
   deleteExpense: (id: string) => void;
 }
 
-const ExpenseDeleteDialog: React.FC<ExpenseDeleteDialogProps> = ({ open, expenseToDeleteId, close, deleteExpense }) => {
+const ExpenseDeleteDialog: React.FC<ExpenseDeleteDialogProps> = ({ expenseDeleteDialog, deleteExpense }) => {
+  const { isOpen, data, close } = expenseDeleteDialog;
+
   const handleDelete = useCallback(() => {
-    deleteExpense(expenseToDeleteId);
+    deleteExpense(data ?? '');
     close();
-  }, [deleteExpense, close, expenseToDeleteId]);
+  }, [close, data, deleteExpense]);
 
   return (
-    <Dialog open={open} onClose={close}>
+    <Dialog open={isOpen} onClose={close}>
       <DialogTitle>Delete Expense</DialogTitle>
       <DialogContent>
         Are you sure you want to delete this expense?

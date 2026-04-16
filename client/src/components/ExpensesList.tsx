@@ -1,17 +1,18 @@
 import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
-import React, { useState } from "react";
-import { ExpenseType, OrderDirection, type Expense, type QueryOptions } from '../graphql/__generated__/graphql';
+import React from "react";
+import { ExpenseType, OrderDirection, type Expense } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import { AppRoutes, buildRoute } from '../routes/routes';
 import { Link } from 'react-router';
+import type { UseTableResult } from '../types/types';
 
 type ExpensesListProps = {
   expenses: Expense[];
   expensesCount: number;
   expensesLoading: boolean;
-  refetchExpenses: (options: QueryOptions) => void;
+  expensesTable: UseTableResult;
   openExpenseDeleteDialog: (expenseId: string) => void;
 };
 
@@ -19,50 +20,18 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
   expenses,
   expensesCount,
   expensesLoading,
-  refetchExpenses,
+  expensesTable,
   openExpenseDeleteDialog,
 }) => {
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [orderBy, setOrderBy] = useState<string>('date');
-  const [orderDirection, setOrderDirection] = useState<OrderDirection>(OrderDirection.Desc);
-
-  const handleSort = (orderBy: string, orderDirection: OrderDirection) => {
-    setOrderBy(orderBy);
-    setOrderDirection(orderDirection);
-
-    refetchExpenses({
-      page,
-      rowsPerPage,
-      orderBy,
-      orderDirection,
-    });
-  }
-
-  const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
-    setPage(page);
-
-    refetchExpenses({
-      page,
-      rowsPerPage,
-      orderBy,
-      orderDirection,
-    });
-  };
-
-  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const rowsPerPage: number = Number(event.target.value);
-
-    setPage(0);
-    setRowsPerPage(rowsPerPage);
-
-    refetchExpenses({
-      page,
-      rowsPerPage,
-      orderBy,
-      orderDirection,
-    });
-  };
+  const {
+    orderBy,
+    orderDirection,
+    page,
+    rowsPerPage,
+    handleSort,
+    handlePageChange,
+    handleRowsPerPageChange,
+  } = expensesTable;
 
   if (expensesLoading) {
     return (
