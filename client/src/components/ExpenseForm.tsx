@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import { MenuItem, TextField } from '@mui/material';
 import { ExpenseType, type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
+import { formatDateString } from '../tools/formatDateString';
 
 type ExpenseFormProps = {
   expense?: Expense;
@@ -33,7 +34,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
       type: expense?.type ?? ExpenseType.Expense,
       amount: expense?.amount ? Math.abs(expense.amount).toString() : '',
       date: expense?.date
-        ? new Date(expense.date).toISOString().slice(0, 16)
+        ? formatDateString(expense.date)
         : new Date().toISOString().slice(0, 16),
       categoryId: expense?.category?.id ?? '',
     },

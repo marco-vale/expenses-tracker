@@ -1,5 +1,5 @@
-query GetExpenses($options: QueryOptions) {
-  expenses(options: $options) {
+query GetExpenses($filters: ExpensesFilters, $options: QueryOptions) {
+  expenses(filters: $filters, options: $options) {
     expenses {
       id
       description

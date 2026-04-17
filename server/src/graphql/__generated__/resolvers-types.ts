@@ -72,6 +72,13 @@ export type ExpenseUpdateInput = {
   type: ExpenseType;
 };
 
+export type ExpensesFilters = {
+  categories?: InputMaybe<Array<Scalars['ID']['input']>>;
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  startDate?: InputMaybe<Scalars['String']['input']>;
+  types?: InputMaybe<Array<ExpenseType>>;
+};
+
 export type ExpensesImportInput = {
   file: Scalars['Upload']['input'];
   importCategories?: InputMaybe<Scalars['Boolean']['input']>;
@@ -194,6 +201,7 @@ export type QueryExpenseCategoriesArgs = {
 
 
 export type QueryExpensesArgs = {
+  filters?: InputMaybe<ExpensesFilters>;
   options?: InputMaybe<QueryOptions>;
 };
 
@@ -319,6 +327,7 @@ export type ResolversTypes = {
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseType: ExpenseType;
   ExpenseUpdateInput: ExpenseUpdateInput;
+  ExpensesFilters: ExpensesFilters;
   ExpensesImportInput: ExpensesImportInput;
   ExpensesReturn: ResolverTypeWrapper<ExpensesReturn>;
   ExpensesSummary: ResolverTypeWrapper<ExpensesSummary>;
@@ -348,6 +357,7 @@ export type ResolversParentTypes = {
   ExpenseCategoryUpdateInput: ExpenseCategoryUpdateInput;
   ExpenseCreateInput: ExpenseCreateInput;
   ExpenseUpdateInput: ExpenseUpdateInput;
+  ExpensesFilters: ExpensesFilters;
   ExpensesImportInput: ExpensesImportInput;
   ExpensesReturn: ExpensesReturn;
   ExpensesSummary: ExpensesSummary;

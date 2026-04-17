@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
-import { BatchPayload } from '../../generated/prisma/internal/prismaNamespace';
+import { BatchPayload, ExpenseWhereInput } from '../../generated/prisma/internal/prismaNamespace';
 import importExpenses from '../helpers/importExpenses';
 import getUserByUserToken from '../helpers/getUserByToken';
 import uploadFile from '../helpers/uploadFile';
@@ -36,13 +36,30 @@ export const resolvers: Resolvers<GraphQLContext> = {
       };
     },
 
-    expenses: async (parent, { options }, context) => {
-      const expenses: Expense[] = await context.prisma.expense.findMany({
-        include: { category: true },
-        ...getPrismaArgsFromQueryOptions(options),
-      });
+    expenses: async (parent, { filters, options }, context) => {
+      const prismaWhereInput: ExpenseWhereInput = {
+        type: filters?.types && filters.types.length > 0
+          ? { in: filters.types }
+          : undefined,
+        date: {
+          gte: filters?.startDate ? new Date(filters.startDate) : undefined,
+          lte: filters?.endDate ? new Date(filters.endDate) : undefined,
+        },
+        categoryId: filters?.categories && filters.categories.length > 0
+          ? { in: filters.categories }
+          : undefined,
+      };
 
-      const count: number = await context.prisma.expense.count();
+      const [expenses, count] = await context.prisma.$transaction([
+        context.prisma.expense.findMany({
+          include: { category: true },
+          ...getPrismaArgsFromQueryOptions(options),
+          where: prismaWhereInput,
+        }),
+        context.prisma.expense.count({
+          where: prismaWhereInput,
+        }),
+      ]);
 
       return {
         expenses: expenses.map((e) => {

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Avatar, Box, Container, Divider, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
-import { Category, Euro, Logout } from '@mui/icons-material';
+import { Logout } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import ErrorsAlert from '../components/ErrorsAlert';
 
@@ -72,7 +72,6 @@ const MainLayout: React.FC = () => {
               to={AppRoutes.Expenses}
               selected={location.pathname === AppRoutes.Expenses}
             >
-              <ListItemIcon><Euro /></ListItemIcon>
               <ListItemText primary="Expenses" />
             </ListItemButton>
 
@@ -81,7 +80,6 @@ const MainLayout: React.FC = () => {
               to={AppRoutes.ExpenseCategories}
               selected={location.pathname === AppRoutes.ExpenseCategories}
             >
-              <ListItemIcon><Category /></ListItemIcon>
               <ListItemText primary="Categories" />
             </ListItemButton>
           </List>

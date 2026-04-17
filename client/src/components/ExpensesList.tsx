@@ -1,18 +1,20 @@
 import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
-import React from "react";
-import { ExpenseType, OrderDirection, type Expense } from '../graphql/__generated__/graphql';
+import React, { useCallback } from "react";
+import { ExpenseType, OrderDirection, type Expense, type ExpenseCategory, type ExpensesFilters } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import { AppRoutes, buildRoute } from '../routes/routes';
 import { Link } from 'react-router';
-import type { UseTableResult } from '../types/types';
+import type { ExpensesListFiltersFormValues, UseTableResult } from '../types/types';
+import ExpensesListFilters from './ExpensesListFilters';
 
 type ExpensesListProps = {
   expenses: Expense[];
   expensesCount: number;
   expensesLoading: boolean;
-  expensesTable: UseTableResult;
+  expenseCategories: ExpenseCategory[];
+  expensesTable: UseTableResult<ExpensesFilters>;
   openExpenseDeleteDialog: (expenseId: string) => void;
 };
 
@@ -20,18 +22,31 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
   expenses,
   expensesCount,
   expensesLoading,
+  expenseCategories,
   expensesTable,
   openExpenseDeleteDialog,
 }) => {
   const {
+    filters,
     orderBy,
     orderDirection,
     page,
     rowsPerPage,
+    handleFiltersApply,
+    handleFiltersClear,
     handleSort,
     handlePageChange,
     handleRowsPerPageChange,
   } = expensesTable;
+
+  const applyFilters = useCallback((values: ExpensesListFiltersFormValues) => {
+    handleFiltersApply({
+      types: values.types,
+      startDate: values.startDate ? new Date(values.startDate).toISOString() : undefined,
+      endDate: values.endDate ? new Date(values.endDate).toISOString() : undefined,
+      categories: values.categories,
+    });
+  }, [handleFiltersApply]);
 
   if (expensesLoading) {
     return (
@@ -42,7 +57,14 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
   }
 
   return (
-    <Stack width="100%" marginTop="2rem" spacing={2}>
+    <Stack width="100%" marginTop="2rem">
+      <ExpensesListFilters
+        expenseCategories={expenseCategories}
+        expensesFilters={filters}
+        onSubmit={applyFilters}
+        handleFiltersClear={handleFiltersClear}
+      />
+
       {expenses.length === 0 && (
         <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
           <Typography variant="h6" gutterBottom>

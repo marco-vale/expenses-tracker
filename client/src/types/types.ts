@@ -23,13 +23,20 @@ export type UseTableParams = {
   rowsPerPage: number;
 };
 
-export type UseTableResult = ReturnType<typeof useTable>;
+export type UseTableResult<T> = ReturnType<typeof useTable<T>>;
 
 export type UseDialogResult<T> = ReturnType<typeof useDialog<T>>;
 
 export type ErrorsContextData = {
   errors: string[];
   setErrors: (errors: string[]) => void;
+};
+
+export type ExpensesListFiltersFormValues = {
+  types: ExpenseType[];
+  startDate?: string;
+  endDate?: string;
+  categories: string[];
 };
 
 export type LoginFormValues = {

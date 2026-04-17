@@ -13,6 +13,7 @@ import {
   type DeleteExpenseMutation,
   type DeleteExpenseMutationVariables,
   type Expense,
+  type ExpensesFilters,
   type ExpensesSummary as ExpensesSummaryType,
   type GetExpensesQuery,
   type GetExpensesQueryVariables,
@@ -27,10 +28,12 @@ import { useAuth } from '../hooks/useAuth';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { Add, Delete, FileUpload } from '@mui/icons-material';
 import { useTable } from '../hooks/useTable';
+import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 const Expenses: React.FC = () => {
   const { userToken } = useAuth();
-  const expensesTable = useTable({
+  const { expenseCategories } = useExpenseCategories();
+  const expensesTable = useTable<ExpensesFilters>({
     orderBy: 'date',
     orderDirection: OrderDirection.Desc,
     rowsPerPage: 10,
@@ -42,6 +45,7 @@ const Expenses: React.FC = () => {
     GetExpensesDocument,
     {
       variables: {
+        filters: expensesTable.filters,
         options: {
           page: expensesTable.page,
           rowsPerPage: expensesTable.rowsPerPage,
@@ -102,6 +106,7 @@ const Expenses: React.FC = () => {
         expenses={expenses}
         expensesCount={expensesCount}
         expensesLoading={expensesLoading}
+        expenseCategories={expenseCategories}
         expensesTable={expensesTable}
         openExpenseDeleteDialog={expenseDeleteDialog.open}
       />

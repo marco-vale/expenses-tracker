@@ -47,6 +47,13 @@ export const typeDefs = `#graphql
     category: ExpenseCategory
   }
 
+  input ExpensesFilters {
+    types: [ExpenseType!]
+    startDate: String
+    endDate: String
+    categories: [ID!]
+  }
+
   type ExpensesReturn {
     expenses: [Expense!]!
     count: Int!
@@ -120,7 +127,7 @@ export const typeDefs = `#graphql
 
     expenseCategories(options: QueryOptions): ExpenseCategoriesReturn
 
-    expenses(options: QueryOptions): ExpensesReturn
+    expenses(filters: ExpensesFilters, options: QueryOptions): ExpensesReturn
     expense(id: ID!): Expense!
 
     expensesSummary(userToken: String!): ExpensesSummary!
