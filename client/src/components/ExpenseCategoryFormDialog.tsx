@@ -38,7 +38,7 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ e
   }, [close, formik]);
 
   return (
-    <Dialog open={isOpen} onClose={handleClose}>
+    <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
       <DialogTitle>Add Category</DialogTitle>
       <form onSubmit={formik.handleSubmit}>
         <DialogContent>
@@ -57,7 +57,7 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ e
             helperText={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button
             variant="text"
             startIcon={<ArrowBack fontSize="small" />}

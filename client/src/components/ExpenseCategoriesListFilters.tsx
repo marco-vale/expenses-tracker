@@ -48,13 +48,10 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
             id="name"
             name="name"
             label="Name"
-            fullWidth
             size="small"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -62,6 +59,9 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
                 </InputAdornment>
               ),
             }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
           />
 
           <Button
@@ -70,7 +70,6 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
             startIcon={<Check />}
             sx={{
               whiteSpace: 'nowrap',
-              alignSelf: 'center',
               width: 40,
               height: 40,
               minWidth: 'auto',
@@ -85,7 +84,6 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
             startIcon={<Clear />}
             sx={{
               whiteSpace: 'nowrap',
-              alignSelf: 'center',
               width: 40,
               height: 40,
               minWidth: 'auto',

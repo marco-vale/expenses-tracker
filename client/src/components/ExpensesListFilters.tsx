@@ -82,7 +82,7 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
             onBlur={formik.handleBlur}
             value={formik.values.startDate}
             slotProps={{ inputLabel: { shrink: true } }}
-            sx={{ minWidth: 160, flex: '1 1 160px' }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.startDate && Boolean(formik.errors.startDate)}
             helperText={formik.touched.startDate && formik.errors.startDate ? formik.errors.startDate : ''}
           />
@@ -96,7 +96,7 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
             onBlur={formik.handleBlur}
             value={formik.values.endDate}
             slotProps={{ inputLabel: { shrink: true } }}
-            sx={{ minWidth: 160, flex: '1 1 160px' }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.endDate && Boolean(formik.errors.endDate)}
             helperText={formik.touched.endDate && formik.errors.endDate ? formik.errors.endDate : ''}
           />
@@ -113,7 +113,7 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
               inputLabel: { shrink: true },
               select: { multiple: true },
             }}
-            sx={{ minWidth: 160, flex: '1 1 160px' }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.types && Boolean(formik.errors.types)}
             helperText={formik.touched.types && formik.errors.types ? formik.errors.types : ''}
           >
@@ -139,7 +139,7 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
               inputLabel: { shrink: true },
               select: { multiple: true },
             }}
-            sx={{ minWidth: 180, flex: '1 1 180px' }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.categories && Boolean(formik.errors.categories)}
             helperText={formik.touched.categories && formik.errors.categories ? formik.errors.categories : ''}
           >
@@ -156,7 +156,6 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
             startIcon={<Check />}
             sx={{
               whiteSpace: 'nowrap',
-              alignSelf: 'center',
               width: 40,
               height: 40,
               minWidth: 'auto',
@@ -171,7 +170,6 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
             startIcon={<Clear />}
             sx={{
               whiteSpace: 'nowrap',
-              alignSelf: 'center',
               width: 40,
               height: 40,
               minWidth: 'auto',

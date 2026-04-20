@@ -9,6 +9,7 @@ import type { ExpenseCategoryFormValues } from '../types/types';
 import { useErrors } from '../hooks/useErrors';
 import { Add } from '@mui/icons-material';
 import { useTable } from '../hooks/useTable';
+import DeleteDialog from '../components/DeleteDialog';
 
 const ExpenseCategories: React.FC = () => {
   const expenseCategoriesTable = useTable<ExpenseCategoriesFilters>({
@@ -17,6 +18,7 @@ const ExpenseCategories: React.FC = () => {
     rowsPerPage: 10,
   });
   const expenseCategoryFormDialog = useDialog<ExpenseCategory>();
+  const expenseCategoryDeleteDialog = useDialog<string>();
   const { onError } = useErrors();
 
   const { data: expenseCategoriesData, loading: expenseCategoriesLoading } = useQuery<GetExpenseCategoriesQuery, GetExpenseCategoriesQueryVariables>(
@@ -74,10 +76,10 @@ const ExpenseCategories: React.FC = () => {
     }
   }, [createExpenseCategoryMutation, expenseCategoryFormDialog.data, updateExpenseCategoryMutation]);
 
-  const deleteExpenseCategory = (id: string) => {
+  const deleteExpenseCategory = (id?: string) => {
     deleteExpenseCategoryMutation({
       variables: {
-        id,
+        id: id ?? '',
       },
     });
   };
@@ -97,7 +99,7 @@ const ExpenseCategories: React.FC = () => {
         expenseCategoriesLoading={expenseCategoriesLoading}
         expenseCategoriesTable={expenseCategoriesTable}
         openExpenseCategoryFormDialog={expenseCategoryFormDialog.open}
-        deleteExpenseCategory={deleteExpenseCategory}
+        openExpenseCategoryDeleteDialog={expenseCategoryDeleteDialog.open}
       />
 
       <Stack direction="row" spacing={2} marginTop="2rem">
@@ -113,6 +115,11 @@ const ExpenseCategories: React.FC = () => {
       <ExpenseCategoryFormDialog
         expenseCategoryFormDialog={expenseCategoryFormDialog}
         onSubmit={onSubmit}
+      />
+
+      <DeleteDialog
+        deleteDialog={expenseCategoryDeleteDialog}
+        deleteFunc={deleteExpenseCategory}
       />
     </>
   );

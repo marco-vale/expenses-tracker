@@ -12,7 +12,7 @@ type ExpenseCategoriesListProps = {
   expenseCategoriesLoading: boolean;
   expenseCategoriesTable: UseTableResult<ExpenseCategoriesFilters>;
   openExpenseCategoryFormDialog: (expenseCategory: ExpenseCategory) => void;
-  deleteExpenseCategory: (id: string) => void;
+  openExpenseCategoryDeleteDialog: (expenseCategoryId: string) => void;
 }
 
 const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
@@ -21,7 +21,7 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
   expenseCategoriesLoading,
   expenseCategoriesTable,
   openExpenseCategoryFormDialog,
-  deleteExpenseCategory,
+  openExpenseCategoryDeleteDialog,
 }) => {
   const {
     filters,
@@ -103,7 +103,7 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
                           size="small"
                           sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }}
                           disabled={!ec.deletable}
-                          onClick={() => deleteExpenseCategory(ec.id)}
+                          onClick={() => openExpenseCategoryDeleteDialog(ec.id)}
                         >
                           <Delete fontSize="small" />
                         </IconButton>

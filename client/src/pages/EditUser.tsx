@@ -2,7 +2,7 @@ import React, { } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useErrors } from '../hooks/useErrors';
 import { useMutation } from '@apollo/client/react';
-import { MeDocument, UpdateUserDocument, type UpdateUserMutation, type UpdateUserMutationVariables } from '../graphql/__generated__/graphql';
+import { DeleteAllDocument, GetExpensesDocument, MeDocument, UpdateUserDocument, type DeleteAllMutation, type DeleteAllMutationVariables, type UpdateUserMutation, type UpdateUserMutationVariables } from '../graphql/__generated__/graphql';
 import { Formik } from 'formik';
 import type { EditUserFormValues } from '../types/types';
 import { useAuth } from '../hooks/useAuth';
@@ -10,10 +10,13 @@ import { AppRoutes } from '../routes/routes';
 import * as Yup from 'yup';
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import UserFormProfile from '../components/UserFormProfile';
-import { ArrowBack, Save } from '@mui/icons-material';
+import { ArrowBack, RestartAlt, Save } from '@mui/icons-material';
+import { useDialog } from '../hooks/useDialog';
+import DeleteDialog from '../components/DeleteDialog';
 
 const EditUser: React.FC = () => {
   const { user } = useAuth();
+  const expenseDeleteAllDialog = useDialog();
   const navigate = useNavigate();
   const { onError } = useErrors();
 
@@ -21,6 +24,17 @@ const EditUser: React.FC = () => {
     UpdateUserDocument,
     { refetchQueries: [MeDocument], onError },
   );
+
+  const [deleteAllMutation] = useMutation<DeleteAllMutation, DeleteAllMutationVariables>(
+    DeleteAllDocument,
+    { refetchQueries: [GetExpensesDocument], onError },
+  );
+
+  const deleteAllExpenses = () => {
+    deleteAllMutation().then(() => {
+      navigate(AppRoutes.Expenses);
+    });
+  };
 
   const validationSchema = Yup.object({
     name: Yup.string(),
@@ -84,8 +98,21 @@ const EditUser: React.FC = () => {
           >
             Save
           </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<RestartAlt />}
+            onClick={expenseDeleteAllDialog.open}
+          >
+            Reset account
+          </Button>
         </Stack>
       </Grid>
+
+      <DeleteDialog
+        deleteDialog={expenseDeleteAllDialog}
+        deleteFunc={deleteAllExpenses}
+      />
     </>
   );
 };

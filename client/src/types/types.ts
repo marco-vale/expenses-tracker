@@ -25,7 +25,7 @@ export type UseTableParams = {
 
 export type UseTableResult<T = unknown> = ReturnType<typeof useTable<T>>;
 
-export type UseDialogResult<T> = ReturnType<typeof useDialog<T>>;
+export type UseDialogResult<T = unknown> = ReturnType<typeof useDialog<T>>;
 
 export type ErrorsContextData = {
   errors: string[];

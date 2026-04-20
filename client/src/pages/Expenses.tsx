@@ -3,13 +3,10 @@ import ExpensesList from '../components/ExpensesList';
 import { Link } from 'react-router';
 import { useMutation, useQuery } from '@apollo/client/react';
 import {
-  DeleteAllDocument,
   DeleteExpenseDocument,
   GetExpensesDocument,
   GetExpensesSummaryDocument,
   OrderDirection,
-  type DeleteAllMutation,
-  type DeleteAllMutationVariables,
   type DeleteExpenseMutation,
   type DeleteExpenseMutationVariables,
   type Expense,
@@ -21,12 +18,12 @@ import {
   type GetExpensesSummaryQueryVariables,
 } from '../graphql/__generated__/graphql';
 import { AppRoutes } from '../routes/routes';
-import ExpenseDeleteDialog from '../components/ExpenseDeleteDialog';
+import DeleteDialog from '../components/DeleteDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useErrors } from '../hooks/useErrors';
 import { useAuth } from '../hooks/useAuth';
 import ExpensesSummary from '../components/ExpensesSummary';
-import { Add, Delete, FileUpload } from '@mui/icons-material';
+import { Add, FileUpload } from '@mui/icons-material';
 import { useTable } from '../hooks/useTable';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
@@ -72,19 +69,14 @@ const Expenses: React.FC = () => {
     { refetchQueries: [GetExpensesDocument], onError },
   );
 
-  const [deleteAllMutation] = useMutation<DeleteAllMutation, DeleteAllMutationVariables>(
-    DeleteAllDocument,
-    { refetchQueries: [GetExpensesDocument], onError },
-  );
-
   const expenses: Expense[] = expensesData?.expenses?.expenses ?? [];
   const expensesCount: number = expensesData?.expenses?.count ?? 0;
   const expensesSummary: ExpensesSummaryType | null = expensesSummaryData?.expensesSummary ?? null;
 
-  const deleteExpense = (id: string) => {
+  const deleteExpense = (id?: string) => {
     deleteExpenseMutation({
       variables: {
-        id,
+        id: id ?? '',
       },
     });
   };
@@ -128,19 +120,11 @@ const Expenses: React.FC = () => {
         >
           Import Expenses
         </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<Delete />}
-          onClick={() => deleteAllMutation()}
-        >
-          Delete All
-        </Button>
       </Stack>
 
-      <ExpenseDeleteDialog
-        expenseDeleteDialog={expenseDeleteDialog}
-        deleteExpense={deleteExpense}
+      <DeleteDialog
+        deleteDialog={expenseDeleteDialog}
+        deleteFunc={deleteExpense}
       />
     </>
   )
