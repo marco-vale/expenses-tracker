@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import ExpenseCategoryFormDialog from '../components/ExpenseCategoryFormDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, OrderDirection, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategory, type GetExpenseCategoriesQuery, type GetExpenseCategoriesQueryVariables, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
+import { CreateExpenseCategoryDocument, DeleteExpenseCategoryDocument, GetExpenseCategoriesDocument, OrderDirection, UpdateExpenseCategoryDocument, type CreateExpenseCategoryMutation, type CreateExpenseCategoryMutationVariables, type DeleteExpenseCategoryMutation, type DeleteExpenseCategoryMutationVariables, type ExpenseCategoriesFilters, type ExpenseCategory, type GetExpenseCategoriesQuery, type GetExpenseCategoriesQueryVariables, type UpdateExpenseCategoryMutation, type UpdateExpenseCategoryMutationVariables } from '../graphql/__generated__/graphql';
 import { Button, Stack, Typography } from '@mui/material';
 import ExpenseCategoriesList from '../components/ExpenseCategoriesList';
 import type { ExpenseCategoryFormValues } from '../types/types';
@@ -11,7 +11,7 @@ import { Add } from '@mui/icons-material';
 import { useTable } from '../hooks/useTable';
 
 const ExpenseCategories: React.FC = () => {
-  const expenseCategoriesTable = useTable({
+  const expenseCategoriesTable = useTable<ExpenseCategoriesFilters>({
     orderBy: 'name',
     orderDirection: OrderDirection.Asc,
     rowsPerPage: 10,
@@ -23,6 +23,7 @@ const ExpenseCategories: React.FC = () => {
     GetExpenseCategoriesDocument,
     {
       variables: {
+        filters: expenseCategoriesTable.filters,
         options: {
           page: expenseCategoriesTable.page,
           rowsPerPage: expenseCategoriesTable.rowsPerPage,

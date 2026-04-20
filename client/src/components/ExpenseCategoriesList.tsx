@@ -1,15 +1,16 @@
 import React from 'react';
-import { OrderDirection, type ExpenseCategory } from '../graphql/__generated__/graphql';
+import { OrderDirection, type ExpenseCategoriesFilters, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import type { UseTableResult } from '../types/types';
+import ExpenseCategoriesListFilters from './ExpenseCategoriesListFilters';
 
 type ExpenseCategoriesListProps = {
   expenseCategories: ExpenseCategory[];
   expenseCategoriesCount: number;
   expenseCategoriesLoading: boolean;
-  expenseCategoriesTable: UseTableResult;
+  expenseCategoriesTable: UseTableResult<ExpenseCategoriesFilters>;
   openExpenseCategoryFormDialog: (expenseCategory: ExpenseCategory) => void;
   deleteExpenseCategory: (id: string) => void;
 }
@@ -23,10 +24,13 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
   deleteExpenseCategory,
 }) => {
   const {
+    filters,
     orderBy,
     orderDirection,
     page,
     rowsPerPage,
+    handleFiltersApply,
+    handleFiltersClear,
     handleSort,
     handlePageChange,
     handleRowsPerPageChange,
@@ -41,7 +45,13 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
   }
 
   return (
-    <Stack width="100%" marginTop="2rem" spacing={2}>
+    <Stack width="100%" marginTop="2rem">
+      <ExpenseCategoriesListFilters
+        expenseCategoriesFilters={filters}
+        handleFiltersApply={handleFiltersApply}
+        handleFiltersClear={handleFiltersClear}
+      />
+
       {expenseCategories.length === 0 && (
         <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
           <Typography variant="h6" align="center" gutterBottom>

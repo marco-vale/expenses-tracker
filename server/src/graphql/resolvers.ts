@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
-import { BatchPayload, ExpenseWhereInput } from '../../generated/prisma/internal/prismaNamespace';
+import { BatchPayload, ExpenseCategoryWhereInput, ExpenseWhereInput } from '../../generated/prisma/internal/prismaNamespace';
 import importExpenses from '../helpers/importExpenses';
 import getUserByUserToken from '../helpers/getUserByToken';
 import uploadFile from '../helpers/uploadFile';
@@ -23,12 +23,20 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
 
-    expenseCategories: async (parent, { options }, context) => {
-      const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany({
-        ...getPrismaArgsFromQueryOptions(options),
-      });
+    expenseCategories: async (parent, { filters, options }, context) => {
+      const prismaWhereInput: ExpenseCategoryWhereInput = {
+        name: filters?.name ? { contains: filters.name } : undefined,
+      };
 
-      const count: number = await context.prisma.expenseCategory.count();
+      const [expenseCategories, count] = await context.prisma.$transaction([
+        context.prisma.expenseCategory.findMany({
+          ...getPrismaArgsFromQueryOptions(options),
+          where: prismaWhereInput,
+        }),
+        context.prisma.expenseCategory.count({
+          where: prismaWhereInput,
+        }),
+      ]);
 
       return {
         expenseCategories,

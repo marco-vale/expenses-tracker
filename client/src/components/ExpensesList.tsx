@@ -1,12 +1,12 @@
 import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
-import React, { useCallback } from "react";
+import React from "react";
 import { ExpenseType, OrderDirection, type Expense, type ExpenseCategory, type ExpensesFilters } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
 import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import { AppRoutes, buildRoute } from '../routes/routes';
 import { Link } from 'react-router';
-import type { ExpensesListFiltersFormValues, UseTableResult } from '../types/types';
+import type { UseTableResult } from '../types/types';
 import ExpensesListFilters from './ExpensesListFilters';
 
 type ExpensesListProps = {
@@ -39,15 +39,6 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
     handleRowsPerPageChange,
   } = expensesTable;
 
-  const applyFilters = useCallback((values: ExpensesListFiltersFormValues) => {
-    handleFiltersApply({
-      types: values.types,
-      startDate: values.startDate ? new Date(values.startDate).toISOString() : undefined,
-      endDate: values.endDate ? new Date(values.endDate).toISOString() : undefined,
-      categories: values.categories,
-    });
-  }, [handleFiltersApply]);
-
   if (expensesLoading) {
     return (
       <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
@@ -61,7 +52,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
       <ExpensesListFilters
         expenseCategories={expenseCategories}
         expensesFilters={filters}
-        onSubmit={applyFilters}
+        handleFiltersApply={handleFiltersApply}
         handleFiltersClear={handleFiltersClear}
       />
 

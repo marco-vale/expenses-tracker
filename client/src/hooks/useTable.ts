@@ -30,7 +30,7 @@ export const useTable = <T>(params: UseTableParams) => {
   const [page, setPage] = useState<number>(params.page ?? 0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(params.rowsPerPage);
 
-  const handleFiltersApply = (filters: T | undefined) => {
+  const handleFiltersApply = (filters?: T) => {
     setFilters(filters);
     setOrderBy(params.orderBy);
     setOrderDirection(params.orderDirection);

@@ -30,6 +30,10 @@ export type Expense = {
   type: ExpenseType;
 };
 
+export type ExpenseCategoriesFilters = {
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ExpenseCategoriesReturn = {
   __typename?: 'ExpenseCategoriesReturn';
   count: Scalars['Int']['output'];
@@ -196,6 +200,7 @@ export type QueryExpenseArgs = {
 
 
 export type QueryExpenseCategoriesArgs = {
+  filters?: InputMaybe<ExpenseCategoriesFilters>;
   options?: InputMaybe<QueryOptions>;
 };
 
@@ -320,6 +325,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Expense: ResolverTypeWrapper<Expense>;
+  ExpenseCategoriesFilters: ExpenseCategoriesFilters;
   ExpenseCategoriesReturn: ResolverTypeWrapper<ExpenseCategoriesReturn>;
   ExpenseCategory: ResolverTypeWrapper<ExpenseCategory>;
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;
@@ -351,6 +357,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Expense: Expense;
+  ExpenseCategoriesFilters: ExpenseCategoriesFilters;
   ExpenseCategoriesReturn: ExpenseCategoriesReturn;
   ExpenseCategory: ExpenseCategory;
   ExpenseCategoryCreateInput: ExpenseCategoryCreateInput;

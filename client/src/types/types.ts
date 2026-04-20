@@ -23,7 +23,7 @@ export type UseTableParams = {
   rowsPerPage: number;
 };
 
-export type UseTableResult<T> = ReturnType<typeof useTable<T>>;
+export type UseTableResult<T = unknown> = ReturnType<typeof useTable<T>>;
 
 export type UseDialogResult<T> = ReturnType<typeof useDialog<T>>;
 
@@ -37,6 +37,10 @@ export type ExpensesListFiltersFormValues = {
   startDate?: string;
   endDate?: string;
   categories: string[];
+};
+
+export type ExpenseCategoriesListFiltersFormValues = {
+  name?: string;
 };
 
 export type LoginFormValues = {

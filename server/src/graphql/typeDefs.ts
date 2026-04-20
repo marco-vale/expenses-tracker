@@ -28,6 +28,10 @@ export const typeDefs = `#graphql
     deletable: Boolean
   }
 
+  input ExpenseCategoriesFilters {
+    name: String
+  }
+
   type ExpenseCategoriesReturn {
     expenseCategories: [ExpenseCategory!]!
     count: Int!
@@ -125,7 +129,7 @@ export const typeDefs = `#graphql
   type Query {
     me(userToken: String!): User!
 
-    expenseCategories(options: QueryOptions): ExpenseCategoriesReturn
+    expenseCategories(filters: ExpenseCategoriesFilters, options: QueryOptions): ExpenseCategoriesReturn
 
     expenses(filters: ExpensesFilters, options: QueryOptions): ExpensesReturn
     expense(id: ID!): Expense!

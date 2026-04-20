@@ -10,14 +10,14 @@ import * as Yup from 'yup';
 type ExpensesListFiltersProps = {
   expenseCategories: ExpenseCategory[];
   expensesFilters: ExpensesFilters | undefined;
-  onSubmit: (values: ExpensesListFiltersFormValues) => void;
+  handleFiltersApply: (filters: ExpensesFilters) => void;
   handleFiltersClear: () => void;
 };
 
 const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
   expenseCategories,
   expensesFilters,
-  onSubmit,
+  handleFiltersApply,
   handleFiltersClear,
 }) => {
   const validationSchema = Yup.object({
@@ -41,7 +41,14 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
     validationSchema,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit,
+    onSubmit: (values => {
+      handleFiltersApply({
+        types: values.types,
+        startDate: values.startDate ? new Date(values.startDate).toISOString() : undefined,
+        endDate: values.endDate ? new Date(values.endDate).toISOString() : undefined,
+        categories: values.categories,
+      });
+    }),
   });
 
   const onTypesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
