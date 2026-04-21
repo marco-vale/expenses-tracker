@@ -1,9 +1,11 @@
 import path from 'path';
 import { parseNumber } from '../tools/parseNumber';
 import { ExpenseImportRow } from '../types/types';
-import { Expense, ExpenseType, PrismaClient } from '../../generated/prisma/client';
+import { Expense, ExpenseType, PrismaClient, User } from '../../generated/prisma/client';
 import XLSX from 'xlsx';
 import { parseDate } from '../tools/parseDate';
+import checkAuth from './checkAuth';
+import { GraphQLContext } from '../graphql/context';
 
 const isExpenseImportRowValid = (row: ExpenseImportRow): boolean => {
   const debit: number = parseNumber(row['Débito ']);
@@ -12,7 +14,12 @@ const isExpenseImportRowValid = (row: ExpenseImportRow): boolean => {
   return !!row['Data mov. '] && (debit > 0 || credit > 0);
 }
 
-const importExpenses = async (filePath: string, prisma: PrismaClient, importCategories?: boolean): Promise<Expense[]> => {
+const importExpenses = async (
+  filePath: string,
+  prisma: PrismaClient,
+  user: User,
+  importCategories?: boolean
+): Promise<Expense[]> => {
   const file = XLSX.readFile(path.join(process.cwd(), filePath), { raw: true });
   const sheetName = file.SheetNames[0];
   const sheet = file.Sheets[sheetName];
@@ -51,10 +58,14 @@ const importExpenses = async (filePath: string, prisma: PrismaClient, importCate
             ? {
               connectOrCreate: {
                 where: { name: category },
-                create: { name: category },
+                create: {
+                  name: category,
+                  user: { connect: { id: user.id } },
+                },
               }
             }
             : undefined,
+          user: { connect: { id: user.id } },
         },
       });
     })

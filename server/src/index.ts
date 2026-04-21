@@ -9,6 +9,10 @@ import { expenseCategoryAmountLoader } from './graphql/loaders/expenseCategoryAm
 import { expenseCategoryDeletableLoader } from './graphql/loaders/expenseCategoryDeletableLoader.js';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import path from 'path';
+import { GraphQLContext } from './graphql/context.js';
+import { User } from '../generated/prisma/client.js';
+import getUserByUserToken from './helpers/getUserByToken.js';
+import handleException from './helpers/handleException.js';
 
 const app = express();
 app.use(express.json());
@@ -35,14 +39,33 @@ app.use(graphqlUploadExpress({ maxFileSize: 10_000_000, maxFiles: 1 }));
 
 app.use(
   '/graphql',
-  expressMiddleware(apollo, {
-    context: async () => ({
-      prisma,
-      loaders: {
-        expenseCategoryAmount: expenseCategoryAmountLoader(prisma),
-        expenseCategoryDeletable: expenseCategoryDeletableLoader(prisma),
-      },
-    }),
+  expressMiddleware<GraphQLContext>(apollo, {
+    context: async ({ req }) => {
+      let user: User | null = null;
+
+      const authHeader = req.headers.authorization;
+      if (authHeader?.startsWith('Bearer ')) {
+        try {
+          user = await getUserByUserToken(authHeader.substring(7), prisma);
+        } catch (ex) {
+          throw handleException(ex);
+        }
+      }
+
+      // Instantiates the loaders later so it can pass them the full context
+      const context: GraphQLContext = {
+        prisma,
+        user,
+        loaders: {} as any,
+      };
+
+      context.loaders = {
+        expenseCategoryAmount: expenseCategoryAmountLoader(context),
+        expenseCategoryDeletable: expenseCategoryDeletableLoader(context),
+      }
+
+      return context;
+    },
   }),
 );
 

@@ -210,16 +210,6 @@ export type QueryExpensesArgs = {
   options?: InputMaybe<QueryOptions>;
 };
 
-
-export type QueryExpensesSummaryArgs = {
-  userToken: Scalars['String']['input'];
-};
-
-
-export type QueryMeArgs = {
-  userToken: Scalars['String']['input'];
-};
-
 export type QueryOptions = {
   orderBy?: InputMaybe<Scalars['String']['input']>;
   orderDirection?: InputMaybe<OrderDirection>;
@@ -245,7 +235,6 @@ export type UserCreateInput = {
 };
 
 export type UserUpdateInput = {
-  id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   picture?: InputMaybe<Scalars['Upload']['input']>;
 };
@@ -442,8 +431,8 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenseCategories?: Resolver<Maybe<ResolversTypes['ExpenseCategoriesReturn']>, ParentType, ContextType, Partial<QueryExpenseCategoriesArgs>>;
   expenses?: Resolver<Maybe<ResolversTypes['ExpensesReturn']>, ParentType, ContextType, Partial<QueryExpensesArgs>>;
-  expensesSummary?: Resolver<ResolversTypes['ExpensesSummary'], ParentType, ContextType, RequireFields<QueryExpensesSummaryArgs, 'userToken'>>;
-  me?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryMeArgs, 'userToken'>>;
+  expensesSummary?: Resolver<ResolversTypes['ExpensesSummary'], ParentType, ContextType>;
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
 
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {

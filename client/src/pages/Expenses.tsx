@@ -21,14 +21,12 @@ import { AppRoutes } from '../routes/routes';
 import DeleteDialog from '../components/DeleteDialog';
 import { useDialog } from '../hooks/useDialog';
 import { useErrors } from '../hooks/useErrors';
-import { useAuth } from '../hooks/useAuth';
 import ExpensesSummary from '../components/ExpensesSummary';
 import { Add, FileUpload } from '@mui/icons-material';
 import { useTable } from '../hooks/useTable';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 
 const Expenses: React.FC = () => {
-  const { userToken } = useAuth();
   const { expenseCategories } = useExpenseCategories();
   const expensesTable = useTable<ExpensesFilters>({
     orderBy: 'date',
@@ -57,9 +55,6 @@ const Expenses: React.FC = () => {
   const { data: expensesSummaryData } = useQuery<GetExpensesSummaryQuery, GetExpensesSummaryQueryVariables>(
     GetExpensesSummaryDocument,
     {
-      variables: {
-        userToken: userToken ?? '',
-      },
       fetchPolicy: 'network-only',
     },
   );

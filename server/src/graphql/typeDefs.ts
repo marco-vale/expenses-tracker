@@ -90,7 +90,6 @@ export const typeDefs = `#graphql
   }
 
   input UserUpdateInput {
-    id: ID!
     name: String
     picture: Upload
   }
@@ -127,14 +126,14 @@ export const typeDefs = `#graphql
   }
 
   type Query {
-    me(userToken: String!): User!
+    me: User!
 
     expenseCategories(filters: ExpenseCategoriesFilters, options: QueryOptions): ExpenseCategoriesReturn
 
     expenses(filters: ExpensesFilters, options: QueryOptions): ExpensesReturn
     expense(id: ID!): Expense!
 
-    expensesSummary(userToken: String!): ExpensesSummary!
+    expensesSummary: ExpensesSummary!
   }
 
   type Mutation {

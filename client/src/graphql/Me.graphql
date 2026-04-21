@@ -1,5 +1,5 @@
-query Me($userToken: String!) {
-  me(userToken: $userToken) {
+query Me {
+  me {
     id
     email
     name

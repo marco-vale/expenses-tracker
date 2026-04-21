@@ -8,82 +8,101 @@ import jwt from 'jsonwebtoken';
 import GraphQLUpload, { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import { BatchPayload, ExpenseCategoryWhereInput, ExpenseWhereInput } from '../../generated/prisma/internal/prismaNamespace';
 import importExpenses from '../helpers/importExpenses';
-import getUserByUserToken from '../helpers/getUserByToken';
 import uploadFile from '../helpers/uploadFile';
 import getPrismaArgsFromQueryOptions from '../helpers/getPrismaArgsFromQueryOptions';
 import handleException from '../helpers/handleException';
+import checkAuth from '../helpers/checkAuth';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
-    me: async (parent, { userToken }, context) => {
+    me: async (parent, { }, context) => {
       try {
-        return getUserByUserToken(userToken, context.prisma);
+        return checkAuth(context);
       } catch (ex) {
         throw handleException(ex);
       }
     },
 
     expenseCategories: async (parent, { filters, options }, context) => {
-      const prismaWhereInput: ExpenseCategoryWhereInput = {
-        name: filters?.name ? { contains: filters.name } : undefined,
-      };
+      try {
+        const user: User = checkAuth(context);
 
-      const [expenseCategories, count] = await context.prisma.$transaction([
-        context.prisma.expenseCategory.findMany({
-          ...getPrismaArgsFromQueryOptions(options),
-          where: prismaWhereInput,
-        }),
-        context.prisma.expenseCategory.count({
-          where: prismaWhereInput,
-        }),
-      ]);
+        const prismaWhereInput: ExpenseCategoryWhereInput = {
+          name: filters?.name ? { contains: filters.name } : undefined,
+          userId: user.id,
+        };
 
-      return {
-        expenseCategories,
-        count,
-      };
+        const [expenseCategories, count] = await context.prisma.$transaction([
+          context.prisma.expenseCategory.findMany({
+            ...getPrismaArgsFromQueryOptions(options),
+            where: prismaWhereInput,
+          }),
+          context.prisma.expenseCategory.count({
+            where: prismaWhereInput,
+          }),
+        ]);
+
+        return {
+          expenseCategories,
+          count,
+        };
+      } catch (ex) {
+        throw handleException(ex);
+      }
     },
 
     expenses: async (parent, { filters, options }, context) => {
-      const prismaWhereInput: ExpenseWhereInput = {
-        type: filters?.types && filters.types.length > 0
-          ? { in: filters.types }
-          : undefined,
-        date: {
-          gte: filters?.startDate ? new Date(filters.startDate) : undefined,
-          lte: filters?.endDate ? new Date(filters.endDate) : undefined,
-        },
-        categoryId: filters?.categories && filters.categories.length > 0
-          ? { in: filters.categories }
-          : undefined,
-      };
+      try {
+        const user: User = checkAuth(context);
 
-      const [expenses, count] = await context.prisma.$transaction([
-        context.prisma.expense.findMany({
-          include: { category: true },
-          ...getPrismaArgsFromQueryOptions(options),
-          where: prismaWhereInput,
-        }),
-        context.prisma.expense.count({
-          where: prismaWhereInput,
-        }),
-      ]);
+        const prismaWhereInput: ExpenseWhereInput = {
+          type: filters?.types && filters.types.length > 0
+            ? { in: filters.types }
+            : undefined,
+          date: {
+            gte: filters?.startDate ? new Date(filters.startDate) : undefined,
+            lte: filters?.endDate ? new Date(filters.endDate) : undefined,
+          },
+          categoryId: filters?.categories && filters.categories.length > 0
+            ? { in: filters.categories }
+            : undefined,
+          userId: user.id,
+        };
 
-      return {
-        expenses: expenses.map((e) => {
-          return {
-            ...e,
-            date: convertDateToString(e.date),
-          };
-        }),
-        count,
-      };
+        const [expenses, count] = await context.prisma.$transaction([
+          context.prisma.expense.findMany({
+            include: { category: true },
+            ...getPrismaArgsFromQueryOptions(options),
+            where: prismaWhereInput,
+          }),
+          context.prisma.expense.count({
+            where: prismaWhereInput,
+          }),
+        ]);
+
+        return {
+          expenses: expenses.map((e) => {
+            return {
+              ...e,
+              date: convertDateToString(e.date),
+            };
+          }),
+          count,
+        };
+      } catch (ex) {
+        throw handleException(ex);
+      }
     },
 
     expense: async (parent, { id }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const expense: Expense | null = await context.prisma.expense.findFirst({
-          where: { id },
+          where: {
+            id,
+            userId: user.id,
+          },
           include: { category: true },
         });
 
@@ -100,9 +119,9 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
 
-    expensesSummary: async (parent, { userToken }, context) => {
+    expensesSummary: async (parent, { }, context) => {
       try {
-        const user: User = await getUserByUserToken(userToken, context.prisma);
+        const user: User = checkAuth(context);
 
         const expensesSummary: ExpensesSummary = {
           expensesAmount: 0,
@@ -112,6 +131,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         };
 
         const expenseAmountsByType = await context.prisma.expense.groupBy({
+          where: { userId: user.id },
           by: ['type'],
           _sum: { amount: true },
         });
@@ -129,6 +149,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         });
 
         const expenseAmountsByCategory = await context.prisma.expense.groupBy({
+          where: { userId: user.id },
           by: ['categoryId'],
           _sum: { amount: true },
         });
@@ -239,8 +260,9 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     updateUser: async (parent, { user }, context) => {
       try {
+        const currentUser: User = checkAuth(context);
+
         const userSchema = Yup.object({
-          id: Yup.string().required('ID is required'),
           name: Yup.string(),
           picture: Yup.mixed<Promise<FileUpload>>(),
         });
@@ -250,7 +272,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const picturePath: string | undefined = await uploadFile(user.picture);
 
         const updatedUser: User = await context.prisma.user.update({
-          where: { id: user.id },
+          where: { id: currentUser.id },
           data: {
             name: user.name,
             picture: picturePath,
@@ -265,6 +287,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     createExpenseCategory: async (parent, { expenseCategory }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const expenseCategorySchema = Yup.object({
           name: Yup.string().required('Name is required'),
         });
@@ -273,7 +297,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
         const newExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.create({
           data: {
-            ...expenseCategory
+            ...expenseCategory,
+            user: { connect: { id: user.id } },
           },
         });
 
@@ -285,6 +310,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     updateExpenseCategory: async (parent, { expenseCategory }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const expenseCategorySchema = Yup.object({
           id: Yup.string().required('ID is required'),
           name: Yup.string().required('Name is required'),
@@ -293,7 +320,10 @@ export const resolvers: Resolvers<GraphQLContext> = {
         await expenseCategorySchema.validate(expenseCategory);
 
         const updatedExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.update({
-          where: { id: expenseCategory.id },
+          where: {
+            id: expenseCategory.id,
+            userId: user.id,
+          },
           data: {
             name: expenseCategory.name,
           },
@@ -307,8 +337,13 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     deleteExpenseCategory: async (parent, { id }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         await context.prisma.expenseCategory.delete({
-          where: { id },
+          where: {
+            id,
+            userId: user.id,
+          },
         });
 
         return id;
@@ -319,6 +354,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     createExpense: async (parent, { expense }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const expenseSchema = Yup.object({
           description: Yup.string().required('Description is required'),
           type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
@@ -336,8 +373,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
             amount: expense.type === ExpenseType.EXPENSE ? -expense.amount : expense.amount,
             date: new Date(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : undefined,
+            user: { connect: { id: user.id } },
           },
-          include: { category: true },
         });
 
         return newExpense.id;
@@ -348,6 +385,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     updateExpense: async (parent, { expense }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const expenseSchema = Yup.object({
           id: Yup.string().required('ID is required'),
           description: Yup.string().required('Description is required'),
@@ -360,7 +399,10 @@ export const resolvers: Resolvers<GraphQLContext> = {
         await expenseSchema.validate(expense);
 
         const updatedExpense: Expense = await context.prisma.expense.update({
-          where: { id: expense.id },
+          where: {
+            id: expense.id,
+            userId: user.id,
+          },
           data: {
             description: expense.description,
             type: expense.type,
@@ -368,7 +410,6 @@ export const resolvers: Resolvers<GraphQLContext> = {
             date: new Date(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : { disconnect: true },
           },
-          include: { category: true },
         });
 
         return updatedExpense.id;
@@ -379,8 +420,13 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     deleteExpense: async (parent, { id }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         await context.prisma.expense.delete({
-          where: { id },
+          where: {
+            id,
+            userId: user.id,
+          },
         });
 
         return id;
@@ -391,6 +437,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     importExpenses: async (parent, { importData }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const importDataSchema = Yup.object({
           file: Yup.mixed<Promise<FileUpload>>().required('File is required'),
         });
@@ -405,6 +453,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const importedExpenses: Expense[] = await importExpenses(
           filePath,
           context.prisma,
+          user,
           importData.importCategories ?? false,
         );
 
@@ -416,9 +465,15 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
     deleteAll: async (parent, { }, context) => {
       try {
+        const user: User = checkAuth(context);
+
         const transaction: BatchPayload[] = await context.prisma.$transaction([
-          context.prisma.expense.deleteMany({}),
-          context.prisma.expenseCategory.deleteMany({}),
+          context.prisma.expense.deleteMany({
+            where: { userId: user.id },
+          }),
+          context.prisma.expenseCategory.deleteMany({
+            where: { userId: user.id },
+          }),
         ]);
 
         return transaction.reduce((count, batch) => count + batch.count, 0);

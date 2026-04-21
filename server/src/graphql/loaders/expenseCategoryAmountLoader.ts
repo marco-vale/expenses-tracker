@@ -1,14 +1,19 @@
 import DataLoader from 'dataloader';
-import { PrismaClient } from '../../../generated/prisma/client';
+import { User } from '../../../generated/prisma/client';
 import handleException from '../../helpers/handleException';
+import checkAuth from '../../helpers/checkAuth';
+import { GraphQLContext } from '../context';
 
-export const expenseCategoryAmountLoader = (prisma: PrismaClient) => {
+export const expenseCategoryAmountLoader = (context: GraphQLContext) => {
   return new DataLoader<string, number>(async (categoryIds: readonly string[]) => {
     try {
-      const expenseAmountsByCategory = await prisma.expense.groupBy({
+      const user: User = checkAuth(context);
+
+      const expenseAmountsByCategory = await context.prisma.expense.groupBy({
         by: ['categoryId'],
         where: {
           categoryId: { in: [...categoryIds] },
+          userId: user.id,
         },
         _sum: { amount: true },
       });

@@ -3,8 +3,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { LoginDocument, MeDocument, type LoginMutation, type LoginMutationVariables, type MeQuery, type MeQueryVariables, type User } from '../graphql/__generated__/graphql';
 import { useErrors } from '../hooks/useErrors';
-
-const LOCALSTORAGE_USERTOKEN_KEY = 'user_token';
+import { LOCALSTORAGE_USERTOKEN_KEY } from '../constants/constants';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -18,9 +17,6 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { data: meData, loading: meLoading, error: meError } = useQuery<MeQuery, MeQueryVariables>(
     MeDocument,
     {
-      variables: {
-        userToken: userToken ?? '',
-      },
       fetchPolicy: 'cache-first',
       skip: !userToken,
     },

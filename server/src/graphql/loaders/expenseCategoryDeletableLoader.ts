@@ -1,14 +1,19 @@
 import DataLoader from 'dataloader';
-import { PrismaClient } from '../../../generated/prisma/client';
 import handleException from '../../helpers/handleException';
+import { GraphQLContext } from '../context';
+import { User } from '../__generated__/resolvers-types';
+import checkAuth from '../../helpers/checkAuth';
 
-export const expenseCategoryDeletableLoader = (prisma: PrismaClient) => {
+export const expenseCategoryDeletableLoader = (context: GraphQLContext) => {
   return new DataLoader<string, boolean>(async (categoryIds: readonly string[]) => {
     try {
-      const expenseCountsByCategory = await prisma.expense.groupBy({
+      const user: User = checkAuth(context);
+
+      const expenseCountsByCategory = await context.prisma.expense.groupBy({
         by: ['categoryId'],
         where: {
           categoryId: { in: [...categoryIds] },
+          userId: user.id,
         },
         _count: { id: true },
       });

@@ -11,12 +11,14 @@ datasource db {
 }
 
 model User {
-  id              String  @id @default(cuid())
-  email           String  @unique
-  password        String
-  name            String?
-  picture         String?
-  startingBalance Float   @default(0)
+  id                String            @id @default(cuid())
+  email             String            @unique
+  password          String
+  name              String?
+  picture           String?
+  startingBalance   Float             @default(0)
+  expenses          Expense[]
+  expenseCategories ExpenseCategory[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -26,6 +28,8 @@ model ExpenseCategory {
   id       String    @id @default(cuid())
   name     String    @unique
   expenses Expense[]
+  userId   String    @default("")
+  user     User      @relation(fields: [userId], references: [id])
 }
 
 enum ExpenseType {
@@ -41,6 +45,8 @@ model Expense {
   date        DateTime
   categoryId  String?
   category    ExpenseCategory? @relation(fields: [categoryId], references: [id])
+  userId      String           @default("")
+  user        User             @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

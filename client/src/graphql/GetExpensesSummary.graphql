@@ -1,5 +1,5 @@
-query GetExpensesSummary($userToken: String!) {
-  expensesSummary(userToken: $userToken) {
+query GetExpensesSummary {
+  expensesSummary {
     expensesAmount
     incomeAmount
     balance
