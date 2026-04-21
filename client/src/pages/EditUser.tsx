@@ -13,6 +13,7 @@ import UserFormProfile from '../components/UserFormProfile';
 import { ArrowBack, RestartAlt, Save } from '@mui/icons-material';
 import { useDialog } from '../hooks/useDialog';
 import DeleteDialog from '../components/DeleteDialog';
+import { formatNumberString } from '../tools/formatNumberString';
 
 const EditUser: React.FC = () => {
   const { user } = useAuth();
@@ -27,7 +28,7 @@ const EditUser: React.FC = () => {
 
   const [deleteAllMutation] = useMutation<DeleteAllMutation, DeleteAllMutationVariables>(
     DeleteAllDocument,
-    { refetchQueries: [GetExpensesDocument], onError },
+    { refetchQueries: [MeDocument, GetExpensesDocument], onError },
   );
 
   const deleteAllExpenses = () => {
@@ -39,6 +40,13 @@ const EditUser: React.FC = () => {
   const validationSchema = Yup.object({
     name: Yup.string(),
     picture: Yup.mixed<File>(),
+    startingBalance: Yup.string()
+      .test('is-number', 'Starting balance must be a valid number', (value) => {
+        return !isNaN(parseFloat(value ?? '0'));
+      })
+      .test('is-positive', 'Starting balance must be positive or 0', (value) => {
+        return parseFloat(value ?? '0') >= 0;
+      }),
   });
 
   return (
@@ -61,9 +69,9 @@ const EditUser: React.FC = () => {
             updateUserMutation({
               variables: {
                 user: {
-                  id: user?.id ?? '',
                   name: values.name,
                   picture: values.picture,
+                  startingBalance: Number(formatNumberString(values.startingBalance))
                 },
               },
             }).then(() => {

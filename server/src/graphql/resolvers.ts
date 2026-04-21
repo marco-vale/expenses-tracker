@@ -173,6 +173,12 @@ export const resolvers: Resolvers<GraphQLContext> = {
     },
   },
 
+  User: {
+    startingBalanceEditable: async (parent, { }, context) => {
+      return context.loaders.userStartingBalanceEditable.load(parent.id);
+    },
+  },
+
   ExpenseCategory: {
     amount: async (parent, { }, context) => {
       return context.loaders.expenseCategoryAmount.load(parent.id);
@@ -265,6 +271,10 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const userSchema = Yup.object({
           name: Yup.string(),
           picture: Yup.mixed<Promise<FileUpload>>(),
+          startingBalance: Yup.number()
+            .test('is-positive', 'Starting balance must be positive or 0', (value) => {
+              return (value ?? 0) >= 0;
+            }),
         });
 
         await userSchema.validate(user);
@@ -276,6 +286,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           data: {
             name: user.name,
             picture: picturePath,
+            startingBalance: user.startingBalance ?? 0,
           },
         });
 

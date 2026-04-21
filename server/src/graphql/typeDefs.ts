@@ -19,6 +19,7 @@ export const typeDefs = `#graphql
     name: String
     picture: String
     startingBalance: Float!
+    startingBalanceEditable: Boolean
   }
 
   type ExpenseCategory {
@@ -92,6 +93,7 @@ export const typeDefs = `#graphql
   input UserUpdateInput {
     name: String
     picture: Upload
+    startingBalance: Float
   }
 
   input ExpenseCategoryCreateInput {

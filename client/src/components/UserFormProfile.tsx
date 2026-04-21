@@ -81,7 +81,7 @@ const UserFormProfile: React.FC<UserFormProfileProps> = ({ user }) => {
         slotProps={{ inputLabel: { shrink: true } }}
         error={formik.touched.startingBalance && Boolean(formik.errors.startingBalance)}
         helperText={formik.touched.startingBalance && formik.errors.startingBalance}
-        disabled={!!user}
+        disabled={!(user?.startingBalanceEditable ?? false)}
       />
     </>
   );

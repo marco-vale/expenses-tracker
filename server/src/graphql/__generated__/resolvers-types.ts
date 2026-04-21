@@ -224,6 +224,7 @@ export type User = {
   name?: Maybe<Scalars['String']['output']>;
   picture?: Maybe<Scalars['String']['output']>;
   startingBalance: Scalars['Float']['output'];
+  startingBalanceEditable?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type UserCreateInput = {
@@ -237,6 +238,7 @@ export type UserCreateInput = {
 export type UserUpdateInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   picture?: InputMaybe<Scalars['Upload']['input']>;
+  startingBalance?: InputMaybe<Scalars['Float']['input']>;
 };
 
 
@@ -445,6 +447,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   picture?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   startingBalance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  startingBalanceEditable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = GraphQLContext> = {

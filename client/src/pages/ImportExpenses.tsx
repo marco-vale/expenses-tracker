@@ -5,7 +5,7 @@ import { AppRoutes } from '../routes/routes';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import type { ExpensesImportFormValues } from '../types/types';
-import { ImportExpensesDocument, type ImportExpensesMutation, type ImportExpensesMutationVariables } from '../graphql/__generated__/graphql';
+import { ImportExpensesDocument, MeDocument, type ImportExpensesMutation, type ImportExpensesMutationVariables } from '../graphql/__generated__/graphql';
 import { useMutation } from '@apollo/client/react';
 import { useErrors } from '../hooks/useErrors';
 import { ArrowBack, FileUpload } from '@mui/icons-material';
@@ -16,7 +16,7 @@ const ImportExpenses: React.FC = () => {
 
   const [importExpensesMutation] = useMutation<ImportExpensesMutation, ImportExpensesMutationVariables>(
     ImportExpensesDocument,
-    { onError },
+    { refetchQueries: [MeDocument], onError },
   );
 
   const validationSchema = Yup.object({

@@ -13,6 +13,7 @@ import { GraphQLContext } from './graphql/context.js';
 import { User } from '../generated/prisma/client.js';
 import getUserByUserToken from './helpers/getUserByToken.js';
 import handleException from './helpers/handleException.js';
+import { userStartingBalanceEditableLoader } from './graphql/loaders/userStartingBalanceEditableLoader.js';
 
 const app = express();
 app.use(express.json());
@@ -60,6 +61,7 @@ app.use(
       };
 
       context.loaders = {
+        userStartingBalanceEditable: userStartingBalanceEditableLoader(context),
         expenseCategoryAmount: expenseCategoryAmountLoader(context),
         expenseCategoryDeletable: expenseCategoryDeletableLoader(context),
       }

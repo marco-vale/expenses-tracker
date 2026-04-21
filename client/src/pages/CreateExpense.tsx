@@ -1,7 +1,7 @@
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import { useMutation } from '@apollo/client/react';
 import { Link, useNavigate } from 'react-router';
-import { CreateExpenseDocument, type CreateExpenseMutation, type CreateExpenseMutationVariables } from '../graphql/__generated__/graphql';
+import { CreateExpenseDocument, MeDocument, type CreateExpenseMutation, type CreateExpenseMutationVariables } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
@@ -18,7 +18,7 @@ const CreateExpense: React.FC = () => {
 
   const [createExpenseMutation] = useMutation<CreateExpenseMutation, CreateExpenseMutationVariables>(
     CreateExpenseDocument,
-    { onError },
+    { refetchQueries: [MeDocument], onError },
   );
 
   const onSubmit = useCallback((values: ExpenseFormValues) => {

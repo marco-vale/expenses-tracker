@@ -6,6 +6,7 @@ import {
   DeleteExpenseDocument,
   GetExpensesDocument,
   GetExpensesSummaryDocument,
+  MeDocument,
   OrderDirection,
   type DeleteExpenseMutation,
   type DeleteExpenseMutationVariables,
@@ -61,7 +62,7 @@ const Expenses: React.FC = () => {
 
   const [deleteExpenseMutation] = useMutation<DeleteExpenseMutation, DeleteExpenseMutationVariables>(
     DeleteExpenseDocument,
-    { refetchQueries: [GetExpensesDocument], onError },
+    { refetchQueries: [MeDocument, GetExpensesDocument], onError },
   );
 
   const expenses: Expense[] = expensesData?.expenses?.expenses ?? [];
