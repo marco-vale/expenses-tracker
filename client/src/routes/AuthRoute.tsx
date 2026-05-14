@@ -33,7 +33,7 @@ const AuthRoute: React.FC<AuthRouteProps> = ({ mode }) => {
 
   if (mode === AuthRouteMode.AuthCheck && isAuthenticated) {
     return (
-      <Navigate to={AppRoutes.Expenses} replace />
+      <Navigate to={AppRoutes.Dashboard} replace />
     );
   }
 

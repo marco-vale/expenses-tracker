@@ -1,0 +1,12 @@
+query GetDashboard {
+  dashboard {
+    barChart {
+      label
+      value
+    }
+    pieChart {
+      label
+      value
+    }
+  }
+}

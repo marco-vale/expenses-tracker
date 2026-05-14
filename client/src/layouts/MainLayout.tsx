@@ -69,6 +69,14 @@ const MainLayout: React.FC = () => {
           <List disablePadding>
             <ListItemButton
               component={Link}
+              to={AppRoutes.Dashboard}
+              selected={location.pathname === AppRoutes.Dashboard}
+            >
+              <ListItemText primary="Dashboard" />
+            </ListItemButton>
+
+            <ListItemButton
+              component={Link}
               to={AppRoutes.Expenses}
               selected={location.pathname === AppRoutes.Expenses}
             >

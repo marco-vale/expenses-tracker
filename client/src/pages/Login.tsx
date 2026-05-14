@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     validateOnBlur: false,
     onSubmit: (values) => {
       login(values.email, values.password, () => {
-        navigate(AppRoutes.Expenses);
+        navigate(AppRoutes.Dashboard);
       });
     },
   });

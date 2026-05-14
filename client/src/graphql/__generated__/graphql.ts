@@ -16,6 +16,18 @@ export type Scalars = {
   Upload: { input: File; output: File; }
 };
 
+export type Dashboard = {
+  __typename?: 'Dashboard';
+  barChart: Array<DashboardChartElement>;
+  pieChart: Array<DashboardChartElement>;
+};
+
+export type DashboardChartElement = {
+  __typename?: 'DashboardChartElement';
+  label: Scalars['String']['output'];
+  value: Scalars['Float']['output'];
+};
+
 export type Expense = {
   __typename?: 'Expense';
   amount: Scalars['Float']['output'];
@@ -185,9 +197,10 @@ export enum OrderDirection {
 
 export type Query = {
   __typename?: 'Query';
+  dashboard: Dashboard;
   expense: Expense;
-  expenseCategories?: Maybe<ExpenseCategoriesReturn>;
-  expenses?: Maybe<ExpensesReturn>;
+  expenseCategories: ExpenseCategoriesReturn;
+  expenses: ExpensesReturn;
   expensesSummary: ExpensesSummary;
   me: User;
 };
@@ -280,6 +293,11 @@ export type DeleteExpenseCategoryMutationVariables = Exact<{
 
 export type DeleteExpenseCategoryMutation = { __typename?: 'Mutation', deleteExpenseCategory: string };
 
+export type GetDashboardQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDashboardQuery = { __typename?: 'Query', dashboard: { __typename?: 'Dashboard', barChart: Array<{ __typename?: 'DashboardChartElement', label: string, value: number }>, pieChart: Array<{ __typename?: 'DashboardChartElement', label: string, value: number }> } };
+
 export type GetExpenseQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -295,7 +313,7 @@ export type GetExpenseCategoriesQueryVariables = Exact<{
 }>;
 
 
-export type GetExpenseCategoriesQuery = { __typename?: 'Query', expenseCategories?: { __typename?: 'ExpenseCategoriesReturn', count: number, expenseCategories: Array<{ __typename?: 'ExpenseCategory', id: string, name: string, amount?: number | null, deletable?: boolean | null }> } | null };
+export type GetExpenseCategoriesQuery = { __typename?: 'Query', expenseCategories: { __typename?: 'ExpenseCategoriesReturn', count: number, expenseCategories: Array<{ __typename?: 'ExpenseCategory', id: string, name: string, amount?: number | null, deletable?: boolean | null }> } };
 
 export type GetExpensesQueryVariables = Exact<{
   filters?: InputMaybe<ExpensesFilters>;
@@ -303,7 +321,7 @@ export type GetExpensesQueryVariables = Exact<{
 }>;
 
 
-export type GetExpensesQuery = { __typename?: 'Query', expenses?: { __typename?: 'ExpensesReturn', count: number, expenses: Array<{ __typename?: 'Expense', id: string, description: string, type: ExpenseType, amount: number, date: string, category?: { __typename?: 'ExpenseCategory', id: string, name: string } | null }> } | null };
+export type GetExpensesQuery = { __typename?: 'Query', expenses: { __typename?: 'ExpensesReturn', count: number, expenses: Array<{ __typename?: 'Expense', id: string, description: string, type: ExpenseType, amount: number, date: string, category?: { __typename?: 'ExpenseCategory', id: string, name: string } | null }> } };
 
 export type GetExpensesSummaryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -357,6 +375,7 @@ export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"Ope
 export const DeleteAllDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteAll"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAll"}}]}}]} as unknown as DocumentNode<DeleteAllMutation, DeleteAllMutationVariables>;
 export const DeleteExpenseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteExpense"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteExpense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteExpenseMutation, DeleteExpenseMutationVariables>;
 export const DeleteExpenseCategoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteExpenseCategory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteExpenseCategory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteExpenseCategoryMutation, DeleteExpenseCategoryMutationVariables>;
+export const GetDashboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetDashboard"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dashboard"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"barChart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pieChart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]}}]} as unknown as DocumentNode<GetDashboardQuery, GetDashboardQueryVariables>;
 export const GetExpenseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetExpense"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expense"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetExpenseQuery, GetExpenseQueryVariables>;
 export const GetExpenseCategoriesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetExpenseCategories"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExpenseCategoriesFilters"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"QueryOptions"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"getAmount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},"defaultValue":{"kind":"BooleanValue","value":true}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"getDeletable"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},"defaultValue":{"kind":"BooleanValue","value":true}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenseCategories"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenseCategories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"amount"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"getAmount"}}}]}]},{"kind":"Field","name":{"kind":"Name","value":"deletable"},"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"getDeletable"}}}]}]}]}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]}}]} as unknown as DocumentNode<GetExpenseCategoriesQuery, GetExpenseCategoriesQueryVariables>;
 export const GetExpensesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetExpenses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExpensesFilters"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"QueryOptions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filters"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"expenses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]}}]} as unknown as DocumentNode<GetExpensesQuery, GetExpensesQueryVariables>;

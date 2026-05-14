@@ -20,6 +20,18 @@ export type Scalars = {
   Upload: { input: FileUpload; output: FileUpload; }
 };
 
+export type Dashboard = {
+  __typename?: 'Dashboard';
+  barChart: Array<DashboardChartElement>;
+  pieChart: Array<DashboardChartElement>;
+};
+
+export type DashboardChartElement = {
+  __typename?: 'DashboardChartElement';
+  label: Scalars['String']['output'];
+  value: Scalars['Float']['output'];
+};
+
 export type Expense = {
   __typename?: 'Expense';
   amount: Scalars['Float']['output'];
@@ -186,9 +198,10 @@ export enum OrderDirection {
 
 export type Query = {
   __typename?: 'Query';
+  dashboard: Dashboard;
   expense: Expense;
-  expenseCategories?: Maybe<ExpenseCategoriesReturn>;
-  expenses?: Maybe<ExpensesReturn>;
+  expenseCategories: ExpenseCategoriesReturn;
+  expenses: ExpensesReturn;
   expensesSummary: ExpensesSummary;
   me: User;
 };
@@ -315,6 +328,8 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Dashboard: ResolverTypeWrapper<Dashboard>;
+  DashboardChartElement: ResolverTypeWrapper<DashboardChartElement>;
   Expense: ResolverTypeWrapper<Expense>;
   ExpenseCategoriesFilters: ExpenseCategoriesFilters;
   ExpenseCategoriesReturn: ResolverTypeWrapper<ExpenseCategoriesReturn>;
@@ -347,6 +362,8 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  Dashboard: Dashboard;
+  DashboardChartElement: DashboardChartElement;
   Expense: Expense;
   ExpenseCategoriesFilters: ExpenseCategoriesFilters;
   ExpenseCategoriesReturn: ExpenseCategoriesReturn;
@@ -372,6 +389,16 @@ export type ResolversParentTypes = {
   User: User;
   UserCreateInput: UserCreateInput;
   UserUpdateInput: UserUpdateInput;
+};
+
+export type DashboardResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Dashboard'] = ResolversParentTypes['Dashboard']> = {
+  barChart?: Resolver<Array<ResolversTypes['DashboardChartElement']>, ParentType, ContextType>;
+  pieChart?: Resolver<Array<ResolversTypes['DashboardChartElement']>, ParentType, ContextType>;
+};
+
+export type DashboardChartElementResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DashboardChartElement'] = ResolversParentTypes['DashboardChartElement']> = {
+  label?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
 };
 
 export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Expense'] = ResolversParentTypes['Expense']> = {
@@ -430,9 +457,10 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  dashboard?: Resolver<ResolversTypes['Dashboard'], ParentType, ContextType>;
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
-  expenseCategories?: Resolver<Maybe<ResolversTypes['ExpenseCategoriesReturn']>, ParentType, ContextType, Partial<QueryExpenseCategoriesArgs>>;
-  expenses?: Resolver<Maybe<ResolversTypes['ExpensesReturn']>, ParentType, ContextType, Partial<QueryExpensesArgs>>;
+  expenseCategories?: Resolver<ResolversTypes['ExpenseCategoriesReturn'], ParentType, ContextType, Partial<QueryExpenseCategoriesArgs>>;
+  expenses?: Resolver<ResolversTypes['ExpensesReturn'], ParentType, ContextType, Partial<QueryExpensesArgs>>;
   expensesSummary?: Resolver<ResolversTypes['ExpensesSummary'], ParentType, ContextType>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
@@ -451,6 +479,8 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 };
 
 export type Resolvers<ContextType = GraphQLContext> = {
+  Dashboard?: DashboardResolvers<ContextType>;
+  DashboardChartElement?: DashboardChartElementResolvers<ContextType>;
   Expense?: ExpenseResolvers<ContextType>;
   ExpenseCategoriesReturn?: ExpenseCategoriesReturnResolvers<ContextType>;
   ExpenseCategory?: ExpenseCategoryResolvers<ContextType>;

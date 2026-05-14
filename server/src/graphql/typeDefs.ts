@@ -22,6 +22,16 @@ export const typeDefs = `#graphql
     startingBalanceEditable: Boolean
   }
 
+  type DashboardChartElement {
+    label: String!
+    value: Float!
+  }
+
+  type Dashboard {
+    barChart: [DashboardChartElement!]!
+    pieChart: [DashboardChartElement!]!
+  }
+
   type ExpenseCategory {
     id: ID!
     name: String!
@@ -130,9 +140,11 @@ export const typeDefs = `#graphql
   type Query {
     me: User!
 
-    expenseCategories(filters: ExpenseCategoriesFilters, options: QueryOptions): ExpenseCategoriesReturn
+    dashboard: Dashboard!
 
-    expenses(filters: ExpensesFilters, options: QueryOptions): ExpensesReturn
+    expenseCategories(filters: ExpenseCategoriesFilters, options: QueryOptions): ExpenseCategoriesReturn!
+
+    expenses(filters: ExpensesFilters, options: QueryOptions): ExpensesReturn!
     expense(id: ID!): Expense!
 
     expensesSummary: ExpensesSummary!

@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
+    "@mui/x-charts": "^9.2.0",
     "apollo-upload-client": "^19.0.0",
     "formik": "^2.4.9",
     "graphql": "^16.12.0",

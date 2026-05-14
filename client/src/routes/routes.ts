@@ -2,6 +2,7 @@ export enum AppRoutes {
   Login = '/login',
   CreateUser = '/users/create',
   EditUser = '/users/edit',
+  Dashboard = '/dashboard',
   ExpenseCategories = '/expense-categories',
   Expenses = '/',
   CreateExpense = '/create',

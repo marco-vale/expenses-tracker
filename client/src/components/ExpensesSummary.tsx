@@ -45,7 +45,7 @@ const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expensesSummary }) =>
             {expensesSummary.categories.map((esc) => (
               <ListItem key={esc.id}>
                 <ListItemText primary={esc.name} />
-                <Typography variant="body2" fontWeight="bold" color={(esc.amount ?? 0) < 0 ? 'error' : 'success'}>{formatAmount(Math.abs(esc.amount))}</Typography>
+                <Typography variant="body2" fontWeight="bold" color="error">{formatAmount(Math.abs(esc.amount))}</Typography>
               </ListItem>
             ))}
           </List>
