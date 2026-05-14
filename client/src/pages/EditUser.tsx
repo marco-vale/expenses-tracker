@@ -33,7 +33,7 @@ const EditUser: React.FC = () => {
 
   const deleteAllExpenses = () => {
     deleteAllMutation().then(() => {
-      navigate(AppRoutes.Expenses);
+      navigate(AppRoutes.Dashboard);
     });
   };
 
@@ -75,7 +75,7 @@ const EditUser: React.FC = () => {
                 },
               },
             }).then(() => {
-              navigate(AppRoutes.Expenses);
+              navigate(AppRoutes.Dashboard);
             });
           }}
         >
@@ -94,7 +94,7 @@ const EditUser: React.FC = () => {
             startIcon={<ArrowBack fontSize="small" />}
             sx={{ textTransform: 'none' }}
             component={Link}
-            to={AppRoutes.Expenses}
+            to={AppRoutes.Dashboard}
           >
             Back
           </Button>

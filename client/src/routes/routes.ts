@@ -2,12 +2,12 @@ export enum AppRoutes {
   Login = '/login',
   CreateUser = '/users/create',
   EditUser = '/users/edit',
-  Dashboard = '/dashboard',
+  Dashboard = '/',
   ExpenseCategories = '/expense-categories',
-  Expenses = '/',
-  CreateExpense = '/create',
-  EditExpense = '/edit/:id',
-  ImportExpenses='/import',
+  Expenses = '/expenses',
+  CreateExpense = '/expenses/create',
+  EditExpense = '/expenses/edit/:id',
+  ImportExpenses='/expenses/import',
 };
 
 export const buildRoute = (route: AppRoutes, id: string): string => {
