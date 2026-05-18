@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { OrderDirection } from '../graphql/__generated__/graphql';
-import type { UseTableParams } from '../types/types';
+
+type UseTableParams = {
+  orderBy: string;
+  orderDirection: OrderDirection;
+  page?: number;
+  rowsPerPage: number;
+};
 
 /**
  * Custom hook to manage table state including sorting, pagination, and rows per page.

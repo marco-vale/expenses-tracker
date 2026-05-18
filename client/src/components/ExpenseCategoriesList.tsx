@@ -36,14 +36,6 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
     handleRowsPerPageChange,
   } = expenseCategoriesTable;
 
-  if (expenseCategoriesLoading) {
-    return (
-      <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
-        <CircularProgress size={100} />
-      </Stack>
-    );
-  }
-
   return (
     <Stack width="100%" marginTop="2rem">
       <ExpenseCategoriesListFilters
@@ -52,78 +44,86 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
         handleFiltersClear={handleFiltersClear}
       />
 
-      {expenseCategories.length === 0 && (
-        <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="h6" align="center" gutterBottom>
-            No categories found.
-          </Typography>
-        </Paper>
-      )}
+      {expenseCategoriesLoading ? (
+        <Stack width="100%" marginTop="2rem" spacing={2} alignItems="center">
+          <CircularProgress size={100} />
+        </Stack>
+      ) : (
+        <>
+          {expenseCategories.length === 0 && (
+            <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" align="center" gutterBottom>
+                No categories found.
+              </Typography>
+            </Paper>
+          )}
 
-      {expenseCategories.length > 0 && (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TableSortLabel
-                    active={orderBy === 'name'}
-                    direction={orderBy === 'name' ? orderDirection : OrderDirection.Asc}
-                    onClick={() => handleSort('name', orderBy === 'name' && orderDirection === OrderDirection.Asc ? OrderDirection.Desc : OrderDirection.Asc)}
-                  >
-                    Name
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {expenseCategories.map((ec) => (
-                <TableRow key={ec.id}>
-                  <TableCell>{ec.name}</TableCell>
-                  <TableCell>
-                    <Typography variant="body2" fontWeight="bold" color={(ec.amount ?? 0) < 0 ? 'error' : 'success'}>
-                      {formatAmount(Math.abs(ec.amount ?? 0))}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction="row" alignItems="center">
-                      <Tooltip title="Edit category">
-                        <IconButton
-                          size="small"
-                          sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
-                          onClick={() => openExpenseCategoryFormDialog(ec)}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title={ec.deletable ? "Delete category" : "This category is in use and cannot be deleted"}>
-                        <IconButton
-                          size="small"
-                          sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }}
-                          disabled={!ec.deletable}
-                          onClick={() => openExpenseCategoryDeleteDialog(ec.id)}
-                        >
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            component="div"
-            count={expenseCategoriesCount}
-            page={page}
-            onPageChange={handlePageChange}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            rowsPerPageOptions={[5, 10, 25]}
-          />
-        </TableContainer>
+          {expenseCategories.length > 0 && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <TableSortLabel
+                        active={orderBy === 'name'}
+                        direction={orderBy === 'name' ? orderDirection : OrderDirection.Asc}
+                        onClick={() => handleSort('name', orderBy === 'name' && orderDirection === OrderDirection.Asc ? OrderDirection.Desc : OrderDirection.Asc)}
+                      >
+                        Name
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>Amount</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {expenseCategories.map((ec) => (
+                    <TableRow key={ec.id}>
+                      <TableCell>{ec.name}</TableCell>
+                      <TableCell>
+                        <Typography variant="body2" fontWeight="bold" color={(ec.amount ?? 0) < 0 ? 'error' : 'success'}>
+                          {formatAmount(Math.abs(ec.amount ?? 0))}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" alignItems="center">
+                          <Tooltip title="Edit category">
+                            <IconButton
+                              size="small"
+                              sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+                              onClick={() => openExpenseCategoryFormDialog(ec)}
+                            >
+                              <Edit fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title={ec.deletable ? "Delete category" : "This category is in use and cannot be deleted"}>
+                            <IconButton
+                              size="small"
+                              sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }}
+                              disabled={!ec.deletable}
+                              onClick={() => openExpenseCategoryDeleteDialog(ec.id)}
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                component="div"
+                count={expenseCategoriesCount}
+                page={page}
+                onPageChange={handlePageChange}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                rowsPerPageOptions={[5, 10, 25]}
+              />
+            </TableContainer>
+          )}
+        </>
       )}
     </Stack>
   );

@@ -1,6 +1,6 @@
 import { Expense, ExpenseCategory, ExpenseType, User } from '../../generated/prisma/client';
 import { convertDateToString } from '../tools/convertDateToString';
-import { DashboardChartElement, ExpensesSummary, Resolvers } from './__generated__/resolvers-types';
+import { DashboardChartDataPoint, DashboardChartType, ExpensesSummary, Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
@@ -12,7 +12,6 @@ import uploadFile from '../helpers/uploadFile';
 import getPrismaArgsFromQueryOptions from '../helpers/getPrismaArgsFromQueryOptions';
 import handleException from '../helpers/handleException';
 import checkAuth from '../helpers/checkAuth';
-import { date } from 'yup';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -24,70 +23,74 @@ export const resolvers: Resolvers<GraphQLContext> = {
       }
     },
 
-    dashboard: async (parent, { }, context) => {
+    dashboardChart: async (parent, { type, filters }, context) => {
       try {
         const user: User = checkAuth(context);
-
-        const barChart: Record<number, DashboardChartElement> = {};
-        const pieChart: DashboardChartElement[] = [];
-
         const currentDate: Date = new Date();
 
-        const barChartStartDate: Date = new Date(currentDate.getFullYear(), 1, 1);
-        const pieChartStartDate: Date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        if (type === DashboardChartType.Bar) {
+          const dashboardBarChart: Record<number, DashboardChartDataPoint> = {};
 
-        const expenses: Expense[] = await context.prisma.expense.findMany({
-          where: {
-            userId: user.id,
-            date: {
-              gte: barChartStartDate,
+          const dashboardBarChartExpenses: Expense[] = await context.prisma.expense.findMany({
+            where: {
+              userId: user.id,
+              date: {
+                gte: filters?.startDate ?? new Date(currentDate.getFullYear(), 0, 1).toISOString(),
+                lte: filters?.endDate ?? undefined,
+              },
+              type: ExpenseType.EXPENSE,
             },
-            type: ExpenseType.EXPENSE,
-          },
-        });
-
-        expenses.forEach((e) => {
-          const expenseMonth: number = e.date.getMonth();
-
-          if (!barChart[expenseMonth]) {
-            barChart[expenseMonth] = {
-              label: e.date.toLocaleString('default', { month: 'long' }),
-              value: 0,
-            };
-          }
-
-          barChart[expenseMonth].value += e.amount;
-        });
-
-        const expenseAmountsByCategory = await context.prisma.expense.groupBy({
-          where: {
-            userId: user.id,
-            date: {
-              gte: pieChartStartDate,
-            },
-            type: ExpenseType.EXPENSE,
-          },
-          by: ['categoryId'],
-          _sum: { amount: true },
-        });
-
-        const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany({
-          where: { userId: user.id },
-        });
-
-        expenseAmountsByCategory.forEach((eabc) => {
-          const expenseAmountsCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === eabc.categoryId);
-
-          pieChart.push({
-            label: expenseAmountsCategory ? expenseAmountsCategory.name : 'Uncategorized',
-            value: eabc._sum.amount ?? 0,
           });
-        });
 
-        return {
-          barChart: Object.values(barChart),
-          pieChart,
-        };
+          dashboardBarChartExpenses.forEach((dbce) => {
+            const expenseMonth: number = dbce.date.getMonth();
+
+            if (!dashboardBarChart[expenseMonth]) {
+              dashboardBarChart[expenseMonth] = {
+                label: dbce.date.toLocaleString('default', { month: 'long' }),
+                value: 0,
+              };
+            }
+
+            dashboardBarChart[expenseMonth].value += dbce.amount;
+          });
+
+          return Object.values(dashboardBarChart);
+        }
+
+        if (type === DashboardChartType.Pie) {
+          const dashboardPieChart: DashboardChartDataPoint[] = [];
+
+          const dashboardPieChartExpenseAmounts = await context.prisma.expense.groupBy({
+            where: {
+              userId: user.id,
+              date: {
+                gte: filters?.startDate ?? new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString(),
+                lte: filters?.endDate ?? undefined,
+              },
+              type: ExpenseType.EXPENSE,
+            },
+            by: ['categoryId'],
+            _sum: { amount: true },
+          });
+
+          const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany({
+            where: { userId: user.id },
+          });
+
+          dashboardPieChartExpenseAmounts.forEach((pcea) => {
+            const expensesAmountCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === pcea.categoryId);
+
+            dashboardPieChart.push({
+              label: expensesAmountCategory ? expensesAmountCategory.name : 'Uncategorized',
+              value: pcea._sum.amount ?? 0,
+            });
+          });
+
+          return dashboardPieChart;
+        }
+
+        throw new Error('Invalid chart type');
       } catch (ex) {
         throw handleException(ex);
       }
@@ -130,8 +133,8 @@ export const resolvers: Resolvers<GraphQLContext> = {
             ? { in: filters.types }
             : undefined,
           date: {
-            gte: filters?.startDate ? new Date(filters.startDate) : undefined,
-            lte: filters?.endDate ? new Date(filters.endDate) : undefined,
+            gte: filters?.startDate ?? undefined,
+            lte: filters?.endDate ?? undefined,
           },
           categoryId: filters?.categories && filters.categories.length > 0
             ? { in: filters.categories }
@@ -206,16 +209,16 @@ export const resolvers: Resolvers<GraphQLContext> = {
           _sum: { amount: true },
         });
 
-        expenseAmountsByType.forEach((eat) => {
-          if (eat.type === ExpenseType.EXPENSE) {
-            expensesSummary.expensesAmount = eat._sum.amount ?? 0;
+        expenseAmountsByType.forEach((eabt) => {
+          if (eabt.type === ExpenseType.EXPENSE) {
+            expensesSummary.expensesAmount = eabt._sum.amount ?? 0;
           }
 
-          if (eat.type === ExpenseType.INCOME) {
-            expensesSummary.incomeAmount = eat._sum.amount ?? 0;
+          if (eabt.type === ExpenseType.INCOME) {
+            expensesSummary.incomeAmount = eabt._sum.amount ?? 0;
           }
 
-          expensesSummary.balance += eat._sum.amount ?? 0;
+          expensesSummary.balance += eabt._sum.amount ?? 0;
         });
 
         const expenseAmountsByCategory = await context.prisma.expense.groupBy({
@@ -229,13 +232,13 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
         const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany();
 
-        expensesSummary.categories = expenseAmountsByCategory.map((eac) => {
-          const expensesCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === eac.categoryId);
+        expensesSummary.categories = expenseAmountsByCategory.map((eabc) => {
+          const expensesCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === eabc.categoryId);
 
           return {
-            id: eac.categoryId,
+            id: eabc.categoryId,
             name: expensesCategory ? expensesCategory.name : 'Uncategorized',
-            amount: eac._sum.amount ?? 0,
+            amount: eabc._sum.amount ?? 0,
           };
         })
 

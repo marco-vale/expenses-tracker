@@ -7,8 +7,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 type ExpenseCategoriesListFiltersProps = {
-  expenseCategoriesFilters: ExpenseCategoriesFilters | undefined;
-  handleFiltersApply: (filters: ExpenseCategoriesFilters) => void;
+  expenseCategoriesFilters?: ExpenseCategoriesFilters;
+  handleFiltersApply: (filters?: ExpenseCategoriesFilters) => void;
   handleFiltersClear: () => void;
 }
 
@@ -31,6 +31,12 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
     onSubmit: handleFiltersApply,
   });
 
+  const clearFilters = () => {
+    formik.setFieldValue('name', '');
+
+    handleFiltersClear();
+  };
+
   return (
     <Accordion sx={{ boxShadow: 'none', border: 1, borderColor: 'divider' }}>
       <AccordionSummary expandIcon={<ExpandMore />}>
@@ -42,7 +48,7 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
           component="form"
           id="expenseCategoriesListFiltersForm"
           onSubmit={formik.handleSubmit}
-          sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'flex-start' }}
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}
         >
           <TextField
             id="name"
@@ -91,7 +97,7 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
               justifyContent: 'center',
               '& .MuiButton-startIcon': { margin: 0 },
             }}
-            onClick={handleFiltersClear}
+            onClick={clearFilters}
           />
         </Box>
       </AccordionDetails>

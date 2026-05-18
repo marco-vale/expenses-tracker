@@ -1,4 +1,4 @@
-import type { ExpenseType, OrderDirection, User } from '../graphql/__generated__/graphql';
+import type { ExpenseType, User } from '../graphql/__generated__/graphql';
 import type { useDialog } from '../hooks/useDialog';
 import type { useTable } from '../hooks/useTable';
 
@@ -16,13 +16,6 @@ export type AuthContextData = {
   logout: (onLogout?: () => void) => void;
 };
 
-export type UseTableParams = {
-  orderBy: string;
-  orderDirection: OrderDirection;
-  page?: number;
-  rowsPerPage: number;
-};
-
 export type UseTableResult<T = unknown> = ReturnType<typeof useTable<T>>;
 
 export type UseDialogResult<T = unknown> = ReturnType<typeof useDialog<T>>;
@@ -30,6 +23,11 @@ export type UseDialogResult<T = unknown> = ReturnType<typeof useDialog<T>>;
 export type ErrorsContextData = {
   errors: string[];
   setErrors: (errors: string[]) => void;
+};
+
+export type DashboardPieChartFiltersFormValues = {
+  startDate?: string;
+  endDate?: string;
 };
 
 export type ExpensesListFiltersFormValues = {

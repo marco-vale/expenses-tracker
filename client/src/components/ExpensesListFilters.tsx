@@ -9,8 +9,8 @@ import * as Yup from 'yup';
 
 type ExpensesListFiltersProps = {
   expenseCategories: ExpenseCategory[];
-  expensesFilters: ExpensesFilters | undefined;
-  handleFiltersApply: (filters: ExpensesFilters) => void;
+  expensesFilters?: ExpensesFilters;
+  handleFiltersApply: (filters?: ExpensesFilters) => void;
   handleFiltersClear: () => void;
 };
 
@@ -32,10 +32,10 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
       types: expensesFilters?.types ?? [],
       startDate: expensesFilters?.startDate
         ? formatDateString(expensesFilters.startDate)
-        : undefined,
+        : '',
       endDate: expensesFilters?.endDate
         ? formatDateString(expensesFilters.endDate)
-        : undefined,
+        : '',
       categories: expensesFilters?.categories ?? [],
     },
     validationSchema,
@@ -44,8 +44,8 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
     onSubmit: (values => {
       handleFiltersApply({
         types: values.types,
-        startDate: values.startDate ? new Date(values.startDate).toISOString() : undefined,
-        endDate: values.endDate ? new Date(values.endDate).toISOString() : undefined,
+        startDate: values.startDate ? new Date(values.startDate + 'T00:00:00.000Z').toISOString() : '',
+        endDate: values.endDate ? new Date(values.endDate + 'T23:59:59.999Z').toISOString() : '',
         categories: values.categories,
       });
     }),
@@ -59,6 +59,15 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
     formik.setFieldValue('categories', event.target.value as unknown as string[]);
   };
 
+  const clearFilters = () => {
+    formik.setFieldValue('types', []);
+    formik.setFieldValue('startDate', '');
+    formik.setFieldValue('endDate', '');
+    formik.setFieldValue('categories', []);
+
+    handleFiltersClear();
+  };
+
   return (
     <Accordion sx={{ boxShadow: 'none', border: 1, borderColor: 'divider' }}>
       <AccordionSummary expandIcon={<ExpandMore />}>
@@ -70,7 +79,7 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
           component="form"
           id="expenseListFiltersForm"
           onSubmit={formik.handleSubmit}
-          sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'flex-start' }}
+          sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}
         >
           <TextField
             id="startDate"
@@ -177,7 +186,7 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
               justifyContent: 'center',
               '& .MuiButton-startIcon': { margin: 0 },
             }}
-            onClick={handleFiltersClear}
+            onClick={clearFilters}
           />
         </Box>
       </AccordionDetails>
