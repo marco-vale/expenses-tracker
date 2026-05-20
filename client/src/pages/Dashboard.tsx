@@ -14,8 +14,12 @@ const Dashboard: React.FC = () => {
       </Typography>
 
       <Grid container justifyContent="center" spacing={2} marginTop="2rem">
-        <DashboardBarChart />
-        <DashboardPieChart />
+        <Grid size={{ xs: 12, md: 6 }}>
+          <DashboardBarChart />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <DashboardPieChart />
+        </Grid>
       </Grid>
     </>
   );

@@ -25,7 +25,7 @@ export type ErrorsContextData = {
   setErrors: (errors: string[]) => void;
 };
 
-export type DashboardPieChartFiltersFormValues = {
+export type DashboardChartFiltersFormValues = {
   startDate?: string;
   endDate?: string;
 };

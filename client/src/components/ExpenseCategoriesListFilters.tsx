@@ -46,7 +46,6 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
       <AccordionDetails>
         <Box
           component="form"
-          id="expenseCategoriesListFiltersForm"
           onSubmit={formik.handleSubmit}
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}
         >

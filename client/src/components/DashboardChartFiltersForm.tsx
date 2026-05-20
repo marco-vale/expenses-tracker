@@ -1,31 +1,31 @@
 import { Check, Clear, FilterList } from '@mui/icons-material';
-import { Box, Button, Collapse, IconButton, TextField, Tooltip } from '@mui/material';
+import { Box, Button, Collapse, IconButton, TextField, Tooltip, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import type { DashboardPieChartFiltersFormValues } from '../types/types';
+import type { DashboardChartFiltersFormValues } from '../types/types';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { type DashboardChartFilters } from '../graphql/__generated__/graphql';
 import { formatDateString } from '../tools/formatDateString';
+import type { DashboardChartFilters } from '../graphql/__generated__/graphql';
 
-type DashboardPieChartFiltersProps = {
+type DashboardChartFiltersFormProps = {
   dashboardChartFilters?: DashboardChartFilters;
   handleFiltersApply: (filters?: DashboardChartFilters) => void;
   handleFiltersClear: () => void;
 };
 
-const DashboardPieChartFilters: React.FC<DashboardPieChartFiltersProps> = ({
+const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
   dashboardChartFilters,
   handleFiltersApply,
   handleFiltersClear,
 }) => {
-  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [showFiltersForm, setShowFiltersForm] = useState<boolean>(false);
 
   const validationSchema = Yup.object({
     startDate: Yup.string(),
     endDate: Yup.string(),
   });
 
-  const formik = useFormik<DashboardPieChartFiltersFormValues>({
+  const formik = useFormik<DashboardChartFiltersFormValues>({
     initialValues: {
       startDate: dashboardChartFilters?.startDate
         ? formatDateString(dashboardChartFilters.startDate)
@@ -54,15 +54,19 @@ const DashboardPieChartFilters: React.FC<DashboardPieChartFiltersProps> = ({
 
   return (
     <>
-      <Tooltip title={showFilters ? 'Hide filters' : 'Filter by date'} sx={{ marginLeft: 'auto' }}>
-        <IconButton size="small" onClick={() => setShowFilters(!showFilters)}>
+      {dashboardChartFilters?.startDate || dashboardChartFilters?.endDate ? (
+        <Typography variant="caption" color="text.secondary">
+          {dashboardChartFilters.startDate ? formatDateString(dashboardChartFilters.startDate) : '...'} — {dashboardChartFilters.endDate ? formatDateString(dashboardChartFilters.endDate) : '...'}
+        </Typography>
+      ) : null}
+      <Tooltip title={showFiltersForm ? 'Hide filters' : 'Filter by date'} sx={{ marginLeft: 'auto' }}>
+        <IconButton size="small" onClick={() => setShowFiltersForm(!showFiltersForm)}>
           <FilterList fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Collapse in={showFilters} sx={{ width: '100%' }}>
+      <Collapse in={showFiltersForm} sx={{ width: '100%' }}>
         <Box
           component="form"
-          id="dashboardPieChartFiltersForm"
           onSubmit={formik.handleSubmit}
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, px: 2, pt: 1, pb: 2 }}
         >
@@ -76,6 +80,7 @@ const DashboardPieChartFilters: React.FC<DashboardPieChartFiltersProps> = ({
             onBlur={formik.handleBlur}
             value={formik.values.startDate}
             slotProps={{ inputLabel: { shrink: true } }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.startDate && Boolean(formik.errors.startDate)}
             helperText={formik.touched.startDate && formik.errors.startDate ? formik.errors.startDate : ''}
           />
@@ -89,6 +94,7 @@ const DashboardPieChartFilters: React.FC<DashboardPieChartFiltersProps> = ({
             onBlur={formik.handleBlur}
             value={formik.values.endDate}
             slotProps={{ inputLabel: { shrink: true } }}
+            sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.endDate && Boolean(formik.errors.endDate)}
             helperText={formik.touched.endDate && formik.errors.endDate ? formik.errors.endDate : ''}
           />
@@ -127,4 +133,4 @@ const DashboardPieChartFilters: React.FC<DashboardPieChartFiltersProps> = ({
   );
 };
 
-export default DashboardPieChartFilters;
+export default DashboardChartFiltersForm;

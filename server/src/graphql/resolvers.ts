@@ -12,6 +12,8 @@ import uploadFile from '../helpers/uploadFile';
 import getPrismaArgsFromQueryOptions from '../helpers/getPrismaArgsFromQueryOptions';
 import handleException from '../helpers/handleException';
 import checkAuth from '../helpers/checkAuth';
+import getDashboardBarChart from '../helpers/getDashboardBarChart';
+import getDashboardPieChart from '../helpers/getDashboardPieChart';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -26,68 +28,13 @@ export const resolvers: Resolvers<GraphQLContext> = {
     dashboardChart: async (parent, { type, filters }, context) => {
       try {
         const user: User = checkAuth(context);
-        const currentDate: Date = new Date();
 
         if (type === DashboardChartType.Bar) {
-          const dashboardBarChart: Record<number, DashboardChartDataPoint> = {};
-
-          const dashboardBarChartExpenses: Expense[] = await context.prisma.expense.findMany({
-            where: {
-              userId: user.id,
-              date: {
-                gte: filters?.startDate ?? new Date(currentDate.getFullYear(), 0, 1).toISOString(),
-                lte: filters?.endDate ?? undefined,
-              },
-              type: ExpenseType.EXPENSE,
-            },
-          });
-
-          dashboardBarChartExpenses.forEach((dbce) => {
-            const expenseMonth: number = dbce.date.getMonth();
-
-            if (!dashboardBarChart[expenseMonth]) {
-              dashboardBarChart[expenseMonth] = {
-                label: dbce.date.toLocaleString('default', { month: 'long' }),
-                value: 0,
-              };
-            }
-
-            dashboardBarChart[expenseMonth].value += dbce.amount;
-          });
-
-          return Object.values(dashboardBarChart);
+          return getDashboardBarChart(user.id, context.prisma, filters);
         }
 
         if (type === DashboardChartType.Pie) {
-          const dashboardPieChart: DashboardChartDataPoint[] = [];
-
-          const dashboardPieChartExpenseAmounts = await context.prisma.expense.groupBy({
-            where: {
-              userId: user.id,
-              date: {
-                gte: filters?.startDate ?? new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString(),
-                lte: filters?.endDate ?? undefined,
-              },
-              type: ExpenseType.EXPENSE,
-            },
-            by: ['categoryId'],
-            _sum: { amount: true },
-          });
-
-          const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany({
-            where: { userId: user.id },
-          });
-
-          dashboardPieChartExpenseAmounts.forEach((pcea) => {
-            const expensesAmountCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === pcea.categoryId);
-
-            dashboardPieChart.push({
-              label: expensesAmountCategory ? expensesAmountCategory.name : 'Uncategorized',
-              value: pcea._sum.amount ?? 0,
-            });
-          });
-
-          return dashboardPieChart;
+          return getDashboardPieChart(user.id, context.prisma, filters);
         }
 
         throw new Error('Invalid chart type');

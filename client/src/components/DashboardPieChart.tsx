@@ -1,9 +1,10 @@
 import { Card, CardActions, CardContent, CardHeader } from '@mui/material';
 import { PieChart } from '@mui/x-charts';
 import React from 'react';
-import DashboardPieChartFilters from './DashboardPieChartFilters';
 import { useDashboardChart } from '../hooks/useDashboardChart';
 import { DashboardChartType } from '../graphql/__generated__/graphql';
+import DashboardChartFiltersForm from './DashboardChartFiltersForm';
+import { formatAmount } from '../tools/formatAmount';
 
 const DashboardPieChart: React.FC = () => {
   const {
@@ -16,10 +17,10 @@ const DashboardPieChart: React.FC = () => {
   return (
     <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <CardHeader
-        title="Expenses Breakdown by Category"
+        title="Expenses Breakdown"
         slotProps={{ title: { variant: 'h6' } }}
       />
-      <CardContent>
+      <CardContent sx={{ width: '100%', aspectRatio: '16/9' }}>
         <PieChart
           series={[
             {
@@ -28,10 +29,9 @@ const DashboardPieChart: React.FC = () => {
                 label: dp.label,
                 value: Math.abs(dp.value),
               })),
+              valueFormatter: (item) => formatAmount(item.value),
             },
           ]}
-          width={250}
-          height={250}
           colors={[
             '#37474f',
             '#546e7a',
@@ -42,8 +42,8 @@ const DashboardPieChart: React.FC = () => {
           ]}
         />
       </CardContent>
-      <CardActions sx={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-end' }}>
-        <DashboardPieChartFilters
+      <CardActions sx={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-end', mt: 'auto' }}>
+        <DashboardChartFiltersForm
           dashboardChartFilters={filters}
           handleFiltersApply={handleFiltersApply}
           handleFiltersClear={handleFiltersClear}

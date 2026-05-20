@@ -1,19 +1,26 @@
-import { Card, CardContent, CardHeader } from '@mui/material';
+import { Card, CardActions, CardContent, CardHeader } from '@mui/material';
 import { BarChart } from '@mui/x-charts';
 import React from 'react';
 import { DashboardChartType } from '../graphql/__generated__/graphql';
 import { useDashboardChart } from '../hooks/useDashboardChart';
+import DashboardChartFiltersForm from './DashboardChartFiltersForm';
+import { formatAmount } from '../tools/formatAmount';
 
 const DashboardBarChart: React.FC = () => {
-  const { data } = useDashboardChart({ type: DashboardChartType.Bar });
+  const {
+    data,
+    filters,
+    handleFiltersApply,
+    handleFiltersClear,
+  } = useDashboardChart({ type: DashboardChartType.Bar });
 
   return (
     <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <CardHeader
-        title="Expenses Overview (Yearly)"
+        title="Expenses Overview"
         slotProps={{ title: { variant: 'h6' } }}
       />
-      <CardContent>
+      <CardContent sx={{ width: '100%', aspectRatio: '16/9' }}>
         <BarChart
           xAxis={[
             {
@@ -25,14 +32,20 @@ const DashboardBarChart: React.FC = () => {
           series={[
             {
               data: data.map(dbc => Math.abs(dbc.value)),
+              valueFormatter: (item) => formatAmount(item ?? 0),
             },
           ]}
           grid={{ horizontal: true }}
-          width={500}
-          height={300}
           colors={['#37474f']}
         />
       </CardContent>
+      <CardActions sx={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-end', mt: 'auto' }}>
+        <DashboardChartFiltersForm
+          dashboardChartFilters={filters}
+          handleFiltersApply={handleFiltersApply}
+          handleFiltersClear={handleFiltersClear}
+        />
+      </CardActions>
     </Card>
   );
 };

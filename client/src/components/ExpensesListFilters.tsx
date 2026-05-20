@@ -44,8 +44,8 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
     onSubmit: (values => {
       handleFiltersApply({
         types: values.types,
-        startDate: values.startDate ? new Date(values.startDate + 'T00:00:00.000Z').toISOString() : '',
-        endDate: values.endDate ? new Date(values.endDate + 'T23:59:59.999Z').toISOString() : '',
+        startDate: values.startDate ? values.startDate + 'T00:00:00.000Z' : '',
+        endDate: values.endDate ? values.endDate + 'T23:59:59.999Z' : '',
         categories: values.categories,
       });
     }),
@@ -77,7 +77,6 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
       <AccordionDetails>
         <Box
           component="form"
-          id="expenseListFiltersForm"
           onSubmit={formik.handleSubmit}
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}
         >
