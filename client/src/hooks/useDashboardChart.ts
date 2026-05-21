@@ -14,7 +14,7 @@ type UseDashboardChartParams = {
  *
  * @returns An object containing:
  * @returns {DashboardChartDataPoint[]} data - The chart data points
- * @returns {DashboardChartFilters | undefined} filters - The current filters applied to the chart (if any)
+ * @returns {DashboardChartFilters} filters - The current filters applied to the chart
  * @returns {Function} handleFiltersApply - Function to apply filters to the chart
  * @returns {Function} handleFiltersClear - Function to clear filters
  */
@@ -32,7 +32,7 @@ export const useDashboardChart = (params: UseDashboardChartParams) => {
     },
   );
 
-  const handleFiltersApply = (filters?: DashboardChartFilters) => {
+  const handleFiltersApply = (filters: DashboardChartFilters) => {
     setFilters(filters);
   };
 

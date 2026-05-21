@@ -4,7 +4,7 @@ import React from 'react';
 import { DashboardChartType } from '../graphql/__generated__/graphql';
 import { useDashboardChart } from '../hooks/useDashboardChart';
 import DashboardChartFiltersForm from './DashboardChartFiltersForm';
-import { formatAmount } from '../tools/formatAmount';
+import { formatNumber } from '../tools/tools';
 
 const DashboardBarChart: React.FC = () => {
   const {
@@ -32,7 +32,7 @@ const DashboardBarChart: React.FC = () => {
           series={[
             {
               data: data.map(dbc => Math.abs(dbc.value)),
-              valueFormatter: (item) => formatAmount(item ?? 0),
+              valueFormatter: (item) => formatNumber(item),
             },
           ]}
           grid={{ horizontal: true }}

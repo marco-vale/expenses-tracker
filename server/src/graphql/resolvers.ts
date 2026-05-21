@@ -1,6 +1,5 @@
 import { Expense, ExpenseCategory, ExpenseType, User } from '../../generated/prisma/client';
-import { convertDateToString } from '../tools/convertDateToString';
-import { DashboardChartDataPoint, DashboardChartType, ExpensesSummary, Resolvers } from './__generated__/resolvers-types';
+import { DashboardChartType, ExpensesSummary, Resolvers } from './__generated__/resolvers-types';
 import { GraphQLContext } from './context';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
@@ -14,6 +13,12 @@ import handleException from '../helpers/handleException';
 import checkAuth from '../helpers/checkAuth';
 import getDashboardBarChart from '../helpers/getDashboardBarChart';
 import getDashboardPieChart from '../helpers/getDashboardPieChart';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { convertDateToString, parseDateString } from '../tools/tools';
+import { yupDateValidation, yupNumberPositiveOrZeroValidation } from '../validations/validations';
+
+dayjs.extend(utc);
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Query: {
@@ -28,6 +33,13 @@ export const resolvers: Resolvers<GraphQLContext> = {
     dashboardChart: async (parent, { type, filters }, context) => {
       try {
         const user: User = checkAuth(context);
+
+        const dashboardChartFiltersSchema = Yup.object({
+          startDate: yupDateValidation,
+          endDate: yupDateValidation,
+        });
+
+        await dashboardChartFiltersSchema.validate(filters);
 
         if (type === DashboardChartType.Bar) {
           return getDashboardBarChart(user.id, context.prisma, filters);
@@ -46,6 +58,12 @@ export const resolvers: Resolvers<GraphQLContext> = {
     expenseCategories: async (parent, { filters, options }, context) => {
       try {
         const user: User = checkAuth(context);
+
+        const expenseCategoriesFiltersSchema = Yup.object({
+          name: Yup.string(),
+        });
+
+        await expenseCategoriesFiltersSchema.validate(filters);
 
         const prismaWhereInput: ExpenseCategoryWhereInput = {
           name: filters?.name ? { contains: filters.name } : undefined,
@@ -75,13 +93,22 @@ export const resolvers: Resolvers<GraphQLContext> = {
       try {
         const user: User = checkAuth(context);
 
+        const expensesFiltersSchema = Yup.object({
+          types: Yup.array().of(Yup.mixed<ExpenseType>().oneOf(Object.values(ExpenseType))),
+          startDate: yupDateValidation,
+          endDate: yupDateValidation,
+          categories: Yup.array().of(Yup.string()),
+        });
+
+        await expensesFiltersSchema.validate(filters);
+
         const prismaWhereInput: ExpenseWhereInput = {
           type: filters?.types && filters.types.length > 0
             ? { in: filters.types }
             : undefined,
           date: {
-            gte: filters?.startDate ?? undefined,
-            lte: filters?.endDate ?? undefined,
+            gte: filters?.startDate ? parseDateString(filters.startDate) : undefined,
+            lte: filters?.endDate ? parseDateString(filters.endDate) : undefined,
           },
           categoryId: filters?.categories && filters.categories.length > 0
             ? { in: filters.categories }
@@ -260,10 +287,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
           name: Yup.string(),
           picture: Yup.mixed<Promise<FileUpload>>(),
-          startingBalance: Yup.number()
-            .test('is-positive', 'Starting balance must be positive or 0', (value) => {
-              return (value ?? 0) >= 0;
-            }),
+          startingBalance: yupNumberPositiveOrZeroValidation,
         });
 
         await userSchema.validate(user);
@@ -294,10 +318,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const userSchema = Yup.object({
           name: Yup.string(),
           picture: Yup.mixed<Promise<FileUpload>>(),
-          startingBalance: Yup.number()
-            .test('is-positive', 'Starting balance must be positive or 0', (value) => {
-              return (value ?? 0) >= 0;
-            }),
+          startingBalance: yupNumberPositiveOrZeroValidation,
         });
 
         await userSchema.validate(user);
@@ -394,7 +415,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           description: Yup.string().required('Description is required'),
           type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
           amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
-          date: Yup.string().required('Date is required'),
+          date: Yup.string().required('Date is required').concat(yupDateValidation),
           categoryId: Yup.string(),
         });
 
@@ -405,7 +426,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
             description: expense.description,
             type: expense.type,
             amount: expense.type === ExpenseType.EXPENSE ? -expense.amount : expense.amount,
-            date: new Date(expense.date),
+            date: parseDateString(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : undefined,
             user: { connect: { id: user.id } },
           },
@@ -426,7 +447,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           description: Yup.string().required('Description is required'),
           type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
           amount: Yup.number().required('Amount is required').positive('Amount must be positive'),
-          date: Yup.string().required('Date is required'),
+          date: Yup.string().required('Date is required').concat(yupDateValidation),
           categoryId: Yup.string(),
         });
 
@@ -441,7 +462,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
             description: expense.description,
             type: expense.type,
             amount: expense.type === ExpenseType.EXPENSE ? -expense.amount : expense.amount,
-            date: new Date(expense.date),
+            date: parseDateString(expense.date),
             category: expense.categoryId ? { connect: { id: expense.categoryId } } : { disconnect: true },
           },
         });

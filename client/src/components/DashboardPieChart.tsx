@@ -3,8 +3,8 @@ import { PieChart } from '@mui/x-charts';
 import React from 'react';
 import { useDashboardChart } from '../hooks/useDashboardChart';
 import { DashboardChartType } from '../graphql/__generated__/graphql';
-import DashboardChartFiltersForm from './DashboardChartFiltersForm';
-import { formatAmount } from '../tools/formatAmount';
+import DashboardChartFiltersForm from './DashboardChartFiltersForm'
+import { formatNumber } from '../tools/tools';
 
 const DashboardPieChart: React.FC = () => {
   const {
@@ -17,7 +17,7 @@ const DashboardPieChart: React.FC = () => {
   return (
     <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <CardHeader
-        title="Expenses Breakdown"
+        title="Expenses Category Breakdown"
         slotProps={{ title: { variant: 'h6' } }}
       />
       <CardContent sx={{ width: '100%', aspectRatio: '16/9' }}>
@@ -29,7 +29,7 @@ const DashboardPieChart: React.FC = () => {
                 label: dp.label,
                 value: Math.abs(dp.value),
               })),
-              valueFormatter: (item) => formatAmount(item.value),
+              valueFormatter: (item) => formatNumber(item.value),
             },
           ]}
           colors={[

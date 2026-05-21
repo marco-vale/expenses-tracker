@@ -1,10 +1,10 @@
 import React from 'react';
 import { OrderDirection, type ExpenseCategoriesFilters, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
-import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import type { UseTableResult } from '../types/types';
 import ExpenseCategoriesListFilters from './ExpenseCategoriesListFilters';
+import { formatNumber } from '../tools/tools';
 
 type ExpenseCategoriesListProps = {
   expenseCategories: ExpenseCategory[];
@@ -82,7 +82,7 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
                       <TableCell>{ec.name}</TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight="bold" color={(ec.amount ?? 0) < 0 ? 'error' : 'success'}>
-                          {formatAmount(Math.abs(ec.amount ?? 0))}
+                          {formatNumber(ec.amount ? Math.abs(ec.amount) : 0)}
                         </Typography>
                       </TableCell>
                       <TableCell>

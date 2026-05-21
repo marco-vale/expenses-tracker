@@ -13,7 +13,8 @@ import UserFormProfile from '../components/UserFormProfile';
 import { ArrowBack, RestartAlt, Save } from '@mui/icons-material';
 import { useDialog } from '../hooks/useDialog';
 import DeleteDialog from '../components/DeleteDialog';
-import { formatNumberString } from '../tools/formatNumberString';
+import { yupNumberPositiveOrZeroValidation, yupNumberValidation } from '../validations/validations';
+import { parseNumberString } from '../tools/tools';
 
 const EditUser: React.FC = () => {
   const { user } = useAuth();
@@ -40,13 +41,7 @@ const EditUser: React.FC = () => {
   const validationSchema = Yup.object({
     name: Yup.string(),
     picture: Yup.mixed<File>(),
-    startingBalance: Yup.string()
-      .test('is-number', 'Starting balance must be a valid number', (value) => {
-        return !isNaN(parseFloat(value ?? '0'));
-      })
-      .test('is-positive', 'Starting balance must be positive or 0', (value) => {
-        return parseFloat(value ?? '0') >= 0;
-      }),
+    startingBalance: yupNumberValidation.concat(yupNumberPositiveOrZeroValidation),
   });
 
   return (
@@ -71,7 +66,7 @@ const EditUser: React.FC = () => {
                 user: {
                   name: values.name,
                   picture: values.picture,
-                  startingBalance: Number(formatNumberString(values.startingBalance))
+                  startingBalance: values.startingBalance ? parseNumberString(values.startingBalance) : 0,
                 },
               },
             }).then(() => {

@@ -1,13 +1,12 @@
 import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
 import React from "react";
 import { ExpenseType, OrderDirection, type Expense, type ExpenseCategory, type ExpensesFilters } from '../graphql/__generated__/graphql';
-import { formatDateString } from '../tools/formatDateString';
-import { formatAmount } from '../tools/formatAmount';
 import { Delete, Edit } from '@mui/icons-material';
 import { AppRoutes, buildRoute } from '../routes/routes';
 import { Link } from 'react-router';
 import type { UseTableResult } from '../types/types';
 import ExpensesListFilters from './ExpensesListFilters';
+import { formatDateString, formatNumber } from '../tools/tools';
 
 type ExpensesListProps = {
   expenses: Expense[];
@@ -104,7 +103,7 @@ const ExpensesList: React.FC<ExpensesListProps> = ({
                       <TableCell>{e.description}</TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight="bold" color={e.type === ExpenseType.Expense ? 'error' : 'success'}>
-                          {formatAmount(Math.abs(e.amount))}
+                          {formatNumber(Math.abs(e.amount))}
                         </Typography>
                       </TableCell>
                       <TableCell>{formatDateString(e.date)}</TableCell>

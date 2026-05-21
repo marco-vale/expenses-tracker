@@ -4,8 +4,9 @@ import React from "react";
 import { ExpenseType, type ExpenseCategory, type ExpensesFilters } from '../graphql/__generated__/graphql';
 import { useFormik } from 'formik';
 import type { ExpensesListFiltersFormValues } from '../types/types';
-import { formatDateString } from '../tools/formatDateString';
 import * as Yup from 'yup';
+import { yupDateValidation } from '../validations/validations';
+import { formatDateString } from '../tools/tools';
 
 type ExpensesListFiltersProps = {
   expenseCategories: ExpenseCategory[];
@@ -22,20 +23,16 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
 }) => {
   const validationSchema = Yup.object({
     types: Yup.array().of(Yup.mixed<ExpenseType>().oneOf(Object.values(ExpenseType))),
-    startDate: Yup.string(),
-    endDate: Yup.string(),
+    startDate: yupDateValidation,
+    endDate: yupDateValidation,
     categories: Yup.array().of(Yup.string()),
   });
 
   const formik = useFormik<ExpensesListFiltersFormValues>({
     initialValues: {
       types: expensesFilters?.types ?? [],
-      startDate: expensesFilters?.startDate
-        ? formatDateString(expensesFilters.startDate)
-        : '',
-      endDate: expensesFilters?.endDate
-        ? formatDateString(expensesFilters.endDate)
-        : '',
+      startDate: expensesFilters?.startDate ? formatDateString(expensesFilters.startDate) : '',
+      endDate: expensesFilters?.endDate ? formatDateString(expensesFilters.endDate) : '',
       categories: expensesFilters?.categories ?? [],
     },
     validationSchema,
@@ -44,8 +41,8 @@ const ExpensesListFilters: React.FC<ExpensesListFiltersProps> = ({
     onSubmit: (values => {
       handleFiltersApply({
         types: values.types,
-        startDate: values.startDate ? values.startDate + 'T00:00:00.000Z' : '',
-        endDate: values.endDate ? values.endDate + 'T23:59:59.999Z' : '',
+        startDate: values.startDate ? values.startDate + 'T00:00:00.000Z' : undefined,
+        endDate: values.endDate ? values.endDate + 'T23:59:59.999Z' : undefined,
         categories: values.categories,
       });
     }),

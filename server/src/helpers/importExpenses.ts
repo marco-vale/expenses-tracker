@@ -1,18 +1,32 @@
 import path from 'path';
-import { parseNumber } from '../tools/parseNumber';
 import { ExpenseImportRow } from '../types/types';
 import { Expense, ExpenseType, PrismaClient, User } from '../../generated/prisma/client';
 import XLSX from 'xlsx';
-import { parseDate } from '../tools/parseDate';
-import checkAuth from './checkAuth';
-import { GraphQLContext } from '../graphql/context';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 const isExpenseImportRowValid = (row: ExpenseImportRow): boolean => {
-  const debit: number = parseNumber(row['Débito ']);
-  const credit: number = parseNumber(row['Crédito ']);
+  const debit: number = parseRowNumberString(row['Débito ']);
+  const credit: number = parseRowNumberString(row['Crédito ']);
 
   return !!row['Data mov. '] && (debit > 0 || credit > 0);
 }
+
+const parseRowNumberString = (numberString?: string): number => {
+  if (!numberString || !numberString.trim()) {
+    return 0;
+  }
+
+  return Number(numberString.trim().replace(/\./g, '').replace(',', '.')) || 0;
+};
+
+const parseRowDateString = (dateString: string): Date => {
+  return dayjs.utc(dateString.trim(), 'DD-MM-YYYY').toDate();
+};
 
 const importExpenses = async (
   filePath: string,
@@ -29,8 +43,8 @@ const importExpenses = async (
 
   return await prisma.$transaction(
     rows.map((r: ExpenseImportRow) => {
-      const debit: number = parseNumber(r['Débito ']);
-      const credit: number = parseNumber(r['Crédito ']);
+      const debit: number = parseRowNumberString(r['Débito ']);
+      const credit: number = parseRowNumberString(r['Crédito ']);
 
       let type: ExpenseType = ExpenseType.EXPENSE;
       let amount: number = 0;
@@ -53,7 +67,7 @@ const importExpenses = async (
           description: r['Descrição '].trim(),
           type,
           amount: type === ExpenseType.EXPENSE ? -amount : amount,
-          date: parseDate(r['Data mov. ']),
+          date: parseRowDateString(r['Data mov. ']),
           category: category
             ? {
               connectOrCreate: {

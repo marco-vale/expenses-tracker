@@ -1,8 +1,8 @@
 import { Accordion, AccordionDetails, AccordionSummary, Divider, List, ListItem, ListItemText, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { formatAmount } from '../tools/formatAmount';
 import type { ExpensesSummary as ExpensesSummaryType } from '../graphql/__generated__/graphql';
 import { ExpandMore } from '@mui/icons-material';
+import { formatNumber } from '../tools/tools';
 
 type ExpensesSummaryProps = {
   expensesSummary: ExpensesSummaryType | null;
@@ -25,19 +25,19 @@ const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expensesSummary }) =>
               <ListItemText>
                 <Typography variant="body2" fontWeight="bold">Balance</Typography>
               </ListItemText>
-              <Typography variant="body2" fontWeight="bold">{formatAmount(expensesSummary.balance)}</Typography>
+              <Typography variant="body2" fontWeight="bold">{formatNumber(expensesSummary.balance)}</Typography>
             </ListItem>
             <ListItem>
               <ListItemText>
                 <Typography variant="body2" fontWeight="bold" color="error">Total expenses</Typography>
               </ListItemText>
-              <Typography variant="body2" fontWeight="bold" color="error">{formatAmount(Math.abs(expensesSummary.expensesAmount))}</Typography>
+              <Typography variant="body2" fontWeight="bold" color="error">{formatNumber(Math.abs(expensesSummary.expensesAmount))}</Typography>
             </ListItem>
             <ListItem>
               <ListItemText>
                 <Typography variant="body2" fontWeight="bold" color="success">Total income</Typography>
               </ListItemText>
-              <Typography variant="body2" fontWeight="bold" color="success">{formatAmount(Math.abs(expensesSummary.incomeAmount))}</Typography>
+              <Typography variant="body2" fontWeight="bold" color="success">{formatNumber(Math.abs(expensesSummary.incomeAmount))}</Typography>
             </ListItem>
           </List>
           <Divider sx={{ my: 2 }} />
@@ -45,7 +45,7 @@ const ExpensesSummary: React.FC<ExpensesSummaryProps> = ({ expensesSummary }) =>
             {expensesSummary.categories.map((esc) => (
               <ListItem key={esc.id}>
                 <ListItemText primary={esc.name} />
-                <Typography variant="body2" fontWeight="bold" color="error">{formatAmount(Math.abs(esc.amount))}</Typography>
+                <Typography variant="body2" fontWeight="bold" color="error">{formatNumber(Math.abs(esc.amount))}</Typography>
               </ListItem>
             ))}
           </List>

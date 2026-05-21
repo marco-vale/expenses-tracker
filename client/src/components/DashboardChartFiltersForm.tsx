@@ -1,15 +1,16 @@
 import { Check, Clear, FilterList } from '@mui/icons-material';
-import { Box, Button, Collapse, IconButton, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Collapse, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import type { DashboardChartFiltersFormValues } from '../types/types';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { formatDateString } from '../tools/formatDateString';
 import type { DashboardChartFilters } from '../graphql/__generated__/graphql';
+import { yupDateValidation } from '../validations/validations';
+import { formatDateString } from '../tools/tools';
 
 type DashboardChartFiltersFormProps = {
   dashboardChartFilters?: DashboardChartFilters;
-  handleFiltersApply: (filters?: DashboardChartFilters) => void;
+  handleFiltersApply: (filters: DashboardChartFilters) => void;
   handleFiltersClear: () => void;
 };
 
@@ -21,26 +22,22 @@ const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
   const [showFiltersForm, setShowFiltersForm] = useState<boolean>(false);
 
   const validationSchema = Yup.object({
-    startDate: Yup.string(),
-    endDate: Yup.string(),
+    startDate: yupDateValidation,
+    endDate: yupDateValidation,
   });
 
   const formik = useFormik<DashboardChartFiltersFormValues>({
     initialValues: {
-      startDate: dashboardChartFilters?.startDate
-        ? formatDateString(dashboardChartFilters.startDate)
-        : '',
-      endDate: dashboardChartFilters?.endDate
-        ? formatDateString(dashboardChartFilters.endDate)
-        : '',
+      startDate: dashboardChartFilters?.startDate ? formatDateString(dashboardChartFilters.startDate) : '',
+      endDate: dashboardChartFilters?.endDate ? formatDateString(dashboardChartFilters.endDate) : '',
     },
     validationSchema,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: (values => {
       handleFiltersApply({
-        startDate: values.startDate ? values.startDate + 'T00:00:00.000Z' : '',
-        endDate: values.endDate ? values.endDate + 'T23:59:59.999Z' : '',
+        startDate: values.startDate ? values.startDate + 'T00:00:00.000Z' : undefined,
+        endDate: values.endDate ? values.endDate + 'T23:59:59.999Z' : undefined,
       });
     }),
   });
@@ -54,11 +51,6 @@ const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
 
   return (
     <>
-      {dashboardChartFilters?.startDate || dashboardChartFilters?.endDate ? (
-        <Typography variant="caption" color="text.secondary">
-          {dashboardChartFilters.startDate ? formatDateString(dashboardChartFilters.startDate) : '...'} — {dashboardChartFilters.endDate ? formatDateString(dashboardChartFilters.endDate) : '...'}
-        </Typography>
-      ) : null}
       <Tooltip title={showFiltersForm ? 'Hide filters' : 'Filter by date'} sx={{ marginLeft: 'auto' }}>
         <IconButton size="small" onClick={() => setShowFiltersForm(!showFiltersForm)}>
           <FilterList fontSize="small" />

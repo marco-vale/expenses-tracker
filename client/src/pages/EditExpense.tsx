@@ -7,9 +7,9 @@ import type { ExpenseFormValues } from '../types/types';
 import { AppRoutes } from '../routes/routes';
 import ExpenseForm from '../components/ExpenseForm';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
-import { formatNumberString } from '../tools/formatNumberString';
 import { useErrors } from '../hooks/useErrors';
 import { ArrowBack, Save } from '@mui/icons-material';
+import { parseNumberString } from '../tools/tools';
 
 const EditExpense: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,8 +47,8 @@ const EditExpense: React.FC = () => {
           id: expense?.id ?? '',
           description: values.description,
           type: values.type,
-          amount: Number(formatNumberString(values.amount)),
-          date: new Date(values.date).toISOString(),
+          amount: parseNumberString(values.amount),
+          date: values.date,
           categoryId: values.categoryId || undefined,
         },
       },

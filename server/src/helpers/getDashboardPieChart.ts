@@ -1,16 +1,16 @@
 import { ExpenseCategory, ExpenseType, PrismaClient } from '../../generated/prisma/client';
 import { DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
+import { parseDateString } from '../tools/tools';
 
 const getDashboardPieChart = async (userId: string, prisma: PrismaClient, filters?: DashboardChartFilters | null) => {
   const dashboardPieChart: DashboardChartDataPoint[] = [];
-  const now: Date = new Date();
 
   const dashboardPieChartExpenseAmounts = await prisma.expense.groupBy({
     where: {
       userId,
       date: {
-        gte: filters?.startDate ?? new Date(now.getFullYear(), now.getMonth(), 1).toISOString(),
-        lte: filters?.endDate ?? undefined,
+        gte: filters?.startDate ? parseDateString(filters.startDate) : undefined,
+        lte: filters?.endDate ? parseDateString(filters.endDate) : undefined,
       },
       type: ExpenseType.EXPENSE,
     },
