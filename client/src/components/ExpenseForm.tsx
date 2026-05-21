@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { MenuItem, TextField } from '@mui/material';
 import { ExpenseType, type Expense, type ExpenseCategory } from '../graphql/__generated__/graphql';
 import type { ExpenseFormValues } from '../types/types';
-import { yupNumberValidation, yupNumberPositiveOrZeroValidation, yupDateValidation } from '../validations/validations';
+import { yupNumberValidation, yupDateValidation, yupNumberPositiveValidation } from '../validations/validations';
 import { formatDateString } from '../tools/tools';
 
 type ExpenseFormProps = {
@@ -17,7 +17,7 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({ expense, expenseCategories, o
   const validationSchema = Yup.object({
     description: Yup.string().required('Description is required'),
     type: Yup.mixed<ExpenseType>().required('Type is required').oneOf(Object.values(ExpenseType)),
-    amount: Yup.string().required('Amount is required').concat(yupNumberValidation).concat(yupNumberPositiveOrZeroValidation),
+    amount: Yup.string().required('Amount is required').concat(yupNumberValidation).concat(yupNumberPositiveValidation),
     date: Yup.string().required('Date is required').concat(yupDateValidation),
     categoryId: Yup.string(),
   });

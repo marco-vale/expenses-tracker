@@ -6,6 +6,11 @@ export const yupNumberValidation = Yup.string()
     return value ? !isNaN(parseNumberString(value)) : true;
   })
 
+export const yupNumberPositiveValidation = Yup.string()
+  .test('is-positive', 'Number must be positive', (value) => {
+    return value ? parseNumberString(value) > 0 : true;
+  });
+
 export const yupNumberPositiveOrZeroValidation = Yup.string()
   .test('is-positive-or-zero', 'Number must be positive or 0', (value) => {
     return value ? parseNumberString(value) >= 0 : true;
