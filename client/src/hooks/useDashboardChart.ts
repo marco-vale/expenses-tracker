@@ -13,7 +13,8 @@ type UseDashboardChartParams = {
  * @param params.type - The type of chart (Bar, Pie, etc.)
  *
  * @returns An object containing:
- * @returns {DashboardChartDataPoint[]} data - The chart data points
+ * @returns {DashboardChart} data - The chart
+ * @returns {boolean} loading - Indicates if the chart data is being loaded
  * @returns {DashboardChartFilters} filters - The current filters applied to the chart
  * @returns {Function} handleFiltersApply - Function to apply filters to the chart
  * @returns {Function} handleFiltersClear - Function to clear filters
@@ -21,7 +22,7 @@ type UseDashboardChartParams = {
 export const useDashboardChart = (params: UseDashboardChartParams) => {
   const [filters, setFilters] = useState<DashboardChartFilters>();
 
-  const { data } = useQuery<GetDashboardChartQuery, GetDashboardChartQueryVariables>(
+  const { data, loading } = useQuery<GetDashboardChartQuery, GetDashboardChartQueryVariables>(
     GetDashboardChartDocument,
     {
       variables: {
@@ -41,7 +42,8 @@ export const useDashboardChart = (params: UseDashboardChartParams) => {
   };
 
   return {
-    data: data?.dashboardChart ?? [],
+    data: data?.dashboardChart,
+    loading,
     filters,
     handleFiltersApply,
     handleFiltersClear,

@@ -20,14 +20,21 @@ export type Scalars = {
   Upload: { input: FileUpload; output: FileUpload; }
 };
 
+export type DashboardChart = {
+  __typename?: 'DashboardChart';
+  dataPoints: Array<DashboardChartDataPoint>;
+  labels?: Maybe<Array<Scalars['String']['output']>>;
+};
+
 export type DashboardChartDataPoint = {
   __typename?: 'DashboardChartDataPoint';
-  label: Scalars['String']['output'];
-  value: Scalars['Float']['output'];
+  label?: Maybe<Scalars['String']['output']>;
+  values: Array<Scalars['Float']['output']>;
 };
 
 export type DashboardChartFilters = {
   endDate?: InputMaybe<Scalars['String']['input']>;
+  showCategories?: InputMaybe<Scalars['Boolean']['input']>;
   startDate?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -202,7 +209,7 @@ export enum OrderDirection {
 
 export type Query = {
   __typename?: 'Query';
-  dashboardChart: Array<DashboardChartDataPoint>;
+  dashboardChart: DashboardChart;
   expense: Expense;
   expenseCategories: ExpenseCategoriesReturn;
   expenses: ExpensesReturn;
@@ -338,6 +345,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  DashboardChart: ResolverTypeWrapper<DashboardChart>;
   DashboardChartDataPoint: ResolverTypeWrapper<DashboardChartDataPoint>;
   DashboardChartFilters: DashboardChartFilters;
   DashboardChartType: DashboardChartType;
@@ -373,6 +381,7 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  DashboardChart: DashboardChart;
   DashboardChartDataPoint: DashboardChartDataPoint;
   DashboardChartFilters: DashboardChartFilters;
   Expense: Expense;
@@ -402,9 +411,14 @@ export type ResolversParentTypes = {
   UserUpdateInput: UserUpdateInput;
 };
 
+export type DashboardChartResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DashboardChart'] = ResolversParentTypes['DashboardChart']> = {
+  dataPoints?: Resolver<Array<ResolversTypes['DashboardChartDataPoint']>, ParentType, ContextType>;
+  labels?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+};
+
 export type DashboardChartDataPointResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['DashboardChartDataPoint'] = ResolversParentTypes['DashboardChartDataPoint']> = {
-  label?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  value?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  label?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  values?: Resolver<Array<ResolversTypes['Float']>, ParentType, ContextType>;
 };
 
 export type ExpenseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Expense'] = ResolversParentTypes['Expense']> = {
@@ -463,7 +477,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
 };
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  dashboardChart?: Resolver<Array<ResolversTypes['DashboardChartDataPoint']>, ParentType, ContextType, RequireFields<QueryDashboardChartArgs, 'type'>>;
+  dashboardChart?: Resolver<ResolversTypes['DashboardChart'], ParentType, ContextType, RequireFields<QueryDashboardChartArgs, 'type'>>;
   expense?: Resolver<ResolversTypes['Expense'], ParentType, ContextType, RequireFields<QueryExpenseArgs, 'id'>>;
   expenseCategories?: Resolver<ResolversTypes['ExpenseCategoriesReturn'], ParentType, ContextType, Partial<QueryExpenseCategoriesArgs>>;
   expenses?: Resolver<ResolversTypes['ExpensesReturn'], ParentType, ContextType, Partial<QueryExpensesArgs>>;
@@ -485,6 +499,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 };
 
 export type Resolvers<ContextType = GraphQLContext> = {
+  DashboardChart?: DashboardChartResolvers<ContextType>;
   DashboardChartDataPoint?: DashboardChartDataPointResolvers<ContextType>;
   Expense?: ExpenseResolvers<ContextType>;
   ExpenseCategoriesReturn?: ExpenseCategoriesReturnResolvers<ContextType>;

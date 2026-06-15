@@ -28,13 +28,19 @@ export const typeDefs = `#graphql
   }
 
   input DashboardChartFilters {
+    showCategories: Boolean
     startDate: String
     endDate: String
   }
 
   type DashboardChartDataPoint {
-    label: String!
-    value: Float!
+    label: String
+    values: [Float!]!
+  }
+
+  type DashboardChart {
+    labels: [String!]
+    dataPoints: [DashboardChartDataPoint!]!
   }
 
   type ExpenseCategory {
@@ -145,7 +151,7 @@ export const typeDefs = `#graphql
   type Query {
     me: User!
 
-    dashboardChart(type: DashboardChartType!, filters: DashboardChartFilters): [DashboardChartDataPoint!]!
+    dashboardChart(type: DashboardChartType!, filters: DashboardChartFilters): DashboardChart!
 
     expenseCategories(filters: ExpenseCategoriesFilters, options: QueryOptions): ExpenseCategoriesReturn!
 

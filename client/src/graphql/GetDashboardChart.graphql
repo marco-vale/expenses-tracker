@@ -1,6 +1,9 @@
 query GetDashboardChart($type: DashboardChartType!, $filters: DashboardChartFilters) {
   dashboardChart(type: $type, filters: $filters) {
-    label
-    value
+    labels
+    dataPoints {
+      label
+      values
+    }
   }
 }

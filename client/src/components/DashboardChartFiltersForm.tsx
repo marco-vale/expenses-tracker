@@ -1,5 +1,5 @@
-import { Check, Clear, FilterList } from '@mui/icons-material';
-import { Box, Button, Collapse, IconButton, TextField, Tooltip } from '@mui/material';
+import { Check, Clear, FilterListAlt } from '@mui/icons-material';
+import { Box, Button, Collapse, FormControlLabel, IconButton, Switch, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import type { DashboardChartFiltersFormValues } from '../types/types';
 import { useFormik } from 'formik';
@@ -10,12 +10,14 @@ import { formatDateString } from '../tools/tools';
 
 type DashboardChartFiltersFormProps = {
   dashboardChartFilters?: DashboardChartFilters;
+  enableShowCategoriesFilter?: boolean;
   handleFiltersApply: (filters: DashboardChartFilters) => void;
   handleFiltersClear: () => void;
 };
 
 const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
   dashboardChartFilters,
+  enableShowCategoriesFilter,
   handleFiltersApply,
   handleFiltersClear,
 }) => {
@@ -28,6 +30,7 @@ const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
 
   const formik = useFormik<DashboardChartFiltersFormValues>({
     initialValues: {
+      showCategories: !!dashboardChartFilters?.showCategories,
       startDate: dashboardChartFilters?.startDate ? formatDateString(dashboardChartFilters.startDate) : '',
       endDate: dashboardChartFilters?.endDate ? formatDateString(dashboardChartFilters.endDate) : '',
     },
@@ -36,13 +39,19 @@ const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
     validateOnBlur: false,
     onSubmit: (values => {
       handleFiltersApply({
+        showCategories: values.showCategories,
         startDate: values.startDate ? values.startDate + 'T00:00:00.000Z' : undefined,
         endDate: values.endDate ? values.endDate + 'T23:59:59.999Z' : undefined,
       });
     }),
   });
 
+  const onShowCategoriesClick = (checked: boolean) => {
+    formik.setFieldValue('showCategories', checked)
+  };
+
   const clearFilters = () => {
+    formik.setFieldValue('showCategories', false);
     formik.setFieldValue('startDate', '');
     formik.setFieldValue('endDate', '');
 
@@ -53,7 +62,7 @@ const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
     <>
       <Tooltip title={showFiltersForm ? 'Hide filters' : 'Filter by date'} sx={{ marginLeft: 'auto' }}>
         <IconButton size="small" onClick={() => setShowFiltersForm(!showFiltersForm)}>
-          <FilterList fontSize="small" />
+          <FilterListAlt fontSize="small" />
         </IconButton>
       </Tooltip>
       <Collapse in={showFiltersForm} sx={{ width: '100%' }}>
@@ -62,6 +71,22 @@ const DashboardChartFiltersForm: React.FC<DashboardChartFiltersFormProps> = ({
           onSubmit={formik.handleSubmit}
           sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, px: 2, pt: 1, pb: 2 }}
         >
+          {enableShowCategoriesFilter && (
+            <FormControlLabel
+              control={
+                <Switch
+                  id="showCategories"
+                  name="showCategories"
+                  size="small"
+                  checked={formik.values.showCategories}
+                  onChange={(e) => onShowCategoriesClick(e.target.checked)}
+                />
+              }
+              label="Categories"
+              labelPlacement="end"
+              sx={{ mr: 'auto' }}
+            />
+          )}
           <TextField
             id="startDate"
             name="startDate"

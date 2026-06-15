@@ -1,8 +1,8 @@
 import { ExpenseCategory, ExpenseType, PrismaClient } from '../../generated/prisma/client';
-import { DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
+import { DashboardChart, DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
 import { parseDateString } from '../tools/tools';
 
-const getDashboardPieChart = async (userId: string, prisma: PrismaClient, filters?: DashboardChartFilters | null) => {
+const getDashboardPieChart = async (userId: string, prisma: PrismaClient, filters?: DashboardChartFilters | null): Promise<DashboardChart> => {
   const dashboardPieChart: DashboardChartDataPoint[] = [];
 
   const dashboardPieChartExpenseAmounts = await prisma.expense.groupBy({
@@ -27,11 +27,13 @@ const getDashboardPieChart = async (userId: string, prisma: PrismaClient, filter
 
     dashboardPieChart.push({
       label: expensesAmountCategory ? expensesAmountCategory.name : 'Uncategorized',
-      value: pcea._sum.amount ?? 0,
+      values: [pcea._sum.amount ?? 0],
     });
   });
 
-  return dashboardPieChart;
+  return {
+    dataPoints: dashboardPieChart,
+  };
 };
 
 export default getDashboardPieChart;

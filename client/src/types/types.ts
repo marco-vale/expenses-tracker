@@ -26,6 +26,7 @@ export type ErrorsContextData = {
 };
 
 export type DashboardChartFiltersFormValues = {
+  showCategories: boolean;
   startDate?: string;
   endDate?: string;
 };

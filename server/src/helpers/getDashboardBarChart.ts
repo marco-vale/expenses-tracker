@@ -1,11 +1,69 @@
 import { Expense, ExpenseType, PrismaClient } from '../../generated/prisma/client';
-import { DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
+import { DashboardChart, DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
 import { parseDateString } from '../tools/tools';
 
-const getDashboardBarChart = async (userId: string, prisma: PrismaClient, filters?: DashboardChartFilters | null): Promise<DashboardChartDataPoint[]> => {
+type DashboardBarChartDataPointCategories = {
+  label: string;
+  values: Record<string, number>;
+};
+
+const buildDashboardBarChart = (expenses: any[]): DashboardChart => {
+  const dashboardBarChartLabels: Set<string> = new Set();
   const dashboardBarChart: Record<string, DashboardChartDataPoint> = {};
 
-  const dashboardBarChartExpenses: Expense[] = await prisma.expense.findMany({
+  expenses.forEach((e) => {
+    dashboardBarChartLabels.add(e.date.toLocaleString('default', { month: 'long' }));
+
+    const eIndex: string = e.date.getFullYear() + '-' + e.date.getMonth();
+    if (!dashboardBarChart[eIndex]) {
+      dashboardBarChart[eIndex] = {
+        values: [0],
+      };
+    }
+
+    dashboardBarChart[eIndex].values[0] += e.amount;
+  });
+
+  return {
+    labels: Array.from(dashboardBarChartLabels),
+    dataPoints: Object.values(dashboardBarChart),
+  };
+};
+
+const buildDashboardBarChartCategories = (expenses: any[]): DashboardChart => {
+  const dashboardBarChartLabels: Set<string> = new Set();
+  const dashboardBarChartCategories: Record<string, DashboardBarChartDataPointCategories> = {};
+
+  expenses.forEach((e) => {
+    dashboardBarChartLabels.add(e.date.toLocaleString('default', { month: 'long' }));
+
+    const eIndex: string = e.categoryId ?? '';
+    if (!dashboardBarChartCategories[eIndex]) {
+      dashboardBarChartCategories[eIndex] = {
+        label: e.category?.name ?? 'Uncategorized',
+        values: {},
+      };
+    }
+
+    const eDateIndex: string = e.date.getFullYear() + '-' + e.date.getMonth();
+    if (!dashboardBarChartCategories[eIndex].values[eDateIndex]) {
+      dashboardBarChartCategories[eIndex].values[eDateIndex] = 0;
+    }
+
+    dashboardBarChartCategories[eIndex].values[eDateIndex] += e.amount;
+  });
+
+  return {
+    labels: Array.from(dashboardBarChartLabels),
+    dataPoints: Object.values(dashboardBarChartCategories).map(dbcc => ({
+      label: dbcc.label,
+      values: Object.values(dbcc.values),
+    })),
+  };
+};
+
+const getDashboardBarChart = async (userId: string, prisma: PrismaClient, filters?: DashboardChartFilters | null): Promise<DashboardChart> => {
+  const dashboardBarChartExpenses = await prisma.expense.findMany({
     where: {
       userId,
       date: {
@@ -14,23 +72,13 @@ const getDashboardBarChart = async (userId: string, prisma: PrismaClient, filter
       },
       type: ExpenseType.EXPENSE,
     },
-    orderBy: { date: 'asc' },
+    include: { category: true },
+    orderBy: filters?.showCategories ? [{ categoryId: 'asc' }, { date: 'asc' }] : { date: 'asc' },
   });
 
-  dashboardBarChartExpenses.forEach((dbce) => {
-    const dbceIndex: string = dbce.date.getFullYear() + '-' + dbce.date.getMonth();
-
-    if (!dashboardBarChart[dbceIndex]) {
-      dashboardBarChart[dbceIndex] = {
-        label: dbce.date.toLocaleString('default', { month: 'long' }),
-        value: 0,
-      };
-    }
-
-    dashboardBarChart[dbceIndex].value += dbce.amount;
-  });
-
-  return Object.values(dashboardBarChart);
+  return filters?.showCategories
+    ? buildDashboardBarChartCategories(dashboardBarChartExpenses)
+    : buildDashboardBarChart(dashboardBarChartExpenses);
 };
 
 export default getDashboardBarChart;
