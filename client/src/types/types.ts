@@ -62,6 +62,7 @@ export type EditUserFormValues = UserFormProfileValues;
 
 export type ExpenseCategoryFormValues = {
   name: string;
+  color: string;
 };
 
 export type ExpenseFormValues = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { OrderDirection, type ExpenseCategoriesFilters, type ExpenseCategory } from '../graphql/__generated__/graphql';
-import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, IconButton, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Typography, Box } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import type { UseTableResult } from '../types/types';
 import ExpenseCategoriesListFilters from './ExpenseCategoriesListFilters';
@@ -79,7 +79,22 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
                 <TableBody>
                   {expenseCategories.map((ec) => (
                     <TableRow key={ec.id}>
-                      <TableCell>{ec.name}</TableCell>
+                      <TableCell>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          {ec.color && (
+                            <Box
+                              sx={{
+                                width: 16,
+                                height: 16,
+                                borderRadius: '50%',
+                                backgroundColor: ec.color,
+                                flexShrink: 0,
+                              }}
+                            />
+                          )}
+                          <span>{ec.name}</span>
+                        </Stack>
+                      </TableCell>
                       <TableCell>
                         <Typography variant="body2" fontWeight="bold" color={(ec.amount ?? 0) < 0 ? 'error' : 'success'}>
                           {formatNumber(ec.amount ? Math.abs(ec.amount) : 0)}

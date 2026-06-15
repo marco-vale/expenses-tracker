@@ -3,6 +3,7 @@ query GetExpenseCategories($filters: ExpenseCategoriesFilters, $options: QueryOp
     expenseCategories {
       id
       name
+      color
       amount @include(if: $getAmount)
       deletable @include(if: $getDeletable)
     }

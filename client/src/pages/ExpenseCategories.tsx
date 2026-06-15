@@ -62,6 +62,7 @@ const ExpenseCategories: React.FC = () => {
           expenseCategory: {
             id: expenseCategoryFormDialog.data.id,
             name: values.name,
+            color: values.color,
           },
         },
       });
@@ -70,6 +71,7 @@ const ExpenseCategories: React.FC = () => {
         variables: {
           expenseCategory: {
             name: values.name,
+            color: values.color,
           },
         },
       });

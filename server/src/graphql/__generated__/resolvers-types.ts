@@ -66,16 +66,19 @@ export type ExpenseCategoriesReturn = {
 export type ExpenseCategory = {
   __typename?: 'ExpenseCategory';
   amount?: Maybe<Scalars['Float']['output']>;
+  color?: Maybe<Scalars['String']['output']>;
   deletable?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
 };
 
 export type ExpenseCategoryCreateInput = {
+  color?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };
 
 export type ExpenseCategoryUpdateInput = {
+  color?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
 };
@@ -437,6 +440,7 @@ export type ExpenseCategoriesReturnResolvers<ContextType = GraphQLContext, Paren
 
 export type ExpenseCategoryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ExpenseCategory'] = ResolversParentTypes['ExpenseCategory']> = {
   amount?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  color?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   deletable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

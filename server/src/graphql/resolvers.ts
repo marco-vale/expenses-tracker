@@ -346,13 +346,15 @@ export const resolvers: Resolvers<GraphQLContext> = {
 
         const expenseCategorySchema = Yup.object({
           name: Yup.string().required('Name is required'),
+          color: Yup.string().matches(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format'),
         });
 
         await expenseCategorySchema.validate(expenseCategory);
 
         const newExpenseCategory: ExpenseCategory = await context.prisma.expenseCategory.create({
           data: {
-            ...expenseCategory,
+            name: expenseCategory.name,
+            color: expenseCategory.color,
             user: { connect: { id: user.id } },
           },
         });
@@ -370,6 +372,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
         const expenseCategorySchema = Yup.object({
           id: Yup.string().required('ID is required'),
           name: Yup.string().required('Name is required'),
+          color: Yup.string().matches(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format'),
         });
 
         await expenseCategorySchema.validate(expenseCategory);
@@ -381,6 +384,7 @@ export const resolvers: Resolvers<GraphQLContext> = {
           },
           data: {
             name: expenseCategory.name,
+            color: expenseCategory.color,
           },
         });
 

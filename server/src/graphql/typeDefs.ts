@@ -46,6 +46,7 @@ export const typeDefs = `#graphql
   type ExpenseCategory {
     id: ID!
     name: String!
+    color: String
     amount: Float
     deletable: Boolean
   }
@@ -119,11 +120,13 @@ export const typeDefs = `#graphql
 
   input ExpenseCategoryCreateInput {
     name: String!
+    color: String
   }
 
   input ExpenseCategoryUpdateInput {
     id: ID!
     name: String!
+    color: String
   }
 
   input ExpenseCreateInput {
