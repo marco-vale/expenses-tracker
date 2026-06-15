@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Bash(npm run *)",
+      "Bash(npx prisma *)",
+      "Bash(cd *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(mkdir *)",
+      "Bash(touch *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(DROP TABLE *)",
+      "Bash(DROP DATABASE *)"
+    ]
+  }
+}
