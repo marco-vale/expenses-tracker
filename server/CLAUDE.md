@@ -20,9 +20,11 @@ Schema in `prisma/schema.prisma`. Three models:
 
 ### Prisma Workflow
 
+Migration names must follow the format `<tablename>_<change>` where tablename is all lowercase (e.g., `expensecategory_add_color`, `expense_add_notes`).
+
 ```bash
 # After editing schema.prisma:
-npm run prisma:migrate    # Create and apply migration
+npm run prisma:migrate    # Create and apply migration (use --name <tablename>_<change>)
 npm run prisma:generate   # Regenerate Prisma client
 
 # Visual database editor:

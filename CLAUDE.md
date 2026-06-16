@@ -97,6 +97,7 @@ When modifying the GraphQL API:
 - **Mutations return IDs**: All create/update/delete mutations return the affected entity's ID (string).
 - **No barrel exports**: Files are imported directly, no `index.ts` barrel files.
 - **Decimal input**: Users can type commas or dots as decimal separator. `parseNumberString()` normalizes them.
+- **Migration naming**: Prisma migrations must be named `<tablename>_<change>` with the table name in all lowercase (e.g., `expensecategory_add_color`).
 
 ## Database Models
 
