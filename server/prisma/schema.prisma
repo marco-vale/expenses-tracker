@@ -26,11 +26,13 @@ model User {
 
 model ExpenseCategory {
   id       String    @id @default(cuid())
-  name     String    @unique
+  name     String
   color    String?
   expenses Expense[]
   userId   String    @default("")
   user     User      @relation(fields: [userId], references: [id])
+
+  @@unique([name, userId])
 }
 
 enum ExpenseType {

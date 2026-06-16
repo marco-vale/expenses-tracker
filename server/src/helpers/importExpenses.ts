@@ -71,7 +71,7 @@ const importExpenses = async (
           category: category
             ? {
               connectOrCreate: {
-                where: { name: category },
+                where: { name_userId: { name: category, userId: user.id } },
                 create: {
                   name: category,
                   user: { connect: { id: user.id } },

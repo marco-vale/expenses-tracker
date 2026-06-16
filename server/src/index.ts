@@ -15,6 +15,14 @@ import getUserByUserToken from './helpers/getUserByToken.js';
 import handleException from './helpers/handleException.js';
 import { userStartingBalanceEditableLoader } from './graphql/loaders/userStartingBalanceEditableLoader.js';
 
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is required');
+}
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
 const app = express();
 app.use(express.json());
 

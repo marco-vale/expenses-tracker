@@ -40,7 +40,7 @@ const CreateExpense: React.FC = () => {
   return (
     <>
       <Typography variant="h3" align="center" gutterBottom sx={{ mt: '2rem' }}>
-        Add Expense
+        Add expense
       </Typography>
 
       <Grid container spacing={2} justifyContent="center" direction="column">

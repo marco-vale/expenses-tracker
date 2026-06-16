@@ -39,14 +39,14 @@ createRoot(document.getElementById('root')!).render(
             <CssBaseline />
             <BrowserRouter>
               <Routes>
-                <Route element={<AuthRoute mode={AuthRouteMode.AuthCheck} />}>
+                <Route element={<AuthRoute mode={AuthRouteMode.Guest} />}>
                   <Route element={<AuthLayout />}>
                     <Route path={AppRoutes.Login} element={<Login />} />
                     <Route path={AppRoutes.CreateUser} element={<CreateUser />} />
                   </Route>
                 </Route>
 
-                <Route element={<AuthRoute mode={AuthRouteMode.NoAuthCheck} />}>
+                <Route element={<AuthRoute mode={AuthRouteMode.Auth} />}>
                   <Route element={<MainLayout />}>
                     <Route path={AppRoutes.EditUser} element={<EditUser />} />
                     <Route path={AppRoutes.Dashboard} element={<Dashboard />} />

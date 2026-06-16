@@ -25,13 +25,13 @@ const AuthRoute: React.FC<AuthRouteProps> = ({ mode }) => {
     );
   }
 
-  if (mode === AuthRouteMode.NoAuthCheck && !isAuthenticated) {
+  if (mode === AuthRouteMode.Auth && !isAuthenticated) {
     return (
       <Navigate to={AppRoutes.Login} replace />
     );
   }
 
-  if (mode === AuthRouteMode.AuthCheck && isAuthenticated) {
+  if (mode === AuthRouteMode.Guest && isAuthenticated) {
     return (
       <Navigate to={AppRoutes.Dashboard} replace />
     );

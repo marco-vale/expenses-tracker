@@ -204,7 +204,9 @@ export const resolvers: Resolvers<GraphQLContext> = {
           _sum: { amount: true },
         });
 
-        const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany();
+        const expenseCategories: ExpenseCategory[] = await context.prisma.expenseCategory.findMany({
+          where: { userId: user.id },
+        });
 
         expensesSummary.categories = expenseAmountsByCategory.map((eabc) => {
           const expensesCategory: ExpenseCategory | undefined = expenseCategories.find((ec) => ec.id === eabc.categoryId);

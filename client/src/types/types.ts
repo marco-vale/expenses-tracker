@@ -3,8 +3,8 @@ import type { useDialog } from '../hooks/useDialog';
 import type { useTable } from '../hooks/useTable';
 
 export enum AuthRouteMode {
-  AuthCheck,
-  NoAuthCheck,
+  Auth,
+  Guest,
 };
 
 export type AuthContextData = {

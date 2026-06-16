@@ -92,7 +92,9 @@ const ExpenseCategoriesList: React.FC<ExpenseCategoriesListProps> = ({
                               }}
                             />
                           )}
-                          <span>{ec.name}</span>
+                          <Typography variant="body2">
+                            {ec.name}
+                          </Typography>
                         </Stack>
                       </TableCell>
                       <TableCell>

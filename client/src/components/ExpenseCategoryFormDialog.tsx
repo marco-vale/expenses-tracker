@@ -45,7 +45,7 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ e
 
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Add Category</DialogTitle>
+      <DialogTitle>{data?.id ? 'Edit' : 'Add'} category</DialogTitle>
       <form onSubmit={formik.handleSubmit}>
         <DialogContent>
           <TextField
