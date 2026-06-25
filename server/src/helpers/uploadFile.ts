@@ -14,7 +14,8 @@ const uploadFile = async (file?: Promise<FileUpload>): Promise<string | undefine
   const uploadDir = path.join(process.cwd(), 'uploads');
   mkdirSync(uploadDir, { recursive: true });
 
-  const uniqueName = `${Date.now()}-${filename}`;
+  const sanitizedFilename = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
+  const uniqueName = `${Date.now()}-${sanitizedFilename}`;
   filePath = `/uploads/${uniqueName}`;
 
   await new Promise<void>((resolve, reject) => {

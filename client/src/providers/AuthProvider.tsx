@@ -62,7 +62,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     onLogout?.();
   }, []);
 
-  if (meError) {
+  if (meError && userToken) {
     logout();
   }
 
