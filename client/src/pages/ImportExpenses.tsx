@@ -72,7 +72,7 @@ const ImportExpenses: React.FC = () => {
             onBlur={formik.handleBlur}
             slotProps={{
               inputLabel: { shrink: true },
-              htmlInput: { accept: 'text/csv' },
+              htmlInput: { accept: '.xls,.xlsx' },
             }}
             error={formik.touched.file && Boolean(formik.errors.file)}
             helperText={formik.touched.file && formik.errors.file}

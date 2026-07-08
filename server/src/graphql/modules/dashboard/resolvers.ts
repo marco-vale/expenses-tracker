@@ -1,18 +1,18 @@
-import { User } from '../../../../generated/prisma/client';
-import { DashboardChartType, type Resolvers } from '../../__generated__/resolvers-types';
-import type { GraphQLContext } from '../../context';
+import { User } from '../../../../generated/prisma/client.js';
+import { DashboardChartType, type Resolvers } from '../../__generated__/resolvers-types.js';
+import type { GraphQLContext } from '../../context.js';
 import * as Yup from 'yup';
-import handleException from '../../../helpers/handleException';
-import checkAuth from '../../../helpers/checkAuth';
-import getDashboardBarChart from '../../../helpers/getDashboardBarChart';
-import getDashboardPieChart from '../../../helpers/getDashboardPieChart';
-import { yupDateValidation } from '../../../validations/validations';
+import handleException from '../../../helpers/handleException.js';
+import checkAuth from '../../../helpers/checkAuth.js';
+import getDashboardBarChart from '../../../helpers/getDashboardBarChart.js';
+import getDashboardPieChart from '../../../helpers/getDashboardPieChart.js';
+import { yupDateValidation } from '../../../validations/validations.js';
 
 export const dashboardResolvers: Resolvers<GraphQLContext> = {
   Query: {
     dashboardChart: async (parent, { type, filters }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const dashboardChartFiltersSchema = Yup.object({
           startDate: yupDateValidation,

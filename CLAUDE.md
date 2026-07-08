@@ -81,7 +81,7 @@ When modifying the GraphQL API:
 
 1. Edit the schema in `server/src/graphql/typeDefs.ts`
 2. Run `npm run codegen` in `server/` → generates `src/graphql/__generated__/resolvers-types.ts`
-3. Implement resolvers in `server/src/graphql/resolvers.ts`
+3. Implement resolvers in the relevant domain module under `server/src/graphql/modules/<domain>/resolvers.ts` (aggregated in `server/src/graphql/resolvers.ts`)
 4. Add/edit `.graphql` operation files in `client/src/graphql/`
 5. Run `npm run codegen` in `client/` → generates `src/graphql/__generated__/graphql.ts`
 6. Use generated typed document nodes in client components
@@ -98,6 +98,32 @@ When modifying the GraphQL API:
 - **No barrel exports**: Files are imported directly, no `index.ts` barrel files.
 - **Decimal input**: Users can type commas or dots as decimal separator. `parseNumberString()` normalizes them.
 - **Migration naming**: Prisma migrations must be named `<tablename>_<change>` with the table name in all lowercase (e.g., `expensecategory_add_color`).
+
+## Code Conventions & Standards
+
+Standards to follow when writing or reviewing code. Server- and client-specific details live in `server/CLAUDE.md` and `client/CLAUDE.md`.
+
+### General
+- **TypeScript strict** — no `any`, no `@ts-ignore`.
+- **No barrel exports** — import directly from source files.
+- **GraphQL pipeline stays in sync** — `typeDefs.ts` ↔ resolvers ↔ `.graphql` operations ↔ generated types. Run codegen after schema changes and never hand-edit `__generated__/` files.
+
+### Server
+- Call `checkAuth(context)` at the start of every protected resolver.
+- Validate input with Yup (`validations/`) before business logic.
+- Scope every Prisma query by `userId` — never expose another user's data.
+- Use `prisma.$transaction()` for multi-step writes.
+- Resolve computed fields via DataLoaders (`graphql/loaders/`), not inline queries.
+- Apply the amount sign in the resolver — input is always positive; EXPENSE is stored negative, INCOME positive.
+- Mark nullable schema fields optional; wrap custom error messages with `handleException()`.
+
+### Client
+- Functional components only, one component per file, MUI for all UI.
+- Formik + Yup with `validateOnChange: false` and `validateOnBlur: false`.
+- `parseNumberString()` for decimal input, `formatNumber()` for display; form value types in `types/types.ts`.
+- Use generated typed document nodes with Apollo hooks.
+- Apollo `InMemoryCache` for server state; React contexts for auth/errors only. Mutations must update the cache or set `refetchQueries`.
+- Use the `useDialog()`, `useTable()`, and `useErrors()` hooks for their respective concerns.
 
 ## Database Models
 

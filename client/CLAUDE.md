@@ -27,8 +27,8 @@ React 19 + Vite 7 + Apollo Client 4 + MUI 7 frontend.
 
 - Routes defined in `routes/routes.ts` as `AppRoutes` enum
 - Route guard via `AuthRoute` component with two modes:
-  - `AuthRouteMode.AuthCheck` — requires auth, redirects to login if not authenticated
-  - `AuthRouteMode.NoAuthCheck` — requires no auth, redirects to dashboard if authenticated
+  - `AuthRouteMode.Auth` — requires auth, redirects to login if not authenticated
+  - `AuthRouteMode.Guest` — requires no auth, redirects to dashboard if authenticated
 - Layouts: `AuthLayout` for login/signup, `MainLayout` for authenticated pages (sidebar nav + header)
 
 ## State Management

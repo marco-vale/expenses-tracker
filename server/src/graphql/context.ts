@@ -1,7 +1,7 @@
-import { PrismaClient, User } from '../../generated/prisma/client';
-import { expenseCategoryAmountLoader } from './loaders/expenseCategoryAmountLoader';
-import { expenseCategoryDeletableLoader } from './loaders/expenseCategoryDeletableLoader';
-import { userStartingBalanceEditableLoader } from './loaders/userStartingBalanceEditableLoader';
+import { PrismaClient, User } from '../../generated/prisma/client.js';
+import { expenseCategoryAmountLoader } from './loaders/expenseCategoryAmountLoader.js';
+import { expenseCategoryDeletableLoader } from './loaders/expenseCategoryDeletableLoader.js';
+import { userStartingBalanceEditableLoader } from './loaders/userStartingBalanceEditableLoader.js';
 
 export type GraphQLContext = {
   prisma: PrismaClient;

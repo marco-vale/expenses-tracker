@@ -4,10 +4,12 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { AppRoutes } from '../routes/routes';
 import { Logout } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
+import { useAuthenticatedImage } from '../hooks/useAuthenticatedImage';
 import ErrorsAlert from '../components/ErrorsAlert';
 
 const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();
+  const pictureUrl = useAuthenticatedImage(user?.picture);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -45,7 +47,7 @@ const MainLayout: React.FC = () => {
               {`Welcome, ${user.name ?? user.email}!`}
             </Typography>
             <Avatar
-              src={user.picture ? `http://localhost:3001${user.picture}` : undefined}
+              src={pictureUrl}
               alt={user.name ?? user.email}
               sx={{ width: 32, height: 32, ml: 1 }}
             />

@@ -1,11 +1,11 @@
 import DataLoader from 'dataloader';
-import { GraphQLContext } from '../context';
-import handleException from '../../helpers/handleException';
+import handleException from '../../helpers/handleException.js';
+import { PrismaClient } from '../../../generated/prisma/client.js';
 
-export const userStartingBalanceEditableLoader = (context: GraphQLContext) => {
+export const userStartingBalanceEditableLoader = (prisma: PrismaClient) => {
   return new DataLoader<string, boolean>(async (userIds: readonly string[]) => {
     try {
-      const expenseCountsByUser = await context.prisma.expense.groupBy({
+      const expenseCountsByUser = await prisma.expense.groupBy({
         by: ['userId'],
         where: {
           userId: { in: [...userIds] },

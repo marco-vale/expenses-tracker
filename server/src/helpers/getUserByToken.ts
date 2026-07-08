@@ -1,6 +1,6 @@
-import { PrismaClient, User } from '../../generated/prisma/client';
+import { PrismaClient, User } from '../../generated/prisma/client.js';
 import jwt from 'jsonwebtoken';
-import { UserToken } from '../types/types';
+import { UserToken } from '../types/types.js';
 
 const getUserByUserToken = async (userToken: string, prisma: PrismaClient): Promise<User> => {
   const decodedUserToken = jwt.verify(userToken, process.env.JWT_SECRET!) as UserToken;

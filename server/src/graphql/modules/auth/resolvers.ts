@@ -1,20 +1,20 @@
-import { User } from '../../../../generated/prisma/client';
+import { User } from '../../../../generated/prisma/client.js';
 import type { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
-import type { Resolvers } from '../../__generated__/resolvers-types';
-import type { GraphQLContext } from '../../context';
+import type { Resolvers } from '../../__generated__/resolvers-types.js';
+import type { GraphQLContext } from '../../context.js';
 import * as Yup from 'yup';
 import * as argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import handleException from '../../../helpers/handleException';
-import checkAuth from '../../../helpers/checkAuth';
-import uploadFile from '../../../helpers/uploadFile';
-import { yupNumberPositiveOrZeroValidation } from '../../../validations/validations';
+import handleException from '../../../helpers/handleException.js';
+import checkAuth from '../../../helpers/checkAuth.js';
+import uploadFile from '../../../helpers/uploadFile.js';
+import { yupNumberPositiveOrZeroValidation } from '../../../validations/validations.js';
 
 export const authResolvers: Resolvers<GraphQLContext> = {
   Query: {
     me: async (parent, { }, context) => {
       try {
-        return checkAuth(context);
+        return checkAuth(context.user);
       } catch (ex) {
         throw handleException(ex);
       }
@@ -102,7 +102,7 @@ export const authResolvers: Resolvers<GraphQLContext> = {
 
     updateUser: async (parent, { user }, context) => {
       try {
-        const currentUser: User = checkAuth(context);
+        const currentUser: User = checkAuth(context.user);
 
         const userSchema = Yup.object({
           name: Yup.string(),
@@ -119,7 +119,7 @@ export const authResolvers: Resolvers<GraphQLContext> = {
           data: {
             name: user.name,
             picture: picturePath,
-            startingBalance: user.startingBalance ?? 0,
+            startingBalance: user.startingBalance ?? undefined,
           },
         });
 

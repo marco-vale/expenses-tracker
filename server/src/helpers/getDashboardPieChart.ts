@@ -1,6 +1,6 @@
-import { ExpenseCategory, ExpenseType, PrismaClient } from '../../generated/prisma/client';
-import { DashboardChart, DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
-import { parseDateString } from '../tools/tools';
+import { ExpenseCategory, ExpenseType, PrismaClient } from '../../generated/prisma/client.js';
+import { DashboardChart, DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types.js';
+import { parseDateString } from '../tools/tools.js';
 
 const getDashboardPieChart = async (userId: string, prisma: PrismaClient, filters?: DashboardChartFilters | null): Promise<DashboardChart> => {
   const dashboardPieChart: DashboardChartDataPoint[] = [];

@@ -28,9 +28,13 @@ export const useExpenseCategories = () => {
 
   const expenseCategories = useMemo<ExpenseCategory[]>(() => {
     return [
+      // Sentinel for "no category"; the server maps id '' to categoryId IS NULL.
       {
         id: '',
         name: 'Uncategorized',
+        color: null,
+        amount: null,
+        deletable: null,
       },
       ...(expenseCategoriesData?.expenseCategories?.expenseCategories ?? [])
     ];

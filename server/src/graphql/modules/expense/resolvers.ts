@@ -1,22 +1,22 @@
-import { Expense, ExpenseCategory, ExpenseType, User } from '../../../../generated/prisma/client';
-import { BatchPayload, ExpenseWhereInput } from '../../../../generated/prisma/internal/prismaNamespace';
-import type { ExpensesSummary, Resolvers } from '../../__generated__/resolvers-types';
-import type { GraphQLContext } from '../../context';
+import { Expense, ExpenseCategory, ExpenseType, User } from '../../../../generated/prisma/client.js';
+import { BatchPayload, ExpenseWhereInput } from '../../../../generated/prisma/internal/prismaNamespace.js';
+import type { ExpensesSummary, Resolvers } from '../../__generated__/resolvers-types.js';
+import type { GraphQLContext } from '../../context.js';
 import type { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
 import * as Yup from 'yup';
-import handleException from '../../../helpers/handleException';
-import checkAuth from '../../../helpers/checkAuth';
-import getPrismaArgsFromQueryOptions from '../../../helpers/getPrismaArgsFromQueryOptions';
-import importExpenses from '../../../helpers/importExpenses';
-import uploadFile from '../../../helpers/uploadFile';
-import { convertDateToString, parseDateString } from '../../../tools/tools';
-import { yupDateValidation } from '../../../validations/validations';
+import handleException from '../../../helpers/handleException.js';
+import checkAuth from '../../../helpers/checkAuth.js';
+import getPrismaArgsFromQueryOptions from '../../../helpers/getPrismaArgsFromQueryOptions.js';
+import importExpenses from '../../../helpers/importExpenses.js';
+import uploadFile from '../../../helpers/uploadFile.js';
+import { convertDateToString, parseDateString } from '../../../tools/tools.js';
+import { yupDateValidation } from '../../../validations/validations.js';
 
 export const expenseResolvers: Resolvers<GraphQLContext> = {
   Query: {
     expenses: async (parent, { filters, options }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expensesFiltersSchema = Yup.object({
           types: Yup.array().of(Yup.mixed<ExpenseType>().oneOf(Object.values(ExpenseType))),
@@ -27,6 +27,12 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
         await expensesFiltersSchema.validate(filters);
 
+        // The client uses '' as a sentinel for "Uncategorized" (categoryId IS NULL),
+        // which an `in` clause can never match, so split it out into an OR.
+        const categoryIds: string[] = filters?.categories?.filter((c): c is string => !!c) ?? [];
+        const includeUncategorized: boolean = filters?.categories?.includes('') ?? false;
+        const hasCategoryFilter: boolean = (filters?.categories?.length ?? 0) > 0;
+
         const prismaWhereInput: ExpenseWhereInput = {
           type: filters?.types && filters.types.length > 0
             ? { in: filters.types }
@@ -35,8 +41,11 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
             gte: filters?.startDate ? parseDateString(filters.startDate) : undefined,
             lte: filters?.endDate ? parseDateString(filters.endDate) : undefined,
           },
-          categoryId: filters?.categories && filters.categories.length > 0
-            ? { in: filters.categories }
+          OR: hasCategoryFilter
+            ? [
+              ...(categoryIds.length > 0 ? [{ categoryId: { in: categoryIds } }] : []),
+              ...(includeUncategorized ? [{ categoryId: null }] : []),
+            ]
             : undefined,
           userId: user.id,
         };
@@ -44,7 +53,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
         const [expenses, count] = await context.prisma.$transaction([
           context.prisma.expense.findMany({
             include: { category: true },
-            ...getPrismaArgsFromQueryOptions(options),
+            ...getPrismaArgsFromQueryOptions(options, ['description', 'amount', 'date']),
             where: prismaWhereInput,
           }),
           context.prisma.expense.count({
@@ -68,7 +77,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
     expense: async (parent, { id }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expense: Expense | null = await context.prisma.expense.findFirst({
           where: {
@@ -93,7 +102,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
     expensesSummary: async (parent, { }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expensesSummary: ExpensesSummary = {
           expensesAmount: 0,
@@ -153,7 +162,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
   Mutation: {
     createExpense: async (parent, { expense }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expenseSchema = Yup.object({
           description: Yup.string().required('Description is required'),
@@ -184,7 +193,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
     updateExpense: async (parent, { expense }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expenseSchema = Yup.object({
           id: Yup.string().required('ID is required'),
@@ -219,7 +228,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
     deleteExpense: async (parent, { id }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         await context.prisma.expense.delete({
           where: {
@@ -236,7 +245,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
     importExpenses: async (parent, { importData }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const importDataSchema = Yup.object({
           file: Yup.mixed<Promise<FileUpload>>().required('File is required'),
@@ -264,7 +273,7 @@ export const expenseResolvers: Resolvers<GraphQLContext> = {
 
     deleteAll: async (parent, { }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const transaction: BatchPayload[] = await context.prisma.$transaction([
           context.prisma.expense.deleteMany({

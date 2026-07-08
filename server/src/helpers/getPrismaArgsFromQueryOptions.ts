@@ -1,13 +1,28 @@
-import { OrderDirection, QueryOptions } from '../graphql/__generated__/resolvers-types';
+import { OrderDirection, QueryOptions } from '../graphql/__generated__/resolvers-types.js';
 
-const getPrismaArgsFromQueryOptions = (options?: QueryOptions | null): any | undefined => {
+type PrismaQueryArgs = {
+  orderBy?: Record<string, OrderDirection>;
+  skip?: number;
+  take?: number;
+};
+
+/**
+ * Converts pagination/sorting query options into Prisma args.
+ *
+ * `orderBy` is validated against `allowedOrderByFields` to prevent arbitrary
+ * client-supplied fields from reaching Prisma; unknown fields are ignored.
+ */
+const getPrismaArgsFromQueryOptions = (
+  options?: QueryOptions | null,
+  allowedOrderByFields: string[] = [],
+): PrismaQueryArgs | undefined => {
   if (!options) {
     return undefined;
   }
 
-  const prismaArgs: any = {};
+  const prismaArgs: PrismaQueryArgs = {};
 
-  if (options.orderBy) {
+  if (options.orderBy && allowedOrderByFields.includes(options.orderBy)) {
     prismaArgs.orderBy = {
       [options.orderBy]: options.orderDirection ?? OrderDirection.Asc,
     };

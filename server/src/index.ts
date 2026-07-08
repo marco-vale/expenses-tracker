@@ -61,25 +61,47 @@ app.use(
         }
       }
 
-      // Instantiates the loaders later so it can pass them the full context
       const context: GraphQLContext = {
         prisma,
         user,
-        loaders: {} as any,
+        loaders: {
+          userStartingBalanceEditable: userStartingBalanceEditableLoader(prisma),
+          expenseCategoryAmount: expenseCategoryAmountLoader(prisma, user),
+          expenseCategoryDeletable: expenseCategoryDeletableLoader(prisma, user),
+        },
       };
-
-      context.loaders = {
-        userStartingBalanceEditable: userStartingBalanceEditableLoader(context),
-        expenseCategoryAmount: expenseCategoryAmountLoader(context),
-        expenseCategoryDeletable: expenseCategoryDeletableLoader(context),
-      }
 
       return context;
     },
   }),
 );
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+// Uploaded files are private: only the authenticated owner may read them.
+app.use(
+  '/uploads',
+  async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization;
+      const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : undefined;
+      if (!token) {
+        res.status(401).end();
+        return;
+      }
+
+      const requestingUser: User = await getUserByUserToken(token, prisma);
+
+      if (requestingUser.picture !== `/uploads${req.path}`) {
+        res.status(403).end();
+        return;
+      }
+
+      next();
+    } catch {
+      res.status(401).end();
+    }
+  },
+  express.static(path.join(process.cwd(), 'uploads')),
+);
 
 const port = Number(process.env.PORT ?? 3001);
 

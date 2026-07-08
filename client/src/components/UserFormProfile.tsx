@@ -3,6 +3,7 @@ import React from "react";
 import type { User } from '../graphql/__generated__/graphql';
 import { useFormikContext } from 'formik';
 import type { UserFormProfileValues } from '../types/types';
+import { useAuthenticatedImage } from '../hooks/useAuthenticatedImage';
 
 type UserFormProfileProps = {
   user?: User | null;
@@ -10,6 +11,7 @@ type UserFormProfileProps = {
 
 const UserFormProfile: React.FC<UserFormProfileProps> = ({ user }) => {
   const formik = useFormikContext<UserFormProfileValues>();
+  const serverPictureUrl = useAuthenticatedImage(user?.picture);
 
   const onPictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     formik.setFieldValue('picture', event.currentTarget.files?.[0]);
@@ -54,7 +56,7 @@ const UserFormProfile: React.FC<UserFormProfileProps> = ({ user }) => {
               src={
                 formik.values.picture
                   ? URL.createObjectURL(formik.values.picture)
-                  : user?.picture ? `http://localhost:3001${user.picture}` : undefined
+                  : serverPictureUrl
               }
               alt="Profile picture preview"
               sx={{

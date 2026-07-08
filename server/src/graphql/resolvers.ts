@@ -1,10 +1,10 @@
-import { commonResolvers } from './modules/common/resolvers';
-import { authResolvers } from './modules/auth/resolvers';
-import { expenseCategoryResolvers } from './modules/expenseCategory/resolvers';
-import { expenseResolvers } from './modules/expense/resolvers';
-import { dashboardResolvers } from './modules/dashboard/resolvers';
-import type { Resolvers } from './__generated__/resolvers-types';
-import type { GraphQLContext } from './context';
+import { commonResolvers } from './modules/common/resolvers.js';
+import { authResolvers } from './modules/auth/resolvers.js';
+import { expenseCategoryResolvers } from './modules/expenseCategory/resolvers.js';
+import { expenseResolvers } from './modules/expense/resolvers.js';
+import { dashboardResolvers } from './modules/dashboard/resolvers.js';
+import type { Resolvers } from './__generated__/resolvers-types.js';
+import type { GraphQLContext } from './context.js';
 
 export const resolvers: Resolvers<GraphQLContext> = {
   Upload: commonResolvers.Upload,

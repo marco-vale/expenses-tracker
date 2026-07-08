@@ -1,17 +1,17 @@
-import { ExpenseCategory, User } from '../../../../generated/prisma/client';
-import { ExpenseCategoryWhereInput } from '../../../../generated/prisma/internal/prismaNamespace';
-import type { Resolvers } from '../../__generated__/resolvers-types';
-import type { GraphQLContext } from '../../context';
+import { ExpenseCategory, User } from '../../../../generated/prisma/client.js';
+import { ExpenseCategoryWhereInput } from '../../../../generated/prisma/internal/prismaNamespace.js';
+import type { Resolvers } from '../../__generated__/resolvers-types.js';
+import type { GraphQLContext } from '../../context.js';
 import * as Yup from 'yup';
-import handleException from '../../../helpers/handleException';
-import checkAuth from '../../../helpers/checkAuth';
-import getPrismaArgsFromQueryOptions from '../../../helpers/getPrismaArgsFromQueryOptions';
+import handleException from '../../../helpers/handleException.js';
+import checkAuth from '../../../helpers/checkAuth.js';
+import getPrismaArgsFromQueryOptions from '../../../helpers/getPrismaArgsFromQueryOptions.js';
 
 export const expenseCategoryResolvers: Resolvers<GraphQLContext> = {
   Query: {
     expenseCategories: async (parent, { filters, options }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expenseCategoriesFiltersSchema = Yup.object({
           name: Yup.string(),
@@ -26,7 +26,7 @@ export const expenseCategoryResolvers: Resolvers<GraphQLContext> = {
 
         const [expenseCategories, count] = await context.prisma.$transaction([
           context.prisma.expenseCategory.findMany({
-            ...getPrismaArgsFromQueryOptions(options),
+            ...getPrismaArgsFromQueryOptions(options, ['name']),
             where: prismaWhereInput,
           }),
           context.prisma.expenseCategory.count({
@@ -56,7 +56,7 @@ export const expenseCategoryResolvers: Resolvers<GraphQLContext> = {
   Mutation: {
     createExpenseCategory: async (parent, { expenseCategory }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expenseCategorySchema = Yup.object({
           name: Yup.string().required('Name is required'),
@@ -81,7 +81,7 @@ export const expenseCategoryResolvers: Resolvers<GraphQLContext> = {
 
     updateExpenseCategory: async (parent, { expenseCategory }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         const expenseCategorySchema = Yup.object({
           id: Yup.string().required('ID is required'),
@@ -110,7 +110,7 @@ export const expenseCategoryResolvers: Resolvers<GraphQLContext> = {
 
     deleteExpenseCategory: async (parent, { id }, context) => {
       try {
-        const user: User = checkAuth(context);
+        const user: User = checkAuth(context.user);
 
         await context.prisma.expenseCategory.delete({
           where: {

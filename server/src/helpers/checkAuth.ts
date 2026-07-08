@@ -1,12 +1,11 @@
-import { User } from '../../generated/prisma/client';
-import { GraphQLContext } from '../graphql/context';
+import { User } from '../../generated/prisma/client.js';
 
-const checkAuth = (context: GraphQLContext): User => {
-  if (!context.user) {
+const checkAuth = (user: User | null): User => {
+  if (!user) {
     throw new Error('Unauthorized');
   }
 
-  return context.user;
+  return user;
 };
 
 export default checkAuth;

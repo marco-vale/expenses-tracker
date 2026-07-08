@@ -1,10 +1,11 @@
 import path from 'path';
-import { ExpenseImportRow } from '../types/types';
-import { Expense, ExpenseType, PrismaClient, User } from '../../generated/prisma/client';
+import { unlink } from 'fs/promises';
+import { ExpenseImportRow } from '../types/types.js';
+import { Expense, ExpenseType, PrismaClient, User } from '../../generated/prisma/client.js';
 import XLSX from 'xlsx';
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import utc from 'dayjs/plugin/utc.js';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -34,56 +35,62 @@ const importExpenses = async (
   user: User,
   importCategories?: boolean
 ): Promise<Expense[]> => {
-  const file = XLSX.readFile(path.join(process.cwd(), filePath), { raw: true });
+  const absoluteFilePath = path.join(process.cwd(), filePath);
+  const file = XLSX.readFile(absoluteFilePath, { raw: true });
   const sheetName = file.SheetNames[0];
   const sheet = file.Sheets[sheetName];
 
   const rows: ExpenseImportRow[] = XLSX.utils.sheet_to_json<ExpenseImportRow>(sheet, { range: 6 })
     .filter(isExpenseImportRowValid);
 
-  return await prisma.$transaction(
-    rows.map((r: ExpenseImportRow) => {
-      const debit: number = parseRowNumberString(r['Débito ']);
-      const credit: number = parseRowNumberString(r['Crédito ']);
+  try {
+    return await prisma.$transaction(
+      rows.map((r: ExpenseImportRow) => {
+        const debit: number = parseRowNumberString(r['Débito ']);
+        const credit: number = parseRowNumberString(r['Crédito ']);
 
-      let type: ExpenseType = ExpenseType.EXPENSE;
-      let amount: number = 0;
+        let type: ExpenseType = ExpenseType.EXPENSE;
+        let amount: number = 0;
 
-      if (debit > 0) {
-        type = ExpenseType.EXPENSE;
-        amount = debit;
-      } else if (credit > 0) {
-        type = ExpenseType.INCOME;
-        amount = credit;
-      }
+        if (debit > 0) {
+          type = ExpenseType.EXPENSE;
+          amount = debit;
+        } else if (credit > 0) {
+          type = ExpenseType.INCOME;
+          amount = credit;
+        }
 
-      let category: string | undefined = undefined;
-      if (importCategories && r['Categoria ']) {
-        category = r['Categoria '].trim();
-      }
+        let category: string | undefined = undefined;
+        if (importCategories && r['Categoria ']) {
+          category = r['Categoria '].trim();
+        }
 
-      return prisma.expense.create({
-        data: {
-          description: r['Descrição '].trim(),
-          type,
-          amount: type === ExpenseType.EXPENSE ? -amount : amount,
-          date: parseRowDateString(r['Data mov. ']),
-          category: category
-            ? {
-              connectOrCreate: {
-                where: { name_userId: { name: category, userId: user.id } },
-                create: {
-                  name: category,
-                  user: { connect: { id: user.id } },
-                },
+        return prisma.expense.create({
+          data: {
+            description: (r['Descrição '] ?? '').trim(),
+            type,
+            amount: type === ExpenseType.EXPENSE ? -amount : amount,
+            date: parseRowDateString(r['Data mov. ']),
+            category: category
+              ? {
+                connectOrCreate: {
+                  where: { name_userId: { name: category, userId: user.id } },
+                  create: {
+                    name: category,
+                    user: { connect: { id: user.id } },
+                  },
+                }
               }
-            }
-            : undefined,
-          user: { connect: { id: user.id } },
-        },
-      });
-    })
-  );
+              : undefined,
+            user: { connect: { id: user.id } },
+          },
+        });
+      })
+    );
+  } finally {
+    // The uploaded file has been parsed; remove it so uploads/ doesn't accumulate.
+    await unlink(absoluteFilePath).catch(() => undefined);
+  }
 };
 
 export default importExpenses;

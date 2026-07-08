@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { LoginDocument, MeDocument, type LoginMutation, type LoginMutationVariables, type MeQuery, type MeQueryVariables, type User } from '../graphql/__generated__/graphql';
@@ -62,9 +62,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     onLogout?.();
   }, []);
 
-  if (meError && userToken) {
-    logout();
-  }
+  useEffect(() => {
+    if (meError && userToken) {
+      logout();
+    }
+  }, [meError, userToken, logout]);
 
   return (
     <AuthContext.Provider value={{ userToken, user, userLoading: meLoading, isAuthenticated, login, logout }}>

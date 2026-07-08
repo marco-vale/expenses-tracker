@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import React, { useCallback } from 'react';
 import type { ExpenseCategoryFormValues, UseDialogResult } from '../types/types';
@@ -76,11 +76,21 @@ const ExpenseCategoryFormDialog: React.FC<ExpenseCategoryFormDialogProps> = ({ e
               error={formik.touched.color && Boolean(formik.errors.color)}
               helperText={formik.touched.color && formik.errors.color ? formik.errors.color : ''}
             />
-            <input
+            <Box
+              component="input"
               type="color"
               value={formik.values.color}
-              onChange={(e) => onColorChange(e.target.value)}
-              style={{ width: 48, height: 48, border: 'none', cursor: 'pointer', padding: 0 }}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onColorChange(e.target.value)}
+              sx={{
+                width: 48,
+                height: 48,
+                p: 0,
+                border: 1,
+                borderColor: 'divider',
+                cursor: 'pointer',
+                bgcolor: 'transparent',
+                flexShrink: 0,
+              }}
             />
           </Stack>
         </DialogContent>

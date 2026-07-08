@@ -27,7 +27,7 @@ export const useErrors = () => {
   const { setErrors } = context;
 
   const onError = useCallback((error: ErrorLike) => {
-    setErrors([error.message]);
+    setErrors((prev) => prev.includes(error.message) ? prev : [...prev, error.message]);
   }, [setErrors]);
 
   return { ...context, onError };

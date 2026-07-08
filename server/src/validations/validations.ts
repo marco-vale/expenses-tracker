@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { validateDateString } from '../tools/tools';
+import { validateDateString } from '../tools/tools.js';
 
 export const yupNumberPositiveOrZeroValidation = Yup.number()
   .test('is-positive-or-zero', 'Starting balance must be positive or 0', (value) => {

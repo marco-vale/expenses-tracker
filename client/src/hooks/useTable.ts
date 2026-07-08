@@ -55,7 +55,7 @@ export const useTable = <T>(params: UseTableParams) => {
     setOrderDirection(orderDirection);
   }
 
-  const handlePageChange = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
+  const handlePageChange = (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
     setPage(page);
   };
 

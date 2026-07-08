@@ -1,6 +1,7 @@
-import type { ExpenseType } from './generated/prisma/client';
+import type { FileUpload } from 'graphql-upload/GraphQLUpload.mjs';
+import type { ExpenseType } from '../../../generated/prisma/client.js';
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { GraphQLContext } from './src/graphql/context.ts';
+import type { GraphQLContext } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -17,7 +18,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Upload: { input: FileUpload; output: FileUpload; }
+  Upload: { input: Promise<FileUpload>; output: Promise<FileUpload>; }
 };
 
 export type DashboardChart = {

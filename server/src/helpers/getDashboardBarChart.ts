@@ -1,6 +1,6 @@
-import { Expense, ExpenseType, PrismaClient } from '../../generated/prisma/client';
-import { DashboardChart, DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types';
-import { parseDateString } from '../tools/tools';
+import { Expense, ExpenseType, PrismaClient } from '../../generated/prisma/client.js';
+import { DashboardChart, DashboardChartDataPoint, DashboardChartFilters } from '../graphql/__generated__/resolvers-types.js';
+import { parseDateString } from '../tools/tools.js';
 
 type DashboardBarChartDataPointCategories = {
   label: string;

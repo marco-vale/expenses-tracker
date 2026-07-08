@@ -57,12 +57,14 @@ const ExpenseCategoriesListFilters: React.FC<ExpenseCategoriesListFiltersProps> 
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.name}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{ flex: '1 1 120px', minWidth: 120 }}
             error={formik.touched.name && Boolean(formik.errors.name)}
