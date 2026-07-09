@@ -2,7 +2,7 @@ import { ApolloClient, ApolloLink, CombinedGraphQLErrors, CombinedProtocolErrors
 import { SetContextLink } from '@apollo/client/link/context';
 import { ErrorLink } from '@apollo/client/link/error';
 import createUploadLink from 'apollo-upload-client/UploadHttpLink.mjs';
-import { LOCALSTORAGE_USERTOKEN_KEY } from '../constants/constants';
+import { API_URL, LOCALSTORAGE_USERTOKEN_KEY } from '../constants/constants';
 
 const authLink: SetContextLink = new SetContextLink(({ headers }) => {
   const userToken = localStorage.getItem(LOCALSTORAGE_USERTOKEN_KEY);
@@ -35,7 +35,7 @@ const errorLink: ErrorLink = new ErrorLink(({ error }) => {
 });
 
 const uploadLink: createUploadLink = new createUploadLink({
-  uri: "http://localhost:3001/graphql",
+  uri: `${API_URL}/graphql`,
   headers: {
     'apollo-require-preflight': 'true',
   },

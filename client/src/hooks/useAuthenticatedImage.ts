@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LOCALSTORAGE_USERTOKEN_KEY } from '../constants/constants';
+import { API_URL, LOCALSTORAGE_USERTOKEN_KEY } from '../constants/constants';
 
 /**
  * Fetches a private `/uploads` image with the auth token in the `Authorization`
@@ -22,7 +22,7 @@ export const useAuthenticatedImage = (path?: string | null): string | undefined 
     let active = true;
     let currentUrl: string | undefined;
 
-    fetch(`http://localhost:3001${path}`, {
+    fetch(`${API_URL}${path}`, {
       headers: { authorization: token ? `Bearer ${token}` : '' },
     })
       .then((response) => (response.ok ? response.blob() : Promise.reject(new Error('Failed to load image'))))
